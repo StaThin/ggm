@@ -1,2 +1,3 @@
 # ggm
-Some tools to work with graphical Gaussian models
+
+A package to handle graphical Gaussian models and summary graphs. 
