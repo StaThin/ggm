@@ -1,7 +1,7 @@
 Package: ggm
 Version: 2.4
 Date: 2015-01-21
-Title: Functions for Graphical Markov Models
+Title: Tools to handle graphical Gaussian models and summary graphs 
 Author: Giovanni M. Marchetti, Mathias Drton, Kayvan Sadeghi
 Maintainer: Giovanni M. Marchetti <giovanni.marchetti@disia.unifi.it>
 Depends:
