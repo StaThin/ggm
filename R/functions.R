@@ -1,4 +1,4 @@
-`fitDAG` <- function (..., data)
+`fitDAG` <- function (..., data) 
 {
 ### Fits linear recursive regressions with independent residuals. 
 #   ...,  a list of models
