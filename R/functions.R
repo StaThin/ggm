@@ -1,9 +1,9 @@
-#' Fits linear recursive regressions with independent residuals
+#' Fit linear recursive regressions with independent residuals
 
 #'   ...,  a list of models
 #'   data, a data frame.
 
-`fitDAG` <- function (..., data)
+`fitUnivariateReg` <- function (..., data)
 {
   mo = list(...)
   p = length(mo)
@@ -61,8 +61,8 @@ for( i in 1:p) {
   }
 }
 
- # Shat <- cov(Yh)
- # Khat <- solve(Shat)
+# Shat <- cov(Yh)
+# Khat <- solve(Shat)
 #  H <- S %*% Khat
 #  trace <- function(A) sum(diag(A))
 #  dev <- (trace(H) - log(det(H)) - p) * n
