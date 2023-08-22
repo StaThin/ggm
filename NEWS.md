@@ -1,8 +1,11 @@
-# ggm NEWS
+NEWS
 
 - August 2023
   Corrections of \& into & and import from graph
-
+  corrected NAMESPACE
+  corrected DESCRIPTION
+  corrected two man files with no description of the arguments
+  
 - February  2020
   Corrections required by CRAN
 
