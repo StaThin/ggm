@@ -12,10 +12,8 @@ Description: This package provides functions for defining
     independence structures in multivariate distributions
     and in the induced distributions after marginalization 
     and conditioning.
-    
     The package is especially concerned with Gaussian graphical
     models (ggm) for
-    
     (i) ML estimation for directed acyclic, undirected, 
     bi-directed and ancestral graph models;
     (ii) testing several conditional independences;
@@ -23,7 +21,6 @@ Description: This package provides functions for defining
     latent variable;
     (iv) testing Markov equivalences and generating Markov 
     equivalent graphs of specific types.
-    
 License: GPL-2
 Encoding: UTF-8
 LazyData: true
