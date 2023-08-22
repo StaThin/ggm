@@ -2,7 +2,7 @@ ggm
 ===
 
 - August 2023
-  Corrections for Roxygen
+  Corrections of \& into & and import from graph
 
 - February  2020
   Corrections required by CRAN
