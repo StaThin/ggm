@@ -1,7 +1,7 @@
 Package: ggm
 Title:  Graphical Markov Models with Mixed Graphs
-Version: 2.5
-Date: 2020-02-014
+Version: 2.5.1
+Date: 2023-08-24
 Author: Giovanni M. Marchetti, Mathias Drton, Kayvan Sadeghi
 Maintainer: Giovanni M. Marchetti <giovanni.marchetti@unifi.it>
 Depends: R (>= 3.6)
