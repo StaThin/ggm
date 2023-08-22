@@ -38,7 +38,7 @@ rem <- function(a, r) { # this is setdiff (a, r)
 ###############################################################################
 # Finds indices of b in sorted a
 
-"SPl" <- function(a, b) (1:length(a))[is.element(sort(a), b)]
+"SPl" <- function(a, b) (seq_along(a))[is.element(sort(a), b)]
 ##############################################################################
 RR <- function(a) { ## This is unique(a)
   a <- sort(a)
