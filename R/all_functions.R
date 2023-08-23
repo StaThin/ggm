@@ -2751,7 +2751,7 @@
 #' \code{A}.
 #' @return a matrix with \code{n} rows and \code{nrow(A)} columns, a sample
 #' from a multivariate normal distribution with mean zero and covariance matrix
-#' \code{S = solve(A) %*% diag(Delta) %*% t(solve(A))}.
+#' \code{S = solve(A) \%*\% diag(Delta) \%*\% t(solve(A))}.
 #' @author Giovanni M. Marchetti
 #' @seealso \code{\link{triDec}}, \code{\link{fitDag}}
 #' @references Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate
@@ -3105,7 +3105,7 @@
 #' Cholesky decomposition.
 #'
 #' Any symmetric positive definite matrix \eqn{\Sigma}{Sigma} can be decomposed
-#' as \eqn{\Sigma = B \Delta B^T}{Sigma = B %*% Delta %*% t(B)} where \eqn{B}
+#' as \eqn{\Sigma = B \Delta B^T}{Sigma = B \%*\% Delta \%*\% t(B)} where \eqn{B}
 #' is upper triangular with ones along the main diagonal and
 #' \eqn{\Delta}{Delta} is diagonal. If \eqn{\Sigma}{Sigma} is a covariance
 #' matrix, the concentration matrix is \eqn{\Sigma^{-1} = A^T \Delta^{-1} A}
@@ -6662,9 +6662,6 @@ MarkEqRcg <- function(amat, bmat) {
     }
     return(TRUE)
 }
-##########################################################################################
-###########################################################################################
-
 
 
 
@@ -6744,9 +6741,6 @@ RepMarUG <- function(amat) {
     }
     return(list(verify = TRUE, amat = amat))
 }
-########################################################################################
-#########################################################################################
-
 
 
 
@@ -6826,10 +6820,6 @@ RepMarBG <- function(amat) {
     }
     return(list(verify = TRUE, amat = amat))
 }
-########################################################################################
-########################################################################################
-
-
 
 
 #' Representational Markov equivalence to directed acyclic graphs.
@@ -6871,7 +6861,7 @@ RepMarBG <- function(amat) {
 #' RepMarBG(H)
 #'
 #' @export RepMarDAG
-RepMarDAG <- function(amat) {
+`RepMarDAG` <- function(amat) {
     if (class(amat)[1] == "igraph") {
         amat <- grMAT(amat)
     }
@@ -6972,10 +6962,8 @@ RepMarDAG <- function(amat) {
     }
     return(list(verify = TRUE, amat = amat))
 }
-##################################################################################
 
-
-#' The package \code{ggm}: summary information
+#' Package \code{ggm}: summary information
 #'
 #' This package provides functions for defining, manipulating and fitting
 #' graphical Markov models with mixed graphs. It is intended as a contribution
@@ -7023,11 +7011,9 @@ RepMarDAG <- function(amat) {
 #' graphs in R. \emph{The R Journal}, 4(2):65-73.
 #' \url{https://journal.r-project.org/archive/2012/RJ-2012-015/RJ-2012-015.pdf}
 #' @keywords multivariate models graphs
-NULL
 
 
-
-#' Graphs induced by marginalization or conditioning
+#' Induced Graphs
 #'
 #' Functions to find induced graphs after conditioning on a set of variables
 #' and marginalizing over another set.
@@ -7167,9 +7153,9 @@ NULL
 #' cc= list(c("U"), c("Z", "Y"), c("X", "W"))
 #' inducedChainGraph(dag3, cc=cc, type="MRG")
 #'
-NULL
+#' @rdname inducedChainGraph
 
-"inducedChainGraph" <-
+`inducedChainGraph` <-
   function(amat, cc=rownames(amat), cond=NULL, type="LWF"){
     ### Induced chain graph with chain components cc.
     inducedBlockGraph <- function(amat, sel, cond){
@@ -7242,6 +7228,8 @@ NULL
     cg[n,n, drop=FALSE]
   }
 
+#' @rdname inducedConGraph
+
 "inducedConGraph" <-
   function(amat, sel=rownames(amat), cond=NULL){
     ### Induced concentration graph for a set of nodes given a conditioning set.
@@ -7284,6 +7272,7 @@ NULL
     adjMatrix(out)*10
   }
 
+#' @rdname inducedCovGraph
 "inducedCovGraph" <-
   function(amat, sel=rownames(amat), cond=NULL){
     ### Induced covariance graph for a set of nodes given a conditioning set.
@@ -7320,7 +7309,7 @@ NULL
     out <- out[g,g, drop=FALSE]
     adjMatrix(out)*100
   }
-
+#' @rdname inducedDAG
 "inducedDAG" <-
   function(amat, order, cond=NULL){
     ### Induced DAG in a new ordering.
@@ -7328,6 +7317,7 @@ NULL
     inducedChainGraph(amat, cc=cc, cond=cond)
   }
 
+#' @rdname inducedRegGraph
 "inducedRegGraph" <-
   function(amat, sel=rownames(amat), cond=NULL){
     ### Induced regression graph for a set of nodes given a conditioning set.
