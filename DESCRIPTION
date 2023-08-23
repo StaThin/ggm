@@ -16,8 +16,8 @@ Description: Provides functions for defining
     (i) ML estimation for directed acyclic, undirected, 
     bi-directed and ancestral graph models;
     (ii) testing several conditional independences;
-    (iii) checking global identification of DAG Gaussian models with one 
-    latent variable;
+    (iii) checking global identification of DAG Gaussian models
+    with one latent variable;
     (iv) testing Markov equivalences and generating Markov 
     equivalent graphs of specific types.
 License: GPL-2
@@ -27,3 +27,4 @@ NeedsCompilation: no
 Repository: CRAN
 URL: https://github.com/StaThin/ggm
 BugReports: https://github.com/StaThin/ggm/issues
+
