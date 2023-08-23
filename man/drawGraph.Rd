@@ -52,7 +52,7 @@ drawGraph(amat, coor = NULL, adjust = FALSE, alpha = 1.5,
 \pkg{dynamicGraph}, \pkg{Rgraphwiz}, \url{http://www.bioconductor.org}.
 
   GraphViz, Graph Visualization Project. AT&T Research.
-  \url{http://www.graphviz.org}.
+  \url{https://www.graphviz.org}.
 }
 \author{Giovanni M. Marchetti}
 \seealso{\code{\link{UG}}, \code{\link{DAG}}, \code{\link{makeMG}}, \code{\link{plotGraph}}}
