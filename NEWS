@@ -6,6 +6,7 @@ ggm
   corrected NAMESPACE
   corrected DESCRIPTION
   corrected two man files with no description of the arguments
+  corrected some references
 
 - February  2020
   Corrections required by CRAN
