@@ -27,4 +27,3 @@ NeedsCompilation: no
 Repository: CRAN
 URL: https://github.com/StaThin/ggm
 BugReports: https://github.com/StaThin/ggm/issues
-RoxygenNote: 7.2.3
