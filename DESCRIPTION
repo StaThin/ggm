@@ -1,7 +1,7 @@
 Package: ggm
 Title: Graphical Markov Models with Mixed Graphs
 Version: 2.5.1
-Authors@R: c(person(given = "Giovanni", family = "Marchetti", middle = "Maria", email = "giovanni.marchetti@unifi.it", role = c("aut", "cre")), person("Mathias", "Drton", email = "mathias.drton@tum.de", role = "aut"), person("Kayvan", "Sadeghi", email = "k.sadeghi@ucl.ac.uk", role = "aut"))
+Authors@R: c(person(given = "Giovanni M.", family = "Marchetti", email = "giovanni.marchetti@unifi.it", role = c("aut", "cre")), person("Mathias", "Drton", email = "mathias.drton@tum.de", role = "aut"), person("Kayvan", "Sadeghi", email = "k.sadeghi@ucl.ac.uk", role = "aut"))
 Depends: R (>= 3.6.0), methods
 Imports: BiocManager, graph, igraph
 Description: Provides functions for defining 
@@ -12,12 +12,12 @@ Description: Provides functions for defining
     and in the induced distributions after marginalization 
     and conditioning.
     The package is especially concerned with Gaussian graphical
-    models (ggm) for
-    (i) ML estimation for directed acyclic, undirected, 
-    bi-directed and ancestral graph models;
-    (ii) testing several conditional independences;
+    models for
+    (i) ML estimation for directed acyclic graphs, undirected and 
+    bi-directed graphs and ancestral graph models
+    (ii) testing several conditional independencies
     (iii) checking global identification of DAG Gaussian models
-    with one latent variable;
+    with one latent variable
     (iv) testing Markov equivalences and generating Markov 
     equivalent graphs of specific types.
 License: GPL-2
