@@ -2137,9 +2137,6 @@
 # The following function has been generalized and called mlogit.param
 
 
-
-
-
 `mat.mlogit` <- function(d, P = powerset(1:d)) {
     ## Find matrices C and M of binary mlogit parameterization  for a table 2^d.
     ## The output will be in the ordering of P.
