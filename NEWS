@@ -1,7 +1,7 @@
-# ggm
+Package ggm 
 
 - August 2023
-  Corrections of \& into & and import from graph
+  Corrections of "\\&" into "&" and import from graph
   updated references
   corrected NAMESPACE
   improved DESCRIPTION

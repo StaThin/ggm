@@ -26,4 +26,3 @@ LazyData: true
 NeedsCompilation: no
 Repository: CRAN
 URL: https://github.com/StaThin/ggm
-BugReports: https://github.com/StaThin/ggm/issues
