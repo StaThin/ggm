@@ -49,7 +49,7 @@ drawGraph(amat, coor = NULL, adjust = FALSE, alpha = 1.5,
   redisplay the graph.
 }
 \references{
-\pkg{dynamicGraph}, \pkg{Rgraphwiz}, \url{http://www.bioconductor.org}.
+\pkg{dynamicGraph}, \pkg{Rgraphwiz}, \url{https://www.bioconductor.org}.
 
   GraphViz, Graph Visualization Project. AT&T Research.
   \url{https://www.graphviz.org}.
