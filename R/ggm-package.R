@@ -477,7 +477,11 @@ NULL
 #' @author Kayvan Sadeghi, Giovanni M. Marchetti
 #' @seealso \code{unique},\code{setdiff}, \code{is.element}
 #' @keywords utility
-NULL
+
+SPl <- function(a, b) {
+  (seq_along(a))[is.element(sort(a), b)]
+}
+
 
 
 
