@@ -1,7 +1,3 @@
-library(ggm)
-library(igraph)
-library(shiny)
-library(visNetwork)
 # =======================================================================
 # Advanced Graph Layout Editor (Direct Replacement for ggm::plotGraph)
 #
@@ -16,7 +12,7 @@ library(visNetwork)
 #' Allows dynamic node repositioning, handles multiple edge types, and outputs node coordinates.
 #'
 #' @param ggm_matrix A square adjacency matrix, a graphNEL object, an igraph object, or a descriptive character vector.
-#' @param dashed_bidirected Logical. If \code{TRUE} (default), bidirected edges (<->) are drawn as dashed lines.
+#' @param dashed Logical. If \code{TRUE} (default), bidirected edges (<->) are drawn as dashed lines.
 #' @param bidirected_roundness Numeric. Curvature of bidirected edges when multiple edges are present. Default is 0.25.
 #'
 #' @return A matrix of X and Y coordinates for each node, returned after terminating the Shiny application.
@@ -34,7 +30,7 @@ library(visNetwork)
 #'   print(coords)
 #' }
 #' }
-graphLayout <- function(ggm_matrix, dashed_bidirected = TRUE, bidirected_roundness = 0.25) {
+graphLayout <- function(ggm_matrix, dashed = TRUE, bidirected_roundness = 0.25) {
   
   # 1. CONTROLLO DIPENDENZE (Pacchetti in 'Suggests')
   missing_pkgs <- c()
@@ -180,7 +176,7 @@ graphLayout <- function(ggm_matrix, dashed_bidirected = TRUE, bidirected_roundne
         edges_list[[edge_counter]] <- data.frame(
           from = i, to = j,
           arrows = "to, from",
-          dashes = dashed_bidirected,
+          dashes = dashed,
           smooth = I(list(smooth_config)),
           stringsAsFactors = FALSE
         )
@@ -314,11 +310,11 @@ grMAT <- function(agr) {
     
     for (i in seq(1, length(agrn), 2)) {
       idx_from <- SPl(Ragr, agrn[i])
-      idx_to   -------------- SPl(Ragr, agrn[i + 1])
+      idx_to   <- SPl(Ragr, agrn[i + 1])
       
       if ((bn[(i + 1) / 2] == 1   && mat[idx_from, idx_to] %% 10 != 1) || 
-          (bn[(i + 1) / 2] == 10  && mat[idx_from, idx_to] %% 100 < 10) || 
-          (val_edge == 100 && mat[idx_from, idx_to] < 100)) {
+          (bn[(i + 1) / 2] == 10  && mat[idx_from, idx_to] %% 100 < 10) ||
+          (bn[(i + 1) / 2] == 100 && mat[idx_from, idx_to] < 100)) {
         
         mat[idx_from, idx_to] <- mat[idx_from, idx_to] + bn[(i + 1) / 2]
         if (bn[(i + 1) / 2] == 10 || bn[(i + 1) / 2] == 100) {
