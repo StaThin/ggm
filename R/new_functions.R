@@ -1,6 +1,6 @@
 #' Graph to adjacency matrix
 #'
-#' \code{grMAT} converts graph objects to an mixed adjacency matrix.
+#' \code{grMAT} converts graph objects to a mixed adjacency matrix.
 #'
 #' @param agr A graph that can be a `graphNEL` or an
 #' [igraph::igraph] object or a vector of length \eqn{3e} \eqn{3e}, where
