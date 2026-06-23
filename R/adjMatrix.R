@@ -22,7 +22,7 @@ adj_matrix <- function(dag) {
       # Arco non orientato: simmetrico
       mat[orig, dest] <- 10
       mat[dest, orig] <- 10
-    }
+    } 
   }
   return(mat)
 }

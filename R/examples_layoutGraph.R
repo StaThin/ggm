@@ -33,3 +33,15 @@ graphLayout(Glong, dashed = FALSE)
 # A graph with 3 edges between two nodes.
 G4 <- matrix(0, 2, 2); G4[1,2] = 111; G4[2,1] = 111
 graphLayout(G4, dashed = TRUE)
+
+# The graph in R Journal
+
+mg <- matrix(c( 0, 101, 0, 0, 110,
+                100, 0, 100, 0, 1,
+                0, 110, 0, 1, 0,
+                0, 0, 1, 0, 100, 110, 0, 0, 100, 0),
+             5, 5, byrow = TRUE)
+N <- c("X","Y","Z","W","Q") 
+dimnames(mg) <- list(N, N)
+
+
