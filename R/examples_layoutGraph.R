@@ -25,9 +25,11 @@ graphLayout(G)
 # A regression chain graph with longer labels
 
 
-graphLayout(makeMG(bg = UG(~Love*Constraints+ Constraints*Reversal+ Abuse*Distress), dg = DAG(Love ~ Abuse + Distress, Constraints ~ Distress, Reversal ~ Distress, Abuse ~ Fstatus, Distress ~ Fstatus),
-         ug = UG(~Fstatus*Schooling+ Schooling*Age)),
-         dashed = FALSE)
+Glong <- makeMG(bg = UG(~Love*Constraints+ Constraints*Reversal+ Abuse*Distress), dg = DAG(Love ~ Abuse + Distress, Constraints ~ Distress, Reversal ~ Distress, Abuse ~ Fstatus, Distress ~ Fstatus),
+                ug = UG(~Fstatus*Schooling+ Schooling*Age))
+
+graphLayout(Glong, dashed = FALSE)
+
 # A graph with 3 edges between two nodes.
 G4 <- matrix(0, 2, 2); G4[1,2] = 111; G4[2,1] = 111
 graphLayout(G4, dashed = TRUE)

@@ -1,6 +1,6 @@
 `plotGraph2`  <-
   function (a,
-            dashed = FALSE,
+            dashed = TRUE,
             tcltk = FALSE,
             layout = layout_nicely,
             directed = FALSE,

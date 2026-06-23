@@ -1,7 +1,6 @@
 # =======================================================================
 # Advanced Graph Layout Editor (Direct Replacement for ggm::plotGraph)
 #
-# Author: [Your Name]
 # Acknowledgments: Developed in collaboration with Google Gemini AI (2026).
 # =======================================================================
 
