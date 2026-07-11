@@ -1,0 +1,56 @@
+---
+title: "Mixed graphs with multiple edges"
+format: html
+---
+
+I would actually like to create a function to draw mixed graphs
+defined in this way. 
+
+The adjacency matrix $A$ of a mixed graph is a square matrix of order $k$, where $k$ is the number of nodes. The elements $A_{u, v}$ can take the following forms
+
+$$
+\small
+\begin{array}{lll} 
+         &  \text{Edges}            &  (A_{uv}, A_{vu})  & \text{edge type} \\ \hline  
+         &   (1, 0)                       & (1, 0)    &  \text{right arrow}  \\ 
+         &   (0,1)                        &  (0,1)     & \text{left arrow}  \\
+         &  (10,10)                       & (10, 10)   &    \text{line}                 \\       
+         &  (100,100)                     &  (100, 100) &    \text{arc}  \\
+         & \text{Double edges}            &            &             \\           
+         &  (0,1)+(1,0)                   & (1,1)      &    \text{two arrows}   \\        
+         &  (10,10)+(0,1)                 & (10,11)    &    \text{line + arrow}\\       
+         &  (10,10)+(100,100)             & (110,110)   &    \text{line + arc}      \\    
+         &  (0,1)+(100,100)               & (100, 101)  &  \text{arrow+arc}     \\
+         &   \text{Three edges}           &             &                            \\ 
+         &  (0,1)+(100,100)+(10,10)       &(110, 111) & \text{arrow, arc, line}\\  
+         &  (0,1)+(1,0)+(10,10)           & (11,11)   & \text{two arrows and a line} \\   
+         &  (0,1)+(1,0)+(100,100)         & (101,101)   & \text{two arrows and an  arc} \\          & \text{Four edges}              &             &  \\ 
+      &  (0,1)+(1,0)+(10,10)+(100,100) & (111,111)   & \text{two arrows an arc and a line} \\    \hline   
+\end{array}
+$$
+
+Thus the adjacency matrix of a mixed graph $\mathcal{G}$ with node set $V$ and edge set $E$ is a $|V| \times |V|$ matrix obtained as $A = B + S + W$ by adding three matrices $B = (b_{ij})$, $S = (s_{ij} )$ and $W = (w_{ij})$  defined by
+
+$$
+b_{ij}  = \begin{cases}
+          1 &     \iff i \rightarrow j \text{ in } \mathcal{G}\\
+          0 &  \text{otherwise}\\
+          \end{cases}
+$$
+
+$$
+s_{ij}  = s_{ji} = \begin{cases}
+          10 &     \iff i -\!\!- j \text{ in } \mathcal{G}\\
+          0 &  \text{otherwise}\\
+          \end{cases}
+$$
+
+$$
+w_{ij}  = w_{ji} = \begin{cases}
+          100 &     \iff i \leftrightarrow j \text{ in } \mathcal{G}\\
+          0 &  \text{otherwise}\\
+          \end{cases}
+$$
+
+
+  
