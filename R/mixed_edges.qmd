@@ -14,7 +14,7 @@ $$
          &  \text{Edges}            &  (A_{uv}, A_{vu})  & \text{edge type} \\ \hline  
          &   (1, 0)                       & (1, 0)    &  \text{right arrow}  \\ 
          &   (0,1)                        &  (0,1)     & \text{left arrow}  \\
-         &  (10,10)                       & (10, 10)   &    \text{line}                 \\       
+         &  (10,10)                       & (10, 10)   &    \text{line} \\       
          &  (100,100)                     &  (100, 100) &    \text{arc}  \\
          & \text{Double edges}            &            &             \\           
          &  (0,1)+(1,0)                   & (1,1)      &    \text{two arrows}   \\        
