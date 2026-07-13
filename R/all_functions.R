@@ -127,9 +127,49 @@
     ind
   }
 
+#' Simple graph operations
+#' 
+#' Finds the boundary, children, parents of a subset of nodes of a graph.
+#' 
+#' For definitions of the operators see Lauritzen (1996).
+#' @name simple-graph-operations
+#' @aliases bd ch pa
+#' @param nn a vector of nodes. It may either a numeric vector, or a character vector. If it is character vector must be a subset of the \code{rownames} of the edge matrix.
+#' @param amat a square matrix with dimnames specifying the adjacency matrix of the graph.
+#' @return The operators return a character vector specifying the boundary or the children or the parents of nodes \code{nn} in the graph.  This is a numeric or a character vector depending on the mode of \code{nn}.
+#' @author Giovanni M. Marchetti
+#' @seealso \code{\link{UG}}, \code{\link{DAG}}
+#' @references Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon Press.
+#' @keywords graphs models multivariate
+#' @examples
+#' 
+#' ## find boundary of a subset of nodes of a DAG
+#' G <- DAG(y ~ x+b+a, b~a, x~a)
+#' bd("b", G)
+#' bd(c("b", "x"), G)
+#' bd("x", G)
+#' bd(c("x","b"), G)
+#' ## find boundary of a subset of nodes of an UG
+#' G <- UG(~ y*x*z + z*h*v)
+#' bd("z", G)
+#' bd(c("y", "x"), G)
+#' bd("v", G)
+#' bd(c("x","v"), G)
+#' ## children of a subset of nodes of a DAG
+#' G <- DAG(y ~ x+b+a, b~a, x~a)
+#' ch("b", G)
+#' ch(c("b", "x"), G)
+#' ch("x", G)
+#' ch(c("a","x"), G)
+#' ## parents of a subset of nodes of a DAG
+#' pa("b", G)
+#' pa(c("b", "x"), G)
+#' pa("x", G)
+#' pa(c("x","b"), G)
+#' 
 
-"bd" <-
-  function(nn, amat) {
+
+bd <- function(nn, amat) {
     ### Boundary of the nodes nn for a graph with adjacency matrix amat.
     nod <- rownames(amat)
     if (is.null(nod)) stop("The edge matrix must have dimnames!")
@@ -144,8 +184,7 @@
     setdiff(b, nn)
   }
 
-"ch" <-
-  function(nn, amat) {
+ch <- function(nn, amat) {
     ### List of the children of nodes nn for a given with adjacency matrix amat.
     nod <- rownames(amat)
     if (is.null(nod)) stop("The adjacency matrix must have dimnames!")
@@ -160,8 +199,7 @@
   }
 
 
-"pa" <-
-  function(nn, amat) {
+pa <- function(nn, amat) {
     ### List of the parents of nodes nn for a given with adjacency matrix amat.
     nod <- rownames(amat)
     if (is.null(nod)) stop("The adjacency matrix must have dimnames!")
@@ -174,7 +212,6 @@
     }
     setdiff(unique(unlist(p)), nn)
   }
-
 
 
 #' Breadth first search
@@ -2455,10 +2492,8 @@
 #' @return a matrix of the same dimensions as \code{A}.
 #' @author Giovanni M. Marchetti
 #' @seealso \code{\link{DAG}}, \code{\link{inducedCovGraph}},
-#' \code{\link{inducedConGraph}}
-#' @references Wermuth, N. & Cox, D.R. (2004). Joint response graphs and
-#' separation induced by triangular systems. \emph{J.R. Statist. Soc. B}, 66,
-#' Part 3, 687-717.
+#' \code{\link{inducedConGraph}}, \code{\link{In}}
+#' @references Wermuth, N. & Cox, D.R. (2004). Joint response graphs and separation induced by triangular systems. \emph{J.R. Statist. Soc. B}, 66, Part 3, 687-717.
 #' @keywords array algebra graphs multivariate
 #' @examples
 #' 
@@ -2766,22 +2801,13 @@
   }
 
 
-
-
-
-
-
-#' Random sample from a decomposable Gaussian model
+#' Random samples from a decomposable Gaussian model
 #' 
-#' Generates a sample from a mean centered multivariate normal distribution
-#' whose covariance matrix has a given triangular decomposition.
+#' Generates a sample from a mean centered multivariate normal distribution whose covariance matrix has a given triangular decomposition.
 #' 
-#' The value in position \eqn{(i,j)} of \code{A} (with \eqn{i < j}) is a
-#' regression coefficient (with sign changed) in the regression of variable
-#' \eqn{i} on variables \eqn{i+1, \dots, d}.
+#' The value in position \eqn{(i,j)} of \code{A} (with \eqn{i < j}) is a regression coefficient (with sign changed) in the regression of variable \eqn{i} on variables \eqn{i+1, \dots, d}.
 #' 
-#' The value in position \eqn{i} of \code{Delta} is the residual variance in
-#' the above regression.
+#' The value in position \eqn{i} of \code{Delta} is the residual variance in the above regression.
 #' 
 #' @param n an integer > 0, the sample size.
 #' @param A a square, upper triangular matrix with ones along the diagonal. It
@@ -2790,13 +2816,10 @@
 #' number of components of the normal.
 #' @param Delta a numeric vector of length equal to the number of columns of
 #' \code{A}.
-#' @return a matrix with \code{n} rows and \code{nrow(A)} columns, a sample
-#' from a multivariate normal distribution with mean zero and covariance matrix
-#' \code{S = solve(A) %*% diag(Delta) %*% t(solve(A))}.
+#' @return a matrix with \code{n} rows and \code{nrow(A)} columns, a sample from a multivariate normal distribution with mean zero and covariance matrix \code{S = solve(A) %*% diag(Delta) %*% t(solve(A))}.
 #' @author Giovanni M. Marchetti
 #' @seealso \code{\link{triDec}}, \code{\link{fitDag}}
-#' @references Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate
-#' dependencies}. London: Chapman & Hall.
+#' @references Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate dependencies}. London: Chapman & Hall.
 #' @keywords distribution multivariate
 #' @examples
 #' 
@@ -2820,8 +2843,7 @@
 #' triDec(cov(X))$A
 #' 
 #' @export rnormDag
-"rnormDag" <-
-  function(n, A, Delta) {
+rnormDag <- function(n, A, Delta) {
     ### Generates n observations from a multivariate normal with mean 0
     ### and a covariance matrix A^-1 Delta (A^-1)'.
     p <- length(Delta)
@@ -3650,33 +3672,6 @@
 #' @seealso \code{\link{grMAT}}, \code{\link[igraph]{tkplot}},
 #' \code{\link{drawGraph}}, \code{\link[igraph]{plot.igraph}}
 #' @keywords graphs adjacency matrix mixed graphs plot
-#' @examples
-#' 
-#' exvec<-c("b",1,2,"b",1,14,"a",9,8,"l",9,11,
-#'          "a",10,8,"a",11,2,"a",11,9,"a",11,10,
-#'          "a",12,1,"b",12,14,"a",13,10,"a",13,12)
-#' plotGraph(exvec)
-#' ############################################
-#' amat<-matrix(c(0,11,0,0,10,0,100,0,0,100,0,1,0,0,1,0),4,4)
-#' plotGraph(amat)
-#' plotGraph(makeMG(bg = UG(~a*b*c+ c*d), dg = DAG(a ~ x + z, b ~ z )))
-#' plotGraph(makeMG(bg = UG(~a*b*c+ c*d), dg = DAG(a ~ x + z, b ~ z )), dashed = TRUE)
-#' # A graph with double and triple edges
-#' G <-
-#' structure(c(0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0,
-#' 111, 100, 0), .Dim = c(4L, 4L), .Dimnames = list(c("X", "Z",
-#' "Y", "W"), c("X", "Z", "Y", "W")))
-#' plotGraph(G)
-#' # A regression chain graph with longer labels
-#'  plotGraph(makeMG(bg = UG(~Love*Constraints+ Constraints*Reversal+ Abuse*Distress),
-#'    dg = DAG(Love ~ Abuse + Distress, Constraints ~ Distress, Reversal ~ Distress,
-#'    Abuse ~ Fstatus, Distress ~ Fstatus),
-#'    ug = UG(~Fstatus*Schooling+ Schooling*Age)),
-#'    dashed = TRUE, noframe = TRUE)
-#' # A graph with 4 edges between two nodes.
-#' G4 = matrix(0, 2, 2); G4[1,2] = 111; G4[2,1] = 111
-#' plotGraph(G4)
-#' 
 #' @export plotGraph
 `plotGraph` <- function(a, dashed = FALSE, tcltk = TRUE, layout = layout.auto, directed = FALSE, noframe = FALSE, nodesize = 15, vld = 0, vc = "gray", vfc = "black", colbid = "FireBrick3", coloth = "black", cex = 1.5, ...) {
   if (class(a)[1] == "igraph" || class(a)[1] == "graphNEL" || class(a)[1] ==
@@ -3824,32 +3819,19 @@
 #############################################################
 
 
-
-
-
-
-
-
-
 #' Inverts a marginal log-linear parametrization
 #' 
 #' Inverts a marginal log-linear parametrization.
 #' 
-#' A marginal log-linear link is defined by \eqn{\eta = C (M \log p)}. See
-#' Bartolucci et al. (2007).
+#' A marginal log-linear link is defined by \eqn{\eta = C (M \log p)}. See Bartolucci et al. (2007).
 #' 
-#' @param eta a vector of dimension \code{t-1} where \code{t} is the number of
-#' cells of a contingency table.
+#' @param eta a vector of dimension \code{t-1} where \code{t} is the number of cells of a contingency table.
 #' @param C A contrast matrix.
 #' @param M A marginalization matrix.
-#' @param G G is the model matrix of the loglinear parameterization with no
-#' constant term.
-#' @param maxit an integer, specifying the maximum number of iterations.
-#' Default 500.
-#' @param print a logical value: if \code{TRUE}, prints the criterion after
-#' each cycle.
-#' @param tol A small value specifying the tolerance for the convergence
-#' criterion. Default: \code{1e-10}.
+#' @param G G is the model matrix of the loglinear parameterization with no  constant term.
+#' @param maxit an integer, specifying the maximum number of iterations. Default 500.
+#' @param print a logical value: if \code{TRUE}, prints the criterion after each cycle.
+#' @param tol A small value specifying the tolerance for the convergence criterion. Default: \code{1e-10}.
 #' @return A vector of probabilities \code{p}.
 #' @note From a Matlab function by A. Forcina, University of Perugia, Italy.
 #' @author Antonio Forcina, Giovanni M. Marchetti
@@ -4594,135 +4576,6 @@
 
 
 
-`rem` <- function(a, r) { # this is setdiff (a, r)
-  k <- 0
-  b <- a
-  for (i in a) {
-    k <- k + 1
-    for (j in r) {
-      if (i == j) {
-        b <- b[-k]
-        k <- k - 1
-        break
-      }
-    }
-  }
-  return(b)
-}
-
-# SPl<-function(a,alpha){
-# 	a<-sort(a)
-# 	alpha<-sort(alpha)
-# 	r<-c()
-# 	if (length(alpha)>0){
-# 		for(i in 1:length(a)){
-# 			for(j in 1:length(alpha)){
-# 				if(a[i]==alpha[j]){
-# 					r<-c(r,i)
-# 					break}}}}
-# 	return(r)
-# }
-###############################################################################
-# Finds indices of b in sorted a
-
-`SPl` <- function(a, b) (seq_along(a))[is.element(sort(a), b)]
-##############################################################################
-`RR` <- function(a) { ## This is unique(a)
-  a <- sort(a)
-  r <- a[1]
-  i <- 1
-  while (i < length(a)) {
-    if (a[i] == a[i + 1]) {
-      i <- i + 1
-    } else {
-      r <- c(r, a[i + 1])
-      i <- i + 1
-    }
-  }
-  return(r)
-}
-
-`likGau` <- function(K, S, n, k) {
-  # deviance of the Gaussian model.
-  SK <- S %*% K
-  tr <- function(A) sum(diag(A))
-  (tr(SK) - log(det(SK)) - k) * n
-}
-
-
-
-#' Graph to adjacency matrix
-#' 
-#' \code{grMAT} generates the associated adjacency matrix to a given graph.
-#' 
-#' 
-#' @param agr A graph that can be a \code{graphNEL} or an
-#' \code{\link[igraph]{igraph}} object or a vector of length \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of triples
-#' (type, node1label, node2label). The type of edge can be \code{"a"} (arrows
-#' from node1 to node2), \code{"b"} (arcs), and \code{"l"} (lines).
-#' @return A matrix that consists 4 different integers as an \eqn{ij}-element:
-#' 0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
-#' \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
-#' for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
-#' to be associated with multiple edges of different types. The matrix is
-#' symmetric w.r.t full lines and bi-directed arrows.
-#' @author Kayvan Sadeghi
-#' @keywords graphs adjacency matrix mixed graph vector
-#' @examples
-#' 
-#' ## Generating the adjacency matrix from a vector
-#' exvec <-c ('b',1,2,'b',1,14,'a',9,8,'l',9,11,'a',10,8,
-#'            'a',11,2,'a',11,10,'a',12,1,'b',12,14,'a',13,10,'a',13,12)
-#' grMAT(exvec)
-#' 
-#' @export grMAT
-`grMAT` <- function(agr) {
-  if (class(agr)[1] == "graphNEL") {
-    agr <- igraph.from.graphNEL(agr)
-  }
-  if (class(agr)[1] == "igraph") {
-    return(get.adjacency(agr, sparse = FALSE))
-  }
-  if (class(agr)[1] == "character") {
-    if (length(agr) %% 3 != 0) {
-      stop("'The character object' is not in a valid form")
-    }
-    seqt <- seq(1, length(agr), 3)
-    b <- agr[seqt]
-    agrn <- agr[-seqt]
-    bn <- c()
-    for (i in 1:length(b)) {
-      if (b[i] != "a" && b[i] != "l" && b[i] != "b") {
-        stop("'The numeric object' is not in a valid form")
-      }
-      if (b[i] == "l") {
-        bn[i] <- 10
-      }
-      if (b[i] == "a") {
-        bn[i] <- 1
-      }
-      if (b[i] == "b") {
-        bn[i] <- 100
-      }
-    }
-    Ragr <- RR(agrn)
-    ma <- length(Ragr)
-    mat <- matrix(rep(0, (ma)^2), ma, ma)
-    for (i in seq(1, length(agrn), 2)) {
-      if ((bn[(i + 1) / 2] == 1 && mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] %% 10 != 1) || (bn[(i + 1) / 2] == 10 && mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] %% 100 < 10) || (bn[(i + 1) / 2] == 100 && mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] < 100)) {
-        mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] <- mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] + bn[(i + 1) / 2]
-        if (bn[(i + 1) / 2] == 10 || bn[(i + 1) / 2] == 100) {
-          mat[SPl(Ragr, agrn[i + 1]), SPl(Ragr, agrn[i])] <- mat[SPl(Ragr, agrn[i + 1]), SPl(Ragr, agrn[i])] + bn[(i + 1) / 2]
-        }
-      }
-    }
-    rownames(mat) <- Ragr
-    colnames(mat) <- Ragr
-  }
-  return(mat)
-}
-
 
 
 
@@ -4762,8 +4615,7 @@
 #' graphical models. \emph{Bernoulli}, 8(6), 817-840.
 #' 
 #' Sadeghi, K. (2013). Stable mixed graphs. \emph{Bernoulli} 19(5B), 2330–2358.
-#' @keywords graphs directed acyclic graph marginalisation and conditioning MC
-#' graph ribbonless graph
+#' @keywords graphs directed acyclic graph marginalisation and conditioning MC graph ribbonless graph
 #' @examples
 #' 
 #' 	ex <- matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, ##The adjacency matrix of a DAG
@@ -4788,7 +4640,7 @@
 #' RG(ex,M,C,plot=TRUE)
 #' 
 #' @export RG
-`RG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
+RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
   if (class(amat)[1] == "igraph" || class(amat)[1] == "graphNEL" || class(amat)[1] == "character") {
     amat <- grMAT(amat)
   }
@@ -5098,8 +4950,7 @@
 #' 
 #' Wermuth, N. (2011). Probability distributions with summary graph structure.
 #' \emph{Bernoulli}, 17(3),845-879.
-#' @keywords graphs directed acyclic graph marginalization and conditioning
-#' summary graph
+#' @keywords graphs directed acyclic graph marginalization and conditioning summary graph
 #' @examples
 #' 
 #' 	ex <- matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, ##The adjacency matrix of a DAG
@@ -5472,8 +5323,7 @@
 #' models. \emph{Annals of Statistics}, 30(4), 962-1030.
 #' 
 #' Sadeghi, K. (2013). Stable mixed graphs. \emph{Bernoulli} 19(5B), 2330–2358.
-#' @keywords graphs ancestral graph directed acyclic graph marginalization and
-#' conditioning
+#' @keywords graphs ancestral graph directed acyclic graph marginalization and conditioning
 #' @examples
 #' 
 #' ##The adjacency matrix of a DAG
@@ -5882,11 +5732,6 @@
 ##############################################################################
 ##############################################################################
 
-
-
-
-
-
 #' Maximisation for graphs
 #' 
 #' \code{Max} generates a maximal graph that induces the same independence
@@ -5923,12 +5768,12 @@
 #' 	            0,  1,100,  0), 4, 4)
 #' Max(H)
 #' 
-#' @export Max
+#' @export
 Max <- function(amat) {
-  if (class(amat)[1] == "igraph" || class(amat)[1] == "graphNEL" || class(amat)[1] == "character") {
+  if (inherits(amat, "igraph") || inherits(amat, "graphNEL") || is.character(amat)) {
     amat <- grMAT(amat)
   }
-  if (is(amat, "matrix")) {
+  if (is.matrix(amat)) {
     if (nrow(amat) == ncol(amat)) {
       if (length(rownames(amat)) != ncol(amat)) {
         rownames(amat) <- 1:ncol(amat)
@@ -5937,11 +5782,10 @@ Max <- function(amat) {
     } else {
       stop("'object' is not in a valid adjacency matrix form")
     }
-  }
-  if (!is(amat, "matrix")) {
+  } else {
     stop("'object' is not in a valid form")
   }
-
+  
   na <- ncol(amat)
   at <- which(amat + t(amat) + diag(na) == 0, arr.ind = TRUE)
   if (dim(at)[1] > 0) {
@@ -6024,7 +5868,7 @@ Max <- function(amat) {
               }
             }
           }
-
+          
           for (l in twoarc) {
             for (j in Sr) {
               if (amat[l, j] > 99) {
@@ -6076,19 +5920,19 @@ Max <- function(amat) {
   }
   return(amat)
 }
+
+
+
+
+
+
 #####################################################################################################
 ######################################################################################################
-
-
-
-
-
 
 #' The m-separation criterion
 #' 
 #' \code{msep} determines whether two set of nodes are m-separated by a third
 #' set of nodes.
-#' 
 #' 
 #' @param a An adjacency matrix, or a graph that can be a \code{graphNEL} or an
 #' \code{\link[igraph]{igraph}} object or a vector of length \eqn{3e}, where
@@ -6117,12 +5961,12 @@ Max <- function(amat) {
 #' msep(H,1,4, 2)
 #' msep(H,1,4, c())
 #' 
-#' @export msep
+#' @export
 msep <- function(a, alpha, beta, C = c()) {
-  if (class(a)[1] == "igraph" || class(a)[1] == "graphNEL" || class(a)[1] == "character") {
+  if (inherits(a, "igraph") || inherits(a, "graphNEL") || is.character(a)) {
     a <- grMAT(a)
   }
-  if (is(a, "matrix")) {
+  if (is.matrix(a)) {
     if (nrow(a) == ncol(a)) {
       if (length(rownames(a)) != ncol(a)) {
         rownames(a) <- 1:ncol(a)
@@ -6131,27 +5975,20 @@ msep <- function(a, alpha, beta, C = c()) {
     } else {
       stop("'object' is not in a valid adjacency matrix form")
     }
-  }
-  if (!is(a, "matrix")) {
+  } else {
     stop("'object' is not in a valid form")
   }
-
-  M <- rem(rownames(a), c(alpha, beta, C))
+  
+  # Sostituzione di rem con la funzione nativa setdiff
+  M <- setdiff(rownames(a), c(alpha, beta, C))
   ar <- Max(RG(a, M, C))
-
-  # aralpha<-as.matrix(ar[SPl(c(alpha,beta),alpha),SPl(c(alpha,beta),beta)])
-  # arbeta<-as.matrix(ar[SPl(c(alpha,beta),beta),SPl(c(alpha,beta),alpha)])
-  # for(i in 1:length(alpha)){
-  # 	for(j in 1:length(beta)){
-  # 		if(aralpha[j,i]!=0 || arbeta[j,i]!=0){
-  # 			return("NOT separated")
-  # 			break
-  # 			break}}}
+  
   if (max(ar[as.character(beta), as.character(alpha)] + ar[as.character(alpha), as.character(beta)] != 0)) {
     return(FALSE)
   }
   return(TRUE)
 }
+
 ############################################################################
 ############################################################################
 
@@ -6202,8 +6039,7 @@ msep <- function(a, alpha, beta, C = c()) {
 #' 
 #' Sadeghi, K. and Lauritzen, S.L. (2014). Markov properties for loopless mixed
 #' graphs. \emph{Bernoulli} 20(2), 676-696.
-#' @keywords graphs directed acyclic graph marginalisation and conditioning
-#' maximality of graphs MC graph ribbonless graph
+#' @keywords graphs directed acyclic graph marginalisation and conditioning maximality of graphs MC graph ribbonless graph
 #' @examples
 #' 
 #' ex <- matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, ##The adjacency matrix of a DAG
@@ -6233,7 +6069,7 @@ msep <- function(a, alpha, beta, C = c()) {
 #' Max(H)
 #' 
 #' @export MRG
-`MRG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
+MRG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
   return(Max(RG(amat, M, C, showmat, plot, plotfun = plotGraph, ...)))
 }
 ##########################################################################
@@ -6287,8 +6123,7 @@ msep <- function(a, alpha, beta, C = c()) {
 #' 
 #' Wermuth, N. (2011). Probability distributions with summary graph structure.
 #' \emph{Bernoulli}, 17(3), 845-879.
-#' @keywords graphs directed acyclic graph marginalisation and conditioning
-#' maximality of graphs summary graph
+#' @keywords graphs directed acyclic graph marginalisation and conditioning maximality of graphs summary graph
 #' @examples
 #' 
 #' ex<-matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, ##The adjacency matrix of a DAG
@@ -6365,8 +6200,7 @@ msep <- function(a, alpha, beta, C = c()) {
 #' 
 #' Sadeghi, K. and Lauritzen, S.L. (2014). Markov properties for loopless mixed
 #' graphs. \emph{Bernoulli} 20(2), 676-696.
-#' @keywords ancestral graph directed acyclic graph marginalization and
-#' conditioning maximality of graphs
+#' @keywords ancestral graph directed acyclic graph marginalization and conditioning maximality of graphs
 #' @examples
 #' 
 #' ex<-matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, ##The adjacency matrix of a DAG
@@ -6480,8 +6314,7 @@ msep <- function(a, alpha, beta, C = c()) {
 #' @seealso \code{\link{MarkEqMag}}, \code{\link{msep}}
 #' @references Wermuth, N. and Sadeghi, K. (2012). Sequences of regressions and
 #' their independences. Test 21:215–252.
-#' @keywords graphs bidirected graph directed acyclic graph Markov equivalence
-#' regression chain graph undirected graph multivariate
+#' @keywords graphs bidirected graph directed acyclic graph Markov equivalence regression chain graph undirected graph multivariate
 #' @examples
 #' 
 #' H1<-matrix(c(0,100,0,0,0,100,0,100,0,0,0,100,0,0,0,1,0,0,0,100,0,0,1,100,0),5,5)
@@ -6807,8 +6640,7 @@ MarkEqRcg <- function(amat, bmat) {
 #' \code{\link{RepMarBG}}, \code{\link{RepMarDAG}}
 #' @references Sadeghi, K. (2011). Markov equivalences for subclasses of
 #' loopless mixed graphs. \emph{Submitted}, 2011.
-#' @keywords graphs bidirected graph Markov equivalence maximal ancestral graph
-#' representational Markov equivalence
+#' @keywords graphs bidirected graph Markov equivalence maximal ancestral graph representational Markov equivalence
 #' @examples
 #' 
 #' H<-matrix(c(0,10,0,0,10,0,0,0,0,1,0,100,0,0,100,0),4,4)
@@ -6888,8 +6720,7 @@ RepMarUG <- function(amat) {
 #' \code{\link{RepMarDAG}}, \code{\link{RepMarUG}}
 #' @references Sadeghi, K. (2011). Markov equivalences for subclasses of
 #' loopless mixed graphs. \emph{Submitted}, 2011.
-#' @keywords graphs bidirected graph Markov equivalence maximal ancestral graph
-#' representational Markov equivalence
+#' @keywords graphs bidirected graph Markov equivalence maximal ancestral graph' representational Markov equivalence
 #' @examples
 #' 
 #' H<-matrix(c(0,10,0,0,10,0,0,0,0,1,0,100,0,0,100,0),4,4)
@@ -6969,8 +6800,7 @@ RepMarBG <- function(amat) {
 #' \code{\link{RepMarBG}}, \code{\link{RepMarUG}}
 #' @references Sadeghi, K. (2011). Markov equivalences for subclasses of
 #' loopless mixed graphs. \emph{Submitted}, 2011.
-#' @keywords graphs bidirected graph Markov equivalence maximal ancestral graph
-#' representational Markov equivalence
+#' @keywords graphs bidirected graph Markov equivalence maximal ancestral graph representational Markov equivalence
 #' @examples
 #' 
 #' H<-matrix(c(0,10,0,0,10,0,0,0,0,1,0,100,0,0,100,0),4,4)

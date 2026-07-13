@@ -26,7 +26,7 @@
 #' G = UG(~ Y*X + X*Z + Z*U + U*Y)
 #' fitConGraph(G,anger, 684) 
 #' 
-NULL
+"anger"
 
 
 #' Data on blood pressure body mass and age
@@ -70,7 +70,7 @@ NULL
 #' # same result
 #' out2 = fitAncestralGraph(H, derived$S, n = 44)
 #' 
-NULL
+"derived"
 
 
 #' The package \code{ggm}: summary information
@@ -83,7 +83,9 @@ NULL
 #' with ancestral, summary and ribbonless graphs see Sadeghi and Marchetti
 #' (2012) in the references.
 #' 
-#' 
+#' @docType package
+#' @name ggm-package
+#' @aliases ggm
 #' @section Functions: The main functions can be classified as follows.
 #' \itemize{ \item Functions for defining graphs (undirected, directed acyclic,
 #' ancestral and summary graphs): \code{\link{UG}}, \code{\link{DAG}},
@@ -138,7 +140,11 @@ NULL
 #' graphs in R. \emph{The R Journal}, 4(2):65-73.
 #' \url{https://journal.r-project.org/archive/2012/RJ-2012-015/RJ-2012-015.pdf}
 #' @keywords multivariate models graphs
-NULL
+#' @importFrom graphics arrows lines locator par plot points segments text
+#' @importFrom stats binomial coef cor glm model.frame model.matrix model.response pchisq pt rnorm terms
+#' @importFrom methods is
+#' @import igraph
+"_PACKAGE"
 
 
 #' Glucose control
@@ -184,10 +190,7 @@ NULL
 #' ## See Cox & Wermuth (1996), Figure 6.3 p. 140
 #' coplot(Y ~ W | A, data=glucose)
 #' 
-NULL
-
-
-
+"glucose"
 
 
 #' Graphs induced by marginalization or conditioning
@@ -202,11 +205,9 @@ NULL
 #' multivariate regression graph and the chain graph with different
 #' interpretations (see Cox & Wermuth, 1996, 2004).
 #' 
-#' @aliases inducedCovGraph inducedConGraph inducedRegGraph inducedChainGraph
-#' inducedDAG InducedGraphs
+#' @aliases inducedCovGraph inducedConGraph inducedRegGraph inducedChainGraph inducedDAG InducedGraphs
 #' @param amat a square Boolean matrix, the adjacency matrix of a directed
-#' acyclic graph. The names of rows and of the columns are the nodes of the
-#' DAG.
+#' acyclic graph. The names of rows and of the columns are the nodes of the DAG.
 #' @param sel a character vector representing a subset of selected variables.
 #' The elements of the vector must be a subset of the names of the nodes i.e.
 #' of \code{rownames(A)}.  By default \code{sel} is the set of the nodes of the
@@ -330,157 +331,10 @@ NULL
 #' cc= list(c("U"), c("Z", "Y"), c("X", "W"))
 #' inducedChainGraph(dag3, cc=cc, type="MRG")
 #' 
-NULL
+ 
 
 
 
-
-
-#' Mathematics marks
-#' 
-#' Examination marks of 88 students in five subjects.
-#' 
-#' Mechanics and Vectors were closed book examinations. Algebra, Analysis and
-#' Statistics were open book examinations.
-#' 
-#' @name marks
-#' @docType data
-#' @format A data frame with 88 observations on the following 5 variables.
-#' \describe{ \item{mechanics}{a numeric vector, mark in Mechanics}
-#' \item{vectors}{a numeric vector, mark in Vectors} \item{algebra}{a numeric
-#' vector, mark in Algebra} \item{analysis}{a numeric vector, mark in Analysis}
-#' \item{statistics}{a numeric vector, mark in Statistics } }
-#' @references Whittaker, J. (1990). \emph{Graphical models in applied
-#' multivariate statistics}. Chichester: Wiley.
-#' @source Mardia, K.V., Kent, J.T. and Bibby, (1979). \emph{Multivariate
-#' analysis}. London: Academic Press.
-#' @keywords datasets
-#' @examples
-#' 
-#' data(marks)
-#' pairs(marks)
-#' 
-NULL
-
-
-#' Simple graph operations
-#' 
-#' Finds the boundary, children, parents of a subset of nodes of a graph.
-#' 
-#' For definitions of the operators see Lauritzen (1996).
-#' 
-#' @aliases bd ch pa
-#' @param nn a vector of nodes. It may either a numeric vector, or a character
-#' vector. If it is character vector must be a subset of the \code{rownames} of
-#' the edge matrix.
-#' @param amat a square matrix with dimnames specifying the adjacency matrix of
-#' the graph
-#' @return The operators return a character vector specifying the boundary or
-#' the children or the parents of nodes \code{nn} in the graph.  This is a
-#' numeric or a character vector depending on the mode of \code{nn}.
-#' @author Giovanni M. Marchetti
-#' @seealso \code{\link{UG}}, \code{\link{DAG}}
-#' @references Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon
-#' Press.
-#' @keywords graphs models multivariate
-#' @examples
-#' 
-#' ## find boundary of a subset of nodes of a DAG
-#' G <- DAG(y ~ x+b+a, b~a, x~a)
-#' bd("b", G)
-#' bd(c("b", "x"), G)
-#' bd("x", G)
-#' bd(c("x","b"), G)
-#' ## find boundary of a subset of nodes of an UG
-#' G <- UG(~ y*x*z + z*h*v)
-#' bd("z", G)
-#' bd(c("y", "x"), G)
-#' bd("v", G)
-#' bd(c("x","v"), G)
-#' ## children of a subset of nodes of a DAG
-#' G <- DAG(y ~ x+b+a, b~a, x~a)
-#' ch("b", G)
-#' ch(c("b", "x"), G)
-#' ch("x", G)
-#' ch(c("a","x"), G)
-#' ## parents of a subset of nodes of a DAG
-#' pa("b", G)
-#' pa(c("b", "x"), G)
-#' pa("x", G)
-#' pa(c("x","b"), G)
-#' 
-NULL
-
-
-
-
-
-#' Stress
-#' 
-#' Stress data
-#' 
-#' See Cox and Wermuth (1996).
-#' 
-#' @name stress
-#' @docType data
-#' @format A \eqn{4 \times 4} covariance matrix for the following variables.
-#' \describe{ \item{Y}{} \item{V}{} \item{X}{} \item{U}{} }
-#' @references Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate
-#' dependencies}. London: Chapman & Hall.
-#' 
-#' Slangen K., Kleemann P.P and Krohne H.W. (1993). Coping with surgical
-#' stress. In: Krohne H. W. (ed.).  \emph{Attention and avoidance: Strategies
-#' in coping with aversiveness}. New York, Heidelberg: Springer, 321-346.
-#' @keywords datasets
-#' @examples
-#' 
-#' data(stress)
-#' G = UG(~ Y*X + X*V + V*U + U*Y)
-#' fitConGraph(G, stress, 100)
-#' 
-NULL
-
-
-
-
-
-#' A simulated data set
-#' 
-#' Simulated data following a seemingly unrelated regression model.
-#' 
-#' 
-#' @name surdata
-#' @docType data
-#' @format A data frame with 600 observations on the following 4 variables.
-#' \describe{ \item{list("A")}{a numeric response vector} \item{list("B")}{a
-#' numeric response vector} \item{list("X")}{a numeric vector}
-#' \item{list("Z")}{a numeric vector with codes \code{1} and \code{-1} for a
-#' binary variables.} }
-#' @keywords datasets
-#' @examples
-#' 
-#' data(surdata)
-#' pairs(surdata)
-#' 
-NULL
-
-
-
-
-
-#' Utility functions
-#' 
-#' Functions used internally.
-#' 
-#' 
-#' @aliases rem SPl RR likGau
-#' @author Kayvan Sadeghi, Giovanni M. Marchetti
-#' @seealso \code{unique},\code{setdiff}, \code{is.element}
-#' @keywords utility
-
-SPl <- function(a, b) {
-  (seq_along(a))[is.element(sort(a), b)]
-}
 
 
 
