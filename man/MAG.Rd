@@ -10,7 +10,7 @@ MAG(
   C = c(),
   showmat = TRUE,
   plot = FALSE,
-  plotfun = plotGraph,
+  plotfun = plotGraph2,
   ...
 )
 }

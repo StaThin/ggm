@@ -6,7 +6,7 @@
 \usage{
 plotGraph2(
   a,
-  dashed = TRUE,
+  dashed = FALSE,
   layout = igraph::layout_nicely,
   directed = FALSE,
   noframe = FALSE,
@@ -16,16 +16,17 @@ plotGraph2(
   vfc = NA,
   colbid = "FireBrick3",
   coloth = "gray40",
-  cex = 1.5,
-  ew = 1.5,
-  eas = 0.9,
+  cex = 1,
+  ew = 1.8,
+  eas = 0.7,
+  eaw = 1,
   ...
 )
 }
 \arguments{
 \item{a}{A square adjacency matrix, an \code{igraph} object, a \code{graphNEL} object, or a character vector.}
 
-\item{dashed}{Logical. If \code{TRUE} (default), edges with specific identifiers will be drawn as dashed lines.}
+\item{dashed}{Logical. If \code{FALSE} (default), bidirected edges will be drawn as continuous arcs. Otherwise they will drawn as dashed arcs.}
 
 \item{layout}{An \code{igraph} layout function or matrix (e.g., \code{layout_nicely}).}
 
@@ -51,6 +52,8 @@ plotGraph2(
 
 \item{eas}{Numeric. The size of the edge arrowheads.}
 
+\item{eaw}{Numeric. The size of the edge arrow width.}
+
 \item{...}{Additional arguments passed directly to the underlying \code{plot.igraph} function.}
 }
 \value{
@@ -64,27 +67,37 @@ and generates a highly customizable, clean static visual representation of the n
 }
 \examples{
 
-exvec<-c("b",1,2,"b",1,14,"a",9,8,"l",9,11,
-         "a",10,8,"a",11,2,"a",11,9,"a",11,10,
-         "a",12,1,"b",12,14,"a",13,10,"a",13,12)
+exvec <- c(
+  "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11,
+  "a", 10, 8, "a", 11, 2, "a", 11, 9, "a", 11, 10,
+  "a", 12, 1, "b", 12, 14, "a", 13, 10, "a", 13, 12
+)
 plotGraph2(exvec)
 ############################################
-amat<-matrix(c(0,11,0,0,10,0,100,0,0,100,0,1,0,0,1,0),4,4)
+amat <- matrix(c(0, 11, 0, 0, 10, 0, 100, 0, 0, 100, 0, 1, 0, 0, 1, 0), 4, 4)
 plotGraph2(amat)
-plotGraph2(makeMG(bg = UG(~a*b*c+ c*d), dg = DAG(a ~ x + z, b ~ z )))
-plotGraph2(makeMG(bg = UG(~a*b*c+ c*d), dg = DAG(a ~ x + z, b ~ z )), dashed = TRUE)
+plotGraph2(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)))
+plotGraph2(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)), dashed = TRUE)
 # A graph with double and triple edges
 G <-
-structure(c(0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0,
-111, 100, 0), .Dim = c(4L, 4L), .Dimnames = list(c("X", "Z",
-"Y", "W"), c("X", "Z", "Y", "W")))
+  structure(c(
+    0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0,
+    111, 100, 0
+  ), .Dim = c(4L, 4L), .Dimnames = list(c(
+    "X", "Z",
+    "Y", "W"
+  ), c("X", "Z", "Y", "W")))
 plotGraph2(G)
-# A regression chain graph with longer labels
-G <- makeMG(bg = UG(~ Love * Constraints + Constraints * Reversal+ Abuse * Distress), 
-dg = DAG(Love ~ Abuse + Distress, Constraints ~ Distress, Reversal ~ Distress, Abuse ~ Fstatus, Distress ~ Fstatus), 
-ug = UG(~Fstatus * Schooling + Schooling * Age))
+# A regression chain graph
+G <- makeMG(
+  bg = UG(~ Love * C + C * R + A * D),
+  dg = DAG(L ~ A + D, C ~ D, R ~ D, A ~ F, D ~ F),
+  ug = UG(~ F * S + S * Age)
+)
 plotGraph2(G, noframe = TRUE)
 # A graph with 4 edges between two nodes.
-G4 = matrix(0, 2, 2); G4[1,2] = 111; G4[2,1] = 111
+G4 <- matrix(0, 2, 2)
+G4[1, 2] <- 111
+G4[2, 1] <- 111
 plotGraph2(G4)
 }

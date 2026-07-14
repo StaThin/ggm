@@ -2,8 +2,9 @@ Package ggm
 
 - June 2026 
   Used Roxygen2
-  New Function graphEditor
+  Deprecated tcltk = TRUE in plotGraph
   New function plotGraph 
+  substituted functions rem and RR with base R 
 
 - July 2025 
   Corrected Rd file(s) with Rd \link{} targets missing package 

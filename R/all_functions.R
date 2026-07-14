@@ -127,6 +127,7 @@
     ind
   }
 
+
 #' Simple graph operations
 #' 
 #' Finds the boundary, children, parents of a subset of nodes of a graph.
@@ -134,84 +135,93 @@
 #' For definitions of the operators see Lauritzen (1996).
 #' @name simple-graph-operations
 #' @aliases bd ch pa
-#' @param nn a vector of nodes. It may either a numeric vector, or a character vector. If it is character vector must be a subset of the \code{rownames} of the edge matrix.
+#' @param nn a vector of nodes. It may either a numeric vector, or a character vector. If it is character vector must be a subset of the `rownames` of the edge matrix.
 #' @param amat a square matrix with dimnames specifying the adjacency matrix of the graph.
-#' @return The operators return a character vector specifying the boundary or the children or the parents of nodes \code{nn} in the graph.  This is a numeric or a character vector depending on the mode of \code{nn}.
+#' @returns A character vector specifying the boundary or the children or the parents of nodes `nn` in the graph.  This is a numeric or a character vector depending on the mode of `nn`.
 #' @author Giovanni M. Marchetti
-#' @seealso \code{\link{UG}}, \code{\link{DAG}}
+#' @seealso [ggm::UG()], [ggm::DAG()]
 #' @references Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon Press.
 #' @keywords graphs models multivariate
 #' @examples
+#' if (requireNamespace("ggm", quietly = TRUE)) {
+#'   library(ggm)
+#'   
+#'   ## find boundary of a subset of nodes of a DAG
+#'   G <- DAG(y ~ x+b+a, b~a, x~a)
+#'   bd("b", G)
+#'   bd(c("b", "x"), G)
+#'   bd("x", G)
+#'   bd(c("x","b"), G)
+#'   
+#'   ## find boundary of a subset of nodes of an UG
+#'   G <- UG(~ y*x*z + z*h*v)
+#'   bd("z", G)
+#'   bd(c("y", "x"), G)
+#'   bd("v", G)
+#'   bd(c("x","v"), G)
+#'   
+#'   ## children of a subset of nodes of a DAG
+#'   G <- DAG(y ~ x+b+a, b~a, x~a)
+#'   ch("b", G)
+#'   ch(c("b", "x"), G)
+#'   ch("x", G)
+#'   ch(c("a","x"), G)
+#'   
+#'   ## parents of a subset of nodes of a DAG
+#'   pa("b", G)
+#'   pa(c("b", "x"), G)
+#'   pa("x", G)
+#'   pa(c("x","b"), G)
+#' }
 #' 
-#' ## find boundary of a subset of nodes of a DAG
-#' G <- DAG(y ~ x+b+a, b~a, x~a)
-#' bd("b", G)
-#' bd(c("b", "x"), G)
-#' bd("x", G)
-#' bd(c("x","b"), G)
-#' ## find boundary of a subset of nodes of an UG
-#' G <- UG(~ y*x*z + z*h*v)
-#' bd("z", G)
-#' bd(c("y", "x"), G)
-#' bd("v", G)
-#' bd(c("x","v"), G)
-#' ## children of a subset of nodes of a DAG
-#' G <- DAG(y ~ x+b+a, b~a, x~a)
-#' ch("b", G)
-#' ch(c("b", "x"), G)
-#' ch("x", G)
-#' ch(c("a","x"), G)
-#' ## parents of a subset of nodes of a DAG
-#' pa("b", G)
-#' pa(c("b", "x"), G)
-#' pa("x", G)
-#' pa(c("x","b"), G)
-#' 
-
-
+#' @export
 bd <- function(nn, amat) {
-    ### Boundary of the nodes nn for a graph with adjacency matrix amat.
-    nod <- rownames(amat)
-    if (is.null(nod)) stop("The edge matrix must have dimnames!")
-    if (!all(is.element(nn, nod))) stop("Some of the nodes are not among the vertices.")
-    b <- vector(length(nn), mode = "list")
-    diag(amat) <- 0 # As you do not want the node itself in the list
-    k <- length(nn)
-    for (i in 1:k) {
-      b[[i]] <- c(nod[amat[nn[i], ] == 1], nod[amat[, nn[i]] == 1])
-    }
-    b <- unique(unlist(b))
-    setdiff(b, nn)
+  ### Boundary of the nodes nn for a graph with adjacency matrix amat.
+  nod <- rownames(amat)
+  if (is.null(nod)) stop("The edge matrix must have dimnames!")
+  if (!all(is.element(nn, nod))) stop("Some of the nodes are not among the vertices.")
+  b <- vector(length(nn), mode = "list")
+  diag(amat) <- 0 # As you do not want the node itself in the list
+  k <- length(nn)
+  for (i in 1:k) {
+    b[[i]] <- c(nod[amat[nn[i], ] == 1], nod[amat[, nn[i]] == 1])
   }
+  b <- unique(unlist(b))
+  setdiff(b, nn)
+}
 
+#' @rdname simple-graph-operations
+#' @export
 ch <- function(nn, amat) {
-    ### List of the children of nodes nn for a given with adjacency matrix amat.
-    nod <- rownames(amat)
-    if (is.null(nod)) stop("The adjacency matrix must have dimnames!")
-    if (!all(is.element(nn, nod))) stop("Some of the nodes are not among the vertices.")
-    k <- length(nn)
-    p <- vector(k, mode = "list")
-    A <- 0 + ((amat != t(amat)) & (amat == 1)) # Select the directed edges
-    for (i in 1:k) {
-      p[[i]] <- nod[A[nn[i], ] == 1]
-    }
-    setdiff(unique(unlist(p)), nn)
+  ### List of the children of nodes nn for a given with adjacency matrix amat.
+  nod <- rownames(amat)
+  if (is.null(nod)) stop("The adjacency matrix must have dimnames!")
+  if (!all(is.element(nn, nod))) stop("Some of the nodes are not among the vertices.")
+  k <- length(nn)
+  p <- vector(k, mode = "list")
+  A <- 0 + ((amat != t(amat)) & (amat == 1)) # Select the directed edges
+  for (i in 1:k) {
+    p[[i]] <- nod[A[nn[i], ] == 1]
   }
+  setdiff(unique(unlist(p)), nn)
+}
 
-
+#' @rdname simple-graph-operations
+#' @export
 pa <- function(nn, amat) {
-    ### List of the parents of nodes nn for a given with adjacency matrix amat.
-    nod <- rownames(amat)
-    if (is.null(nod)) stop("The adjacency matrix must have dimnames!")
-    if (!all(is.element(nn, nod))) stop("Some of the nodes are not among the vertices.")
-    k <- length(nn)
-    p <- vector(k, mode = "list")
-    A <- 0 + ((amat != t(amat)) & (amat == 1)) # Select the directed edges
-    for (i in 1:k) {
-      p[[i]] <- nod[A[, nn[i]] == 1]
-    }
-    setdiff(unique(unlist(p)), nn)
+  ### List of the parents of nodes nn for a given with adjacency matrix amat.
+  nod <- rownames(amat)
+  if (is.null(nod)) stop("The adjacency matrix must have dimnames!")
+  if (!all(is.element(nn, nod))) stop("Some of the nodes are not among the vertices.")
+  k <- length(nn)
+  p <- vector(k, mode = "list")
+  A <- 0 + ((amat != t(amat)) & (amat == 1)) # Select the directed edges
+  for (i in 1:k) {
+    p[[i]] <- nod[A[, nn[i]] == 1]
   }
+  setdiff(unique(unlist(p)), nn)
+}
+
 
 
 #' Breadth first search
@@ -2227,8 +2237,7 @@ pa <- function(nn, amat) {
 #' @aliases icf icfmag
 #' @param bi.graph a symmetric matrix with dimnames representing the adjacency
 #' matrix of an undirected graph.
-#' @param mag a square matrix representing the adjacency matrix of an ancestral
-#' graph (for example returned by \code{makeAG}).
+# @param mag a square matrix representing the adjacency matrix of an ancestral graph (for example returned by \code{makeAG}).
 #' @param S a symmetric positive definite matrix, the sample covariance matrix.
 #' The order of the variables must be the same of the order of vertices in the
 #' adjacency matrix.
@@ -2252,8 +2261,7 @@ pa <- function(nn, amat) {
 #' Uncertainty in Artificial Intelligence, Department of Statistics, 130--137.
 #' @keywords internal
 #' @export icf
-"icf" <-
-  function(bi.graph, S, start = NULL, tol = 1e-06) {
+icf <-  function(bi.graph, S, start = NULL, tol = 1e-06) {
     ### Iterative conditional fitting for bidirected graphs. Mathias Drton, 2003
     if (!is.matrix(S)) {
       stop("Second argument is not a matrix!")
@@ -2805,59 +2813,60 @@ pa <- function(nn, amat) {
 #' 
 #' Generates a sample from a mean centered multivariate normal distribution whose covariance matrix has a given triangular decomposition.
 #' 
-#' The value in position \eqn{(i,j)} of \code{A} (with \eqn{i < j}) is a regression coefficient (with sign changed) in the regression of variable \eqn{i} on variables \eqn{i+1, \dots, d}.
+#' The value in position \eqn{(i,j)} of `A` (with \eqn{i < j}) is a regression coefficient (with sign changed) in the regression of variable \eqn{i} on variables \eqn{i+1, \dots, d}.
 #' 
-#' The value in position \eqn{i} of \code{Delta} is the residual variance in the above regression.
+#' The value in position \eqn{i} of `Delta` is the residual variance in the above regression.
 #' 
 #' @param n an integer > 0, the sample size.
 #' @param A a square, upper triangular matrix with ones along the diagonal. It
-#' defines, together with \code{Delta}, the concentration matrix (and also the
-#' covariance matrix) of the multivariate normal. The order of \code{A} is the
+#' defines, together with `Delta`, the concentration matrix (and also the
+#' covariance matrix) of the multivariate normal. The order of `A` is the
 #' number of components of the normal.
 #' @param Delta a numeric vector of length equal to the number of columns of
-#' \code{A}.
-#' @return a matrix with \code{n} rows and \code{nrow(A)} columns, a sample from a multivariate normal distribution with mean zero and covariance matrix \code{S = solve(A) %*% diag(Delta) %*% t(solve(A))}.
+#' `A`.
+#' @returns a matrix with `n` rows and `nrow(A)` columns, a sample from a multivariate normal distribution with mean zero and covariance matrix \eqn{S = A^{-1} \Delta (A^{-1})'}{S = solve(A) \%*\% diag(Delta) \%*\% t(solve(A))}.
 #' @author Giovanni M. Marchetti
-#' @seealso \code{\link{triDec}}, \code{\link{fitDag}}
+#' @seealso [ggm::triDec()], [ggm::fitDag()]
 #' @references Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate dependencies}. London: Chapman & Hall.
 #' @keywords distribution multivariate
 #' @examples
+#' if (requireNamespace("ggm", quietly = TRUE)) {
+#'   library(ggm)
+#'   
+#'   ## Generate a sample of 100 observation from a multivariate normal
+#'   ## The matrix of the path coefficients
+#'   A <- matrix(
+#'   c(1, -2, -3,  0, 0,  0,  0,
+#'     0,  1,  0, -4, 0,  0,  0,
+#'     0,  0,  1,  2, 0,  0,  0,
+#'     0,  0,  0,  1, 1, -5,  0,
+#'     0,  0,  0,  0, 1,  0,  3,
+#'     0,  0,  0,  0, 0,  1, -4,
+#'     0,  0,  0,  0, 0,  0,  1), 7, 7, byrow=TRUE)
+#'   D <- rep(1, 7)
+#'   X <- rnormDag(100, A, D)
+#'   
+#'   ## The true covariance matrix
+#'   solve(A) %*% diag(D) %*% t(solve(A))
+#'   
+#'   ## Triangular decomposition of the sample covariance matrix
+#'   triDec(cov(X))$A
+#' }
 #' 
-#' ## Generate a sample of 100 observation from a multivariate normal
-#' ## The matrix of the path coefficients
-#' A <- matrix(
-#' c(1, -2, -3,  0, 0,  0,  0,
-#'   0,  1,  0, -4, 0,  0,  0,
-#'   0,  0,  1,  2, 0,  0,  0,
-#'   0,  0,  0,  1, 1, -5,  0,
-#'   0,  0,  0,  0, 1,  0,  3,
-#'   0,  0,  0,  0, 0,  1, -4,
-#'   0,  0,  0,  0, 0,  0,  1), 7, 7, byrow=TRUE)
-#' D <- rep(1, 7)
-#' X <- rnormDag(100, A, D)
-#' 
-#' ## The true covariance matrix
-#' solve(A) %*% diag(D) %*% t(solve(A))
-#' 
-#' ## Triangular decomposition of the sample covariance matrix
-#' triDec(cov(X))$A
-#' 
-#' @export rnormDag
+#' @export
 rnormDag <- function(n, A, Delta) {
-    ### Generates n observations from a multivariate normal with mean 0
-    ### and a covariance matrix A^-1 Delta (A^-1)'.
-    p <- length(Delta)
-    E <- matrix(0, n, p)
-    for (j in 1:p) {
-      E[, j] <- rnorm(n, 0, sqrt(Delta[j]))
-    }
-    B <- solve(A)
-    Y <- E %*% t(B)
-    colnames(Y) <- colnames(A)
-    Y
+  ### Generates n observations from a multivariate normal with mean 0
+  ### and a covariance matrix A^-1 Delta (A^-1)'.
+  p <- length(Delta)
+  E <- matrix(0, n, p)
+  for (j in 1:p) {
+    E[, j] <- rnorm(n, 0, sqrt(Delta[j]))
   }
-
-
+  B <- solve(A)
+  Y <- E %*% t(B)
+  colnames(Y) <- colnames(A)
+  Y
+}
 
 
 
@@ -3028,93 +3037,94 @@ rnormDag <- function(n, A, Delta) {
     ## list(swept = out, coef = out[a, b], rss = out[a, a, drop = F])
   }
 
-"topOrder" <-
-  function(amat) {
-    ### Return the nodes in topological order (parents before children).
-    ### Translated from: Kevin Murphy's BNT.
-    if (!isAcyclic(amat)) stop("The graph is not acyclic!")
-    n <- nrow(amat)
-    nod <- 1:n
-    indeg <- rep(0, n)
-    up <- !amat[lower.tri(amat)]
-    if (all(up)) {
-      return(nod)
-    }
-    zero.indeg <- c() #  a stack of nodes with no parents
-    for (i in nod) {
-      indeg[i] <- sum(amat[, i])
-      if (indeg[i] == 0) {
-        zero.indeg <- c(i, zero.indeg)
-      }
-    }
-    s <- 1
-    ord <- rep(0, n)
-    while (length(zero.indeg) > 0) {
-      v <- zero.indeg[1] #  pop v
-      zero.indeg <- zero.indeg[-1]
-      ord[s] <- v
-      s <- s + 1
-      cs <- nod[amat[v, ] == 1]
-      if (length(cs) == 0) next
-      for (j in 1:length(cs)) {
-        k <- cs[j]
-        indeg[k] <- indeg[k] - 1
-        if (indeg[k] == 0) {
-          zero.indeg <- c(k, zero.indeg)
-        } # push k
-      }
-    }
-    ord
-  }
-
-
-
 
 
 
 
 #' Topological sort
 #' 
-#' \code{topOrder} returns the topological order of a directed acyclic graph
-#' (parents, before children). \code{topSort} permutates the adjacency matrix
+#' `topOrder` returns the topological order of a directed acyclic graph
+#' (parents, before children). `topSort` permutates the adjacency matrix
 #' according to the topological order.
 #' 
-#' The topological order needs not to be unique.  After the permutation the
+#' The topological order needs not to be unique. After the permutation the
 #' adjacency matrix of the graph is upper triangular. The function is a
-#' translation of the Matlab function \code{topological_sort} in Toolbox
-#' \pkg{BNT} written by Kevin P. Murphy.
+#' translation of the Matlab function `topological_sort` in Toolbox
+#' **BNT** written by Kevin P. Murphy.
 #' 
-#' @aliases topSort topOrder
+#' @name topological-sort
+#' @aliases topOrder topSort
 #' @param amat a square Boolean matrix with dimnames, representing the
 #' adjacency matrix of a directed acyclic graph.
-#' @return \code{topOrder(amat)} returns a vector of integers representing the
-#' permutation of the nodes. \code{topSort(amat)} returns the adjacency matrix
-#' with rows and columns permutated.
-#' @note The order of the nodes defined by \code{DAG} is that of their first
+#' @returns 
+#' * `topOrder(amat)` returns a vector of integers representing the permutation of the nodes.
+#' * `topSort(amat)` returns the adjacency matrix with rows and columns permutated.
+#' @note The order of the nodes defined by [ggm::DAG()] is that of their first
 #' appearance in the model formulae (from left to right).
 #' @author Kevin P. Murphy, Giovanni M. Marchetti
-#' @seealso \code{\link{DAG}}, \code{\link{isAcyclic}}
+#' @seealso [ggm::DAG()], [ggm::isAcyclic()]
 #' @references Aho, A.V., Hopcrtoft, J.E. & Ullman, J.D. (1983). \emph{Data
 #' structures and algorithms.} Reading: Addison-Wesley.
 #' 
 #' Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon Press.
 #' @keywords graphs models multivariate
 #' @examples
+#' if (requireNamespace("ggm", quietly = TRUE)) {
+#'   library(ggm)
+#'   
+#'   ## A simple example
+#'   dag <- DAG(a ~ b, c ~ a + b, d ~ c + b)
+#'   dag
+#'   topOrder(dag)
+#'   topSort(dag)
+#' }
 #' 
-#' ## A simple example
-#' dag <- DAG(a ~ b, c ~ a + b, d ~ c + b)
-#' dag
-#' topOrder(dag)
-#' topSort(dag)
-#' 
-#' @export topSort
-"topSort" <-
-  function(amat) {
-    ### Topological sort of the DAG with adjacency matrix amat.
-    ord <- topOrder(amat)
-    amat[ord, ord]
+#' @export
+topOrder <-  function(amat) {
+  ### Return the nodes in topological order (parents before children).
+  ### Translated from: Kevin Murphy's BNT.
+  if (!isAcyclic(amat)) stop("The graph is not acyclic!")
+  n <- nrow(amat)
+  nod <- 1:n
+  indeg <- rep(0, n)
+  up <- !amat[lower.tri(amat)]
+  if (all(up)) {
+    return(nod)
   }
+  zero.indeg <- c() #  a stack of nodes with no parents
+  for (i in nod) {
+    indeg[i] <- sum(amat[, i])
+    if (indeg[i] == 0) {
+      zero.indeg <- c(i, zero.indeg)
+    }
+  }
+  s <- 1
+  ord <- rep(0, n)
+  while (length(zero.indeg) > 0) {
+    v <- zero.indeg[1] #  pop v
+    zero.indeg <- zero.indeg[-1]
+    ord[s] <- v
+    s <- s + 1
+    cs <- nod[amat[v, ] == 1]
+    if (length(cs) == 0) next
+    for (j in 1:length(cs)) {
+      k <- cs[j]
+      indeg[k] <- indeg[k] - 1
+      if (indeg[k] == 0) {
+        zero.indeg <- c(k, zero.indeg)
+      } # push k
+    }
+  }
+  ord
+}
 
+#' @rdname topological-sort
+#' @export
+topSort <- function(amat) {
+  ### Topological sort of the DAG with adjacency matrix amat.
+  ord <- topOrder(amat)
+  amat[ord, ord]
+}
 
 
 
@@ -3619,201 +3629,7 @@ rnormDag <- function(n, A, Delta) {
 
 
 
-#' Plot of a mixed graph
-#' 
-#' Plots a mixed graph from an adjacency matrix, a \code{graphNEL} object, an
-#' \code{\link[igraph]{igraph}} object, or a descriptive vector.
-#' 
-#' \code{plotGraph} uses \code{\link[igraph]{plot.igraph}} and
-#' \code{\link[igraph]{tkplot}} in \pkg{\link[igraph]{igraph}} package.
-#' 
-#' @param a An adjacency matrix: a matrix that consists of 4 different integers
-#' as an \eqn{ij}-element: 0 for a missing edge between \eqn{i} and \eqn{j}, 1
-#' for an arrow from \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and
-#' \eqn{j}, and 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. These
-#' numbers can be added to generate multiple edges of different types. The
-#' matrix must be symmetric w.r.t full lines and bi-directed arrows. Or a graph
-#' that can be a \code{graphNEL} or an \code{\link[igraph]{igraph}} object.Or a
-#' vector of length \eqn{3e}, where \eqn{e} is the number of edges of the
-#' graph, that is a sequence of triples (type,node1label,node2label). The type
-#' of edge can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs),
-#' and \code{"l"} (lines).
-#' @param dashed A logical value. If \code{TRUE} the bi-directed edges are
-#' plotted as undirected dashed edges.
-#' @param tcltk A logical value. If \code{TRUE} the function opens a tcltk
-#' device to plot the graphs, allowing the interactive manimulation of the
-#' graph. If \code{FALSE}the function opens a standard device without
-#' interaction.
-#' @param layout The name of a function used to compute the (initial) layout of
-#' the graph. The default is \code{layout.auto}. This can be further adjusted
-#' if \code{tcltk} is \code{TRUE}.
-#' @param directed A logical value. If \code{FALSE} a symmetric adjacency
-#' matrix with entries 1 is interpreted as an undirected graph. If \code{TRUE}
-#' it is interpreted as a directed graph with double arrows. If \code{a} is not
-#' an adjacency matrix, it is ignored.
-#' @param noframe A logical value. If \code{TRUE}, then the nodes are not
-#' circled.
-#' @param nodesize An integer denoting the size of the nodes (default 15). It
-#' can be increased to accommodate larger labels.
-#' @param vld An integer defining the distance between a vertex and its label.
-#' Defaults to 0.
-#' @param vc Vertex color. Default is "gray".
-#' @param vfc Vertex frame color. Default is "black".
-#' @param colbid Color of the bi-directed edges. Default is "FireBrick3".
-#' @param coloth Color of all the other edges. Default is "black".
-#' @param cex An integer (defaults to 1) to adjust the scaling of the font of
-#' the labels.
-#' @param \dots Further arguments to be passed to \code{plot} or \code{tkplot}.
-#' @return Plot of the associated graph and returns invisibly a list with two
-#' slots: \code{tkp.id}, \code{graph}, the input graph as an \code{igraph}
-#' object. The id can be used to get the layout of the adjusted graph. The
-#' bi-directed edges are plotted in red.
-#' @author Kayvan Sadeghi, Giovanni M. Marchetti
-#' @seealso \code{\link{grMAT}}, \code{\link[igraph]{tkplot}},
-#' \code{\link{drawGraph}}, \code{\link[igraph]{plot.igraph}}
-#' @keywords graphs adjacency matrix mixed graphs plot
-#' @export plotGraph
-`plotGraph` <- function(a, dashed = FALSE, tcltk = TRUE, layout = layout.auto, directed = FALSE, noframe = FALSE, nodesize = 15, vld = 0, vc = "gray", vfc = "black", colbid = "FireBrick3", coloth = "black", cex = 1.5, ...) {
-  if (class(a)[1] == "igraph" || class(a)[1] == "graphNEL" || class(a)[1] ==
-    "character") {
-    a <- grMAT(a)
-  }
-  if (is(a, "matrix")) {
-    if (nrow(a) == ncol(a)) {
-      if (length(rownames(a)) != ncol(a)) {
-        rownames(a) <- 1:ncol(a)
-        colnames(a) <- 1:ncol(a)
-      }
-      if (!directed) {
-        if (all(a == t(a)) & all(a[a != 0] == 1)) {
-          a <- a * 10
-        }
-      }
-      l1 <- c()
-      l2 <- c()
-      for (i in 1:nrow(a)) {
-        for (j in i:nrow(a)) {
-          if (a[i, j] == 1) {
-            l1 <- c(l1, i, j)
-            l2 <- c(l2, 2)
-          }
-          if (a[j, i] %% 10 == 1) {
-            l1 <- c(l1, j, i)
-            l2 <- c(l2, 2)
-          }
-          if (a[i, j] == 10) {
-            l1 <- c(l1, i, j)
-            l2 <- c(l2, 0)
-          }
-          if (a[i, j] == 11) {
-            l1 <- c(l1, i, j, i, j)
-            l2 <- c(l2, 2, 0)
-          }
-          if (a[i, j] == 100) {
-            l1 <- c(l1, i, j)
-            l2 <- c(l2, 3)
-          }
-          if (a[i, j] == 101) {
-            l1 <- c(l1, i, j, i, j)
-            l2 <- c(l2, 2, 3)
-          }
-          if (a[i, j] == 110) {
-            l1 <- c(l1, i, j, i, j)
-            l2 <- c(l2, 0, 3)
-          }
-          if (a[i, j] == 111) {
-            l1 <- c(l1, i, j, i, j, i, j)
-            l2 <- c(l2, 2, 0, 3)
-          }
-        }
-      }
-    } else {
-      stop("'object' is not in a valid adjacency matrix form")
-    }
-    if (length(l1) > 0) {
-      ## l1 <- l1 - 1   # igraph0
-      agr <- graph(l1, n = nrow(a), directed = TRUE)
-    }
-    if (length(l1) == 0) {
-      agr <- graph.empty(n = nrow(a), directed = TRUE)
-      return(tkplot(agr, vertex.label = rownames(a)))
-    }
-    ed0 <- get.edgelist(agr)
-    ne <- nrow(ed0)
-    ed <- apply(apply(ed0, 1, sort), 2, paste, collapse = "-")
-    tb <- table(ed)
-    curve <- rep(0, ne)
-    if (any(tb > 1)) {
-      tb <- tb[tb > 1]
-      for (i in 1:length(tb)) {
-        reped <- names(tb[i]) == ed
-        U <- ed0[reped, ]
-        if (sum(reped) == 2) {
-          ed0[reped]
-          if (all(is.element(c(0, 3), l2[reped]))) {
-            curve[reped] <- c(0.9, -0.9)
-          }
-          if (all(U[1, ] == U[2, ])) {
-            curve[reped] <- c(0.6, -0.6)
-          } else {
-            curve[reped] <- c(0.6, 0.6)
-          }
-        }
-        if (sum(reped) == 3) {
-          curve[(l2 == 3) & reped] <- 0.9
-          curve[(l2 == 0) & reped] <- -0.9
-        }
-        if (sum(reped) == 4) {
-          curve[(l2 == 3) & reped] <- 0.3
-          curve[(l2 == 0) & reped] <- -0.3
-          curve[(l2 == 1) & reped] <- 0.9
-          curve[(l2 == 2) & reped] <- 0.9
-        }
-      }
-    }
-    col <- rep(coloth, ne)
-    col[l2 == 3] <- colbid
-    if (dashed) {
-      ety <- rep(1, ne)
-      ety[l2 == 3] <- 2
-      l2[l2 == 3] <- 0
-    } else {
-      ety <- rep(1, ne)
-    }
-    if (noframe) {
-      vfc <- "white"
-      vc <- "white"
-    }
-    if (tcltk == TRUE) {
-      id <- tkplot(agr,
-        layout = layout, edge.curved = curve,
-        vertex.label = rownames(a), edge.arrow.mode = l2,
-        edge.color = col, edge.lty = ety,
-        vertex.label.family = "sans",
-        edge.width = 1.5, vertex.size = nodesize,
-        vertex.frame.color = vfc, vertex.color = vc,
-        vertex.label.cex = cex, edge.arrow.width = 1,
-        edge.arrow.size = 1.2, vertex.label.dist = vld, ...
-      )
-    } else {
-      id <- plot(agr,
-        layout = layout, edge.curved = curve,
-        vertex.label = rownames(a), edge.arrow.mode = l2,
-        edge.color = col, edge.lty = ety,
-        vertex.label.family = "sans",
-        edge.width = 2, vertex.size = nodesize * 1.5,
-        vertex.frame.color = vfc, vertex.color = vc,
-        vertex.label.cex = cex * 0.8, edge.arrow.width = 2,
-        edge.arrow.size = .5, vertex.label.dist = vld, ...
-      )
-    }
-    V(agr)$name <- rownames(a)
-    agr <- set.edge.attribute(agr, "edge.arrow.mode", index = E(agr), l2)
-    return(invisible(list(tkp.id = id, igraph = agr)))
-  } else {
-    stop("'object' is not in a valid format")
-  }
-}
+
 
 ## Fit multivariate logistic model with individual covariates
 #############################################################
@@ -4640,7 +4456,7 @@ rnormDag <- function(n, A, Delta) {
 #' RG(ex,M,C,plot=TRUE)
 #' 
 #' @export RG
-RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
+RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph2, ...) {
   if (class(amat)[1] == "igraph" || class(amat)[1] == "graphNEL" || class(amat)[1] == "character") {
     amat <- grMAT(amat)
   }
@@ -4935,7 +4751,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' @param plot A logical value, \code{FALSE} (by default). \code{TRUE} to plot
 #' the generated graph.
 #' @param plotfun Function to plot the graph when \code{plot == TRUE}. Can be
-#' \code{plotGraph} (the default) or \code{drawGraph}.
+#' \code{plotGraph2} (the default) or \code{drawGraph}.
 #' @param \dots Further arguments passed to \code{plotfun}.
 #' @return A matrix that consists 4 different integers as an \eqn{ij}-element:
 #' 0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
@@ -4975,7 +4791,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' SG(ex, M, C, plot = TRUE, plotfun = drawGraph, adjust = FALSE)
 #' 
 #' @export SG
-`SG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
+`SG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph2, ...) {
   if (class(amat)[1] == "igraph" || class(amat)[1] == "graphNEL" || class(amat)[1] == "character") {
     amat <- grMAT(amat)
   }
@@ -5348,7 +5164,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' AG(ex, M, C, plot = TRUE)
 #' 
 #' @export AG
-`AG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
+`AG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph2, ...) {
   if (class(amat)[1] == "igraph" || class(amat)[1] == "graphNEL" || class(amat)[1] == "character") {
     amat <- grMAT(amat)
   }
@@ -6069,8 +5885,8 @@ msep <- function(a, alpha, beta, C = c()) {
 #' Max(H)
 #' 
 #' @export MRG
-MRG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
-  return(Max(RG(amat, M, C, showmat, plot, plotfun = plotGraph, ...)))
+MRG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph2, ...) {
+  return(Max(RG(amat, M, C, showmat, plot, plotfun = plotGraph2, ...)))
 }
 ##########################################################################
 ##########################################################################
@@ -6150,8 +5966,8 @@ MRG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = 
 #' Max(H)
 #' 
 #' @export MSG
-`MSG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
-  return(Max(SG(amat, M, C, showmat, plot, plotfun = plotGraph, ...)))
+`MSG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph2, ...) {
+  return(Max(SG(amat, M, C, showmat, plot, plotfun = plotGraph2, ...)))
 }
 ############################################################################
 ###########################################################################
@@ -6227,8 +6043,8 @@ MRG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = 
 #' Max(H)
 #' 
 #' @export MAG
-`MAG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
-  return(Max(AG(amat, M, C, showmat, plot, plotfun = plotGraph, ...)))
+`MAG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph2, ...) {
+  return(Max(AG(amat, M, C, showmat, plot, plotfun = plotGraph2, ...)))
 }
 ############################################################################
 ############################################################################
@@ -6910,8 +6726,110 @@ RepMarBG <- function(amat) {
 }
 
 
-
-
+########  
+#' Graphs induced by marginalization or conditioning
+#' 
+#' Functions to find induced graphs after conditioning on a set of variables and marginalizing over another set.
+#' 
+#' Given a directed acyclic graph representing a set of conditional independencies it is possible to obtain other graphs of conditional independence implied after marginalizing over and conditionig on sets of nodes. Such graphs are the covariance graph, the concentration graph, the multivariate regression graph and the chain graph with different interpretations (see Cox & Wermuth, 1996, 2004).
+#' 
+#' @name induced-graphs
+#' @aliases inducedCovGraph inducedConGraph inducedRegGraph inducedChainGraph inducedDAG InducedGraphs
+#' @param amat a square Boolean matrix, the adjacency matrix of a directed acyclic graph. The names of rows and of the columns are the nodes of the DAG.
+#' @param sel a character vector representing a subset of selected variables.
+#' The elements of the vector must be a subset of the names of the nodes i.e., of \code{rownames(amat)}. By default \code{sel} is the set of the nodes of the DAG.
+#' @param cond a character vector representing the variables on which you want to condition. \code{cond} must be disjoint from \code{sel} and their union must be a subset of the set of nodes. 
+#' The set difference between the set of nodes and the union of \code{sel} and \code{cond} are the variables over which we marginalize. \code{cond} may be the null vector (the default), meaning that you want to condition on the empty set.
+#' @param cc a list of character vectors specifying the chain components for the chain graph.
+#' @param type a string indicating the interpretation of the chain graph. It can be either "LWF" (Lauritzen, Wermuth, Frydenberg interpretation), "AMP" (Andersson, Madigan, Perlman interpretation) or "MRG" (Multivariate regression graph interpretation).
+#' @param order a character vector indicating the ordering of the vertices of a DAG (left to right, past to future).
+#' @returns 
+#' * \code{inducedCovGraph} returns the adjacency matrix of the covariance graph of the variables in set \code{sel} given the variables in set \code{cond}, implied by the original directed acyclic graph with adjacency matrix \code{amat}.
+#' * \code{inducedConGraph} returns the adjacency matrix of the concentration graph of the variables in set \code{sel} given the variables in set \code{cond}, implied by the original directed acyclic graph with adjacency matrix \code{amat}.
+#' * \code{inducedRegGraph} returns the adjacency matrix of the multivariate regression graph of the variables in set \code{sel} given the variables in set \code{cond}, implied by the original directed acyclic graph with adjacency matrix \code{amat}.
+#' * \code{inducedChainGraph} returns the adjacency matrix of the chain graph for the variables in chain components \code{cc}, given the variables in set \code{cond}, with interpretation specified by string \code{type}, implied by the original directed acyclic graph with adjacency matrix \code{amat}.
+#' * \code{inducedDAG} returns the adjacency matrix of the DAG with the ordering \code{order}, implied by the original directed acyclic graph with adjacency matrix \code{amat}.
+#' @note If \code{sel} is \code{NULL} the functions return the null matrix. If \code{cond} is \code{NULL}, the conditioning set is empty and the functions \code{inducedConGraph} and \code{inducedCovGraph} return the overall induced covariance or concentration matrices of the selected variables. If you do not specify \code{sel} you cannot specify a non-\code{NULL} value of \code{cond}.
+#' @author Giovanni M. Marchetti
+#' @seealso \code{\link[ggm]{DAG}}, \code{\link[ggm]{UG}}, \code{\link[ggm]{isAcyclic}}
+#' @references Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate dependencies}. London: Chapman & Hall.
+#' 
+#' Wermuth, N. & Cox, D.R. (2004). Joint response graphs and separation induced by triangular systems. \emph{J.R. Statist. Soc. B}, 66, Part 3, 687-717.
+#' @keywords graphs models multivariate
+#' @examples
+#' if (requireNamespace("ggm", quietly = TRUE)) {
+#'   library(ggm)
+#'   
+#'   ## Define a DAG
+#'   dag <- DAG(a ~ x, c ~ b + d, d ~ x)
+#'   dag
+#'   ## Induced covariance graph of a, b, d given the empty set.
+#'   inducedCovGraph(dag, sel=c("a", "b", "d"), cond=NULL)
+#'   
+#'   ## Induced concentration graph of a, b, c given x
+#'   inducedConGraph(dag, sel=c("a", "b", "c"), cond="x")
+#'   
+#'   ## Overall covariance graph
+#'   inducedCovGraph(dag)
+#'   
+#'   ## Overall concentration graph
+#'   inducedConGraph(dag)
+#'   
+#'   ## Induced covariance graph of x, b, d given c, x.
+#'   inducedCovGraph(dag, sel=c("a", "b", "d"), cond=c("c", "x"))
+#'   
+#'   ## Induced concentration graph of a, x, c given d, b.
+#'   inducedConGraph(dag, sel=c("a", "x", "c"), cond=c("d", "b"))
+#'   
+#'   ## The DAG on p. 198 of Cox & Wermuth (1996)
+#'   dag <- DAG(y1~ y2 + y3, y3 ~ y5, y4 ~ y5)
+#'   
+#'   ## Cf. figure 8.7 p. 203 in Cox & Wermuth (1996)
+#'   inducedCovGraph(dag, sel=c("y2", "y3", "y4", "y5"), cond="y1")
+#'   inducedCovGraph(dag, sel=c("y1", "y2", "y4", "y5"), cond="y3")
+#'   inducedCovGraph(dag, sel=c("y1", "y2", "y3", "y4"), cond="y5")
+#'   
+#'   ## Cf. figure 8.8 p. 203 in Cox & Wermuth (1996)
+#'   inducedConGraph(dag, sel=c("y2", "y3", "y4", "y5"), cond="y1")
+#'   inducedConGraph(dag, sel=c("y1", "y2", "y4", "y5"), cond="y3")
+#'   inducedConGraph(dag, sel=c("y1", "y2", "y3", "y4"), cond="y5")
+#'   
+#'   ## Cf. figure 8.9 p. 204 in Cox & Wermuth (1996)
+#'   inducedCovGraph(dag, sel=c("y2", "y3", "y4", "y5"), cond=NULL)
+#'   inducedCovGraph(dag, sel=c("y1", "y2", "y4", "y5"), cond=NULL)
+#'   inducedCovGraph(dag, sel=c("y1", "y2", "y3", "y4"), cond=NULL)
+#'   
+#'   ## Cf. figure 8.10 p. 204 in Cox & Wermuth (1996)
+#'   inducedConGraph(dag, sel=c("y2", "y3", "y4", "y5"), cond=NULL)
+#'   inducedConGraph(dag, sel=c("y1", "y2", "y4", "y5"), cond=NULL)
+#'   inducedConGraph(dag, sel=c("y1", "y2", "y3", "y4"), cond=NULL)
+#'   
+#'   ## An induced regression graph
+#'   dag2 = DAG(Y ~ X+U, W ~ Z+U)
+#'   inducedRegGraph(dag2, sel="W",  cond=c("Y", "X", "Z"))
+#'   
+#'   ## An induced DAG
+#'   inducedDAG(dag2, order=c("X","Y","Z","W"))
+#'   
+#'   ## An induced multivariate regression graph
+#'   inducedRegGraph(dag2, sel=c("Y", "W"), cond=c("X", "Z"))
+#'   
+#'   ## An induced chain graph with LWF interpretation
+#'   dag3 = DAG(X~W, W~Y, U~Y+Z)
+#'   cc = list(c("W", "U"), c("X", "Y", "Z"))
+#'   inducedChainGraph(dag3, cc=cc, type="LWF")
+#'   
+#'   ## ... with AMP interpretation
+#'   inducedChainGraph(dag3, cc=cc, type="AMP")
+#'   
+#'   ## ... with multivariate regression interpretation
+#'   cc= list(c("U"), c("Z", "Y"), c("X", "W"))
+#'   inducedChainGraph(dag3, cc=cc, type="MRG")
+#' }
+#' 
+#' @export
+#' @rdname induced-graphs
+#' @export
 `inducedChainGraph` <-
   function(amat, cc = rownames(amat), cond = NULL, type = "LWF") {
     ### Induced chain graph with chain components cc.
@@ -6945,7 +6863,7 @@ RepMarBG <- function(amat) {
         past <- unlist(cc[0:(i - 1)])
         Past <- union(cond, past)
         g <- cc[[i]]
-
+        
         Sgg.r <- inducedConGraph(amat, sel = g, cond = Past)
         cg[g, g] <- Sgg.r
         if (length(past) != 0) {
@@ -6958,7 +6876,7 @@ RepMarBG <- function(amat) {
         past <- unlist(cc[0:(i - 1)])
         Past <- union(cond, past)
         g <- cc[[i]]
-
+        
         Sgg.r <- inducedConGraph(amat, sel = g, cond = Past)
         cg[g, g] <- Sgg.r
         if (length(past) != 0) {
@@ -6971,7 +6889,7 @@ RepMarBG <- function(amat) {
         past <- unlist(cc[0:(i - 1)])
         Past <- union(cond, past)
         g <- cc[[i]]
-
+        
         Sgg.r <- inducedCovGraph(amat, sel = g, cond = Past)
         cg[g, g] <- Sgg.r
         if (length(past) != 0) {
@@ -6985,54 +6903,8 @@ RepMarBG <- function(amat) {
     n <- unlist(cc)
     cg[n, n, drop = FALSE]
   }
-
-
-"inducedConGraph" <-
-  function(amat, sel = rownames(amat), cond = NULL) {
-    ### Induced concentration graph for a set of nodes given a conditioning set.
-    ancGraph <- function(A) {
-      ## Edge matrix of the overall ancestor graph.
-      if (sum(dim(A)) == 0) {
-        return(A)
-      } else {
-        return(In(solve(2 * diag(nrow(A)) - A)))
-      }
-    }
-
-    trclos <- function(M) {
-      ## Transitive closure of an UG with edge matrix M. See Wermuth and Cox (2004).
-      edgematrix(transClos(adjMatrix(M)))
-    }
-
-    A <- edgematrix(amat) # From the adjacency matrix to edge matrix
-    nod <- rownames(A)
-    if (!all(cond %in% nod)) {
-      stop("Conditioning nodes are not among the vertices.")
-    }
-    if (!all(sel %in% nod)) {
-      stop("Selected nodes are not among the vertices.")
-    }
-
-    if (length(intersect(sel, cond) > 0)) {
-      stop("The sets are not disjoint!")
-    }
-
-    l <- setdiff(nod, union(sel, cond)) # Marginal nodes
-    g <- sel
-    r <- cond
-    L <- union(l, g)
-    R <- union(g, r)
-
-    Al <- ancGraph(A[l, l, drop = FALSE])
-    ARR.l <- In(A[R, R, drop = FALSE] +
-      A[R, l, drop = FALSE] %*% Al %*% A[l, R, drop = FALSE])
-    TRl <- In(A[R, l, drop = FALSE] %*% Al)
-    DRl <- In(diag(length(R)) + TRl %*% t(TRl))
-    out <- In(t(ARR.l) %*% trclos(DRl) %*% ARR.l)
-    out <- out[g, g, drop = FALSE]
-    adjMatrix(out) * 10
-  }
-
+#' @rdname induced-graphs
+#' @export
 "inducedCovGraph" <-
   function(amat, sel = rownames(amat), cond = NULL) {
     ### Induced covariance graph for a set of nodes given a conditioning set.
@@ -7064,7 +6936,7 @@ RepMarBG <- function(amat) {
     r <- cond
     L <- union(l, g)
     R <- union(g, r)
-
+    
     AL <- ancGraph(A[L, L, drop = FALSE]) # In(solve(2*diag(length(L)) - A[L,L]))
     TrL <- In(A[r, L, drop = FALSE] %*% AL)
     DLr <- In(diag(length(L)) + t(TrL) %*% TrL)
@@ -7073,14 +6945,55 @@ RepMarBG <- function(amat) {
     out <- out[g, g, drop = FALSE]
     adjMatrix(out) * 100
   }
-
-"inducedDAG" <-
-  function(amat, order, cond = NULL) {
-    ### Induced DAG in a new ordering.
-    cc <- as.list(order)
-    inducedChainGraph(amat, cc = cc, cond = cond)
+#' @rdname induced-graphs
+#' @export
+"inducedConGraph" <-
+  function(amat, sel = rownames(amat), cond = NULL) {
+    ### Induced concentration graph for a set of nodes given a conditioning set.
+    ancGraph <- function(A) {
+      ## Edge matrix of the overall ancestor graph.
+      if (sum(dim(A)) == 0) {
+        return(A)
+      } else {
+        return(In(solve(2 * diag(nrow(A)) - A)))
+      }
+    }
+    
+    trclos <- function(M) {
+      ## Transitive closure of an UG with edge matrix M. See Wermuth and Cox (2004).
+      edgematrix(transClos(adjMatrix(M)))
+    }
+    
+    A <- edgematrix(amat) # From the adjacency matrix to edge matrix
+    nod <- rownames(A)
+    if (!all(cond %in% nod)) {
+      stop("Conditioning nodes are not among the vertices.")
+    }
+    if (!all(sel %in% nod)) {
+      stop("Selected nodes are not among the vertices.")
+    }
+    
+    if (length(intersect(sel, cond) > 0)) {
+      stop("The sets are not disjoint!")
+    }
+    
+    l <- setdiff(nod, union(sel, cond)) # Marginal nodes
+    g <- sel
+    r <- cond
+    L <- union(l, g)
+    R <- union(g, r)
+    
+    Al <- ancGraph(A[l, l, drop = FALSE])
+    ARR.l <- In(A[R, R, drop = FALSE] +
+                  A[R, l, drop = FALSE] %*% Al %*% A[l, R, drop = FALSE])
+    TRl <- In(A[R, l, drop = FALSE] %*% Al)
+    DRl <- In(diag(length(R)) + TRl %*% t(TRl))
+    out <- In(t(ARR.l) %*% trclos(DRl) %*% ARR.l)
+    out <- out[g, g, drop = FALSE]
+    adjMatrix(out) * 10
   }
-
+#' @rdname induced-graphs
+#' @export
 "inducedRegGraph" <-
   function(amat, sel = rownames(amat), cond = NULL) {
     ### Induced regression graph for a set of nodes given a conditioning set.
@@ -7112,15 +7025,23 @@ RepMarBG <- function(amat) {
     r <- cond
     L <- union(l, g)
     R <- union(g, r)
-
+    
     AL <- ancGraph(A[L, L, drop = FALSE]) # A^{LL}
     TrL <- In(A[r, L, drop = FALSE] %*% AL) # T_{rL}
     DrL <- In(diag(length(r)) + TrL %*% t(TrL)) # D_{rr-L}
     Arr.L <- In(A[r, r, drop = FALSE] + A[r, L, drop = FALSE] %*% AL
-      %*% A[L, r, drop = FALSE]) # A_{rr.L}
+                %*% A[L, r, drop = FALSE]) # A_{rr.L}
     FLr <- In(AL %*% A[L, r, drop = FALSE]) # F_{Lr}
     out <- In(AL %*% t(TrL) %*% trclos(DrL) %*% Arr.L + FLr)
     t(out[g, r, drop = FALSE])
+  }
+#' @rdname induced-graphs
+#' @export
+"inducedDAG" <-
+  function(amat, order, cond = NULL) {
+    ### Induced DAG in a new ordering.
+    cc <- as.list(order)
+    inducedChainGraph(amat, cc = cc, cond = cond)
   }
 
 

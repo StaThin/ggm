@@ -20,9 +20,6 @@ adjacency matrix.}
 
 \item{tol}{A small positive number indicating the tolerance used in
 convergence tests.}
-
-\item{mag}{a square matrix representing the adjacency matrix of an ancestral
-graph (for example returned by \code{makeAG}).}
 }
 \value{
 \item{Sigmahat}{the fitted covariance matrix.} \item{Bhat}{matrix of

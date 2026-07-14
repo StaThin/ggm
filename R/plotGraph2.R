@@ -1,10 +1,10 @@
 #' Plot mixed graphs
 #'
-#' @description This function takes an adjacency matrix or a graph object 
+#' @description This function takes an adjacency matrix or a graph object
 #' and generates a highly customizable, clean static visual representation of the network.
 #'
 #' @param a A square adjacency matrix, an \code{igraph} object, a \code{graphNEL} object, or a character vector.
-#' @param dashed Logical. If \code{TRUE} (default), edges with specific identifiers will be drawn as dashed lines.
+#' @param dashed Logical. If \code{FALSE} (default), bidirected edges will be drawn as continuous arcs. Otherwise they will drawn as dashed arcs.
 #' @param layout An \code{igraph} layout function or matrix (e.g., \code{layout_nicely}).
 #' @param directed Logical. Indicates whether the graph should be treated as directed.
 #' @param noframe Logical. If \code{TRUE}, removes vertex frames and sets node backgrounds to white.
@@ -17,6 +17,7 @@
 #' @param cex Numeric. Text expansion factor for vertex labels.
 #' @param ew Numeric. The width (thickness) of the edges.
 #' @param eas Numeric. The size of the edge arrowheads.
+#' @param eaw Numeric. The size of the edge arrow width.
 #' @param ... Additional arguments passed directly to the underlying \code{plot.igraph} function.
 #'
 #' @return An invisible list containing two elements:
@@ -26,32 +27,42 @@
 #' @export
 #'
 #' @examples
-#' 
-#' exvec<-c("b",1,2,"b",1,14,"a",9,8,"l",9,11,
-#'          "a",10,8,"a",11,2,"a",11,9,"a",11,10,
-#'          "a",12,1,"b",12,14,"a",13,10,"a",13,12)
+#'
+#' exvec <- c(
+#'   "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11,
+#'   "a", 10, 8, "a", 11, 2, "a", 11, 9, "a", 11, 10,
+#'   "a", 12, 1, "b", 12, 14, "a", 13, 10, "a", 13, 12
+#' )
 #' plotGraph2(exvec)
 #' ############################################
-#' amat<-matrix(c(0,11,0,0,10,0,100,0,0,100,0,1,0,0,1,0),4,4)
+#' amat <- matrix(c(0, 11, 0, 0, 10, 0, 100, 0, 0, 100, 0, 1, 0, 0, 1, 0), 4, 4)
 #' plotGraph2(amat)
-#' plotGraph2(makeMG(bg = UG(~a*b*c+ c*d), dg = DAG(a ~ x + z, b ~ z )))
-#' plotGraph2(makeMG(bg = UG(~a*b*c+ c*d), dg = DAG(a ~ x + z, b ~ z )), dashed = TRUE)
+#' plotGraph2(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)))
+#' plotGraph2(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)), dashed = TRUE)
 #' # A graph with double and triple edges
 #' G <-
-#' structure(c(0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0,
-#' 111, 100, 0), .Dim = c(4L, 4L), .Dimnames = list(c("X", "Z",
-#' "Y", "W"), c("X", "Z", "Y", "W")))
+#'   structure(c(
+#'     0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0,
+#'     111, 100, 0
+#'   ), .Dim = c(4L, 4L), .Dimnames = list(c(
+#'     "X", "Z",
+#'     "Y", "W"
+#'   ), c("X", "Z", "Y", "W")))
 #' plotGraph2(G)
-#' # A regression chain graph with longer labels
-#' G <- makeMG(bg = UG(~ Love * Constraints + Constraints * Reversal+ Abuse * Distress), 
-#' dg = DAG(Love ~ Abuse + Distress, Constraints ~ Distress, Reversal ~ Distress, Abuse ~ Fstatus, Distress ~ Fstatus), 
-#' ug = UG(~Fstatus * Schooling + Schooling * Age))
+#' # A regression chain graph
+#' G <- makeMG(
+#'   bg = UG(~ Love * C + C * R + A * D),
+#'   dg = DAG(L ~ A + D, C ~ D, R ~ D, A ~ F, D ~ F),
+#'   ug = UG(~ F * S + S * Age)
+#' )
 #' plotGraph2(G, noframe = TRUE)
 #' # A graph with 4 edges between two nodes.
-#' G4 = matrix(0, 2, 2); G4[1,2] = 111; G4[2,1] = 111
+#' G4 <- matrix(0, 2, 2)
+#' G4[1, 2] <- 111
+#' G4[2, 1] <- 111
 #' plotGraph2(G4)
 plotGraph2 <- function(a,
-                       dashed = TRUE,
+                       dashed = FALSE,
                        layout = igraph::layout_nicely,
                        directed = FALSE,
                        noframe = FALSE,
@@ -61,12 +72,12 @@ plotGraph2 <- function(a,
                        vfc = NA,
                        colbid = "FireBrick3",
                        coloth = "gray40",
-                       cex = 1.5,
-                       ew = 1.5,
-                       eas = 0.9,
+                       cex = 1,
+                       ew = 1.8,
+                       eas = 0.7,
+                       eaw = 1,
                        ...) {
-  
-  # 1. Controllo sicuro del tipo di oggetto (Addio class() == ...)
+  # 1. Controllo sicuro del tipo di oggetto
   if (inherits(a, "igraph") || inherits(a, "graphNEL") || is.character(a)) {
     a <- grMAT(a)
   }
@@ -91,36 +102,42 @@ plotGraph2 <- function(a,
     }
   }
   
-  # 3. Estrazione Vettorizzata degli Archi (Ottimizzazione del vecchio doppio ciclo)
-  matrice_sup <- a
-  matrice_sup[lower.tri(matrice_sup)] <- 0
+  # 3. Estrazione Vettorizzata degli Archi
+  matrice_presenze <- (a != 0) | (t(a) != 0)
+  matrice_presenze[lower.tri(matrice_presenze)] <- FALSE
   
-  celle_attive <- which(matrice_sup != 0, arr.ind = TRUE)
+  celle_attive <- which(matrice_presenze, arr.ind = TRUE)
   
   l1 <- c()
   l2 <- c()
+  # Vettore ausiliario per ricordarci lo stile originale dell'arco (per colori e tratteggi)
+  stile_originale <- c() 
   
   if (nrow(celle_attive) > 0) {
-    valori <- matrice_sup[celle_attive]
     i <- celle_attive[, "row"]
     j <- celle_attive[, "col"]
     
+    valori <- a[celle_attive]
+    valori_trasposti <- t(a)[celle_attive]
+    
     l1_list <- list()
     l2_list <- list()
+    stile_list <- list()
     
     # Caso 1
     id1 <- (valori == 1)
     if (any(id1)) {
       l1_list$caso1 <- as.vector(rbind(i[id1], j[id1]))
       l2_list$caso1 <- rep(2, sum(id1))
+      stile_list$caso1 <- rep(1, sum(id1))
     }
     
-    # Caso %% 10 == 1 (verifica speculare sulla matrice trasposta)
-    valori_trasposti <- t(a)[celle_attive]
+    # Caso %% 10 == 1
     id_speciale <- (valori_trasposti %% 10 == 1)
     if (any(id_speciale)) {
       l1_list$caso_sp <- as.vector(rbind(j[id_speciale], i[id_speciale]))
       l2_list$caso_sp <- rep(2, sum(id_speciale))
+      stile_list$caso_sp <- rep(1, sum(id_speciale))
     }
     
     # Caso 10
@@ -128,6 +145,7 @@ plotGraph2 <- function(a,
     if (any(id10)) {
       l1_list$caso10 <- as.vector(rbind(i[id10], j[id10]))
       l2_list$caso10 <- rep(0, sum(id10))
+      stile_list$caso10 <- rep(10, sum(id10))
     }
     
     # Caso 11
@@ -135,6 +153,7 @@ plotGraph2 <- function(a,
     if (any(id11)) {
       l1_list$caso11 <- as.vector(rbind(i[id11], j[id11], i[id11], j[id11]))
       l2_list$caso11 <- as.vector(rbind(rep(2, sum(id11)), rep(0, sum(id11))))
+      stile_list$caso11 <- as.vector(rbind(rep(11, sum(id11)), rep(11, sum(id11))))
     }
     
     # Caso 100
@@ -142,13 +161,20 @@ plotGraph2 <- function(a,
     if (any(id100)) {
       l1_list$caso100 <- as.vector(rbind(i[id100], j[id100]))
       l2_list$caso100 <- rep(3, sum(id100))
+      stile_list$caso100 <- rep(100, sum(id100))
     }
     
-    # Caso 101
+    # Caso 101: Sdoppiamento perfetto anti-bug.
+    # Creiamo 3 frecce a punta singola (mode = 2): la freccia nativa (i->j), l'andata dell'arco (i->j), il ritorno dell'arco (j->i)
     id101 <- (valori == 101)
     if (any(id101)) {
-      l1_list$caso101 <- as.vector(rbind(i[id101], j[id101], i[id101], j[id101]))
-      l2_list$caso101 <- as.vector(rbind(rep(2, sum(id101)), rep(3, sum(id101))))
+      l1_list$caso101 <- as.vector(rbind(
+        i[id101], j[id101],  # 1. Freccia nativa
+        i[id101], j[id101],  # 2. Andata dell'arco
+        j[id101], i[id101]   # 3. Ritorno dell'arco
+      ))
+      l2_list$caso101 <- rep(2, sum(id101) * 3) # Tutte frecce singole (immuni al bug di igraph)
+      stile_list$caso101 <- as.vector(rbind(rep(1, sum(id101)), rep(100, sum(id101)), rep(100, sum(id101))))
     }
     
     # Caso 110
@@ -156,6 +182,7 @@ plotGraph2 <- function(a,
     if (any(id110)) {
       l1_list$caso110 <- as.vector(rbind(i[id110], j[id110], i[id110], j[id110]))
       l2_list$caso110 <- as.vector(rbind(rep(0, sum(id110)), rep(3, sum(id110))))
+      stile_list$caso110 <- as.vector(rbind(rep(110, sum(id110)), rep(110, sum(id110))))
     }
     
     # Caso 111
@@ -163,10 +190,12 @@ plotGraph2 <- function(a,
     if (any(id111)) {
       l1_list$caso111 <- as.vector(rbind(i[id111], j[id111], i[id111], j[id111], i[id111], j[id111]))
       l2_list$caso111 <- as.vector(rbind(rep(2, sum(id111)), rep(0, sum(id111)), rep(3, sum(id111))))
+      stile_list$caso111 <- as.vector(rbind(rep(111, sum(id111)), rep(111, sum(id111)), rep(111, sum(id111))))
     }
     
     l1 <- unlist(l1_list, use.names = FALSE)
     l2 <- unlist(l2_list, use.names = FALSE)
+    stile_originale <- unlist(stile_list, use.names = FALSE)
   }
   
   # 4. Generazione del grafo igraph
@@ -182,7 +211,7 @@ plotGraph2 <- function(a,
   ed0 <- igraph::as_edgelist(agr)
   ne <- nrow(ed0)
   
-  # 5. Calcolo curve (Ottimizzato con split/vettorizzazione anziché ciclo For su stringhe)
+  # 5. Calcolo curve deterministico
   ed <- apply(apply(ed0, 1, sort), 2, paste, collapse = "-")
   tb <- table(ed)
   curve <- rep(0, ne)
@@ -196,7 +225,21 @@ plotGraph2 <- function(a,
       n_ripetizioni <- length(g)
       U <- ed0[g, , drop = FALSE]
       
-      if (n_ripetizioni == 2) {
+      # Gestione del nostro Caso 101 sdoppiato (3 archi totali tra la coppia di nodi)
+      if (n_ripetizioni == 3) {
+        # Identifichiamo i 3 pezzi in base allo stile salvato al punto 3
+        idx_freccia_nat <- g[stile_originale[g] == 1]
+        idx_archi_bid   <- g[stile_originale[g] == 100]
+        
+        curve[idx_freccia_nat] <- 0.0     # La freccia normale rimane perfettamente DRITTA
+        
+        # Le due metà dell'arco bidirezionale devono fare la stessa curva visiva.
+        # Poiché uno va da i->j e uno da j->i, per farli sovrapporre e apparire come un unico arco
+        # dobbiamo dare segno positivo a uno e segno negativo all'altro!
+        curve[idx_archi_bid[1]] <- 0.7
+        curve[idx_archi_bid[2]] <- -0.7
+        
+      } else if (n_ripetizioni == 2) {
         if (all(is.element(c(0, 3), l2[g]))) {
           curve[g] <- c(0.9, -0.9)
         } else if (all(U[1, ] == U[2, ])) {
@@ -204,9 +247,6 @@ plotGraph2 <- function(a,
         } else {
           curve[g] <- c(0.6, 0.6)
         }
-      } else if (n_ripetizioni == 3) {
-        curve[g[l2[g] == 3]] <- 0.9
-        curve[g[l2[g] == 0]] <- -0.9
       } else if (n_ripetizioni == 4) {
         curve[g[l2[g] == 3]] <- 0.3
         curve[g[g[l2[g] == 0]]] <- -0.3
@@ -218,11 +258,12 @@ plotGraph2 <- function(a,
   
   # 6. Colori e Stili degli Archi
   col <- rep(coloth, ne)
-  col[l2 == 3] <- colbid
+  # Coloriamo di rosso (colbid) sia i vecchi casi 100 sia i nuovi pezzi sdoppiati del caso 101
+  col[stile_originale == 100 | l2 == 3] <- colbid
   
   if (dashed) {
     ety <- rep(1, ne)
-    ety[l2 == 3] <- 2
+    ety[stile_originale == 100 | l2 == 3] <- 2
   } else {
     ety <- rep(1, ne)
   }
@@ -238,19 +279,21 @@ plotGraph2 <- function(a,
     agr,
     layout = layout,
     edge.curved = curve,
-    vertex.label = rownames(a),
     edge.arrow.mode = l2,
     edge.color = col,
     edge.lty = ety,
-    vertex.label.family = "sans",
     edge.width = ew,
+    edge.arrow.size = eas,
+    edge.arrow.width = eaw + 0.3, # Allarga leggermente la base per stabilizzare l'aggancio sulla tangente
+    vertex.label = rownames(a),
+    vertex.label.family = "sans",
     vertex.size = nodesize,
     vertex.frame.color = vfc,
     vertex.color = vc,
     vertex.label.cex = cex * 0.8,
-    edge.arrow.size = eas,
     vertex.label.dist = vld,
     margin = c(0, 0, 0, 0),
+    autocurve.edges = FALSE,
     ...
   )
   
@@ -260,3 +303,87 @@ plotGraph2 <- function(a,
   return(invisible(list(tkp.id = NULL, igraph = agr)))
 }
 
+
+
+#' Graph to adjacency matrix
+#'
+#' \code{grMAT} generates the associated adjacency matrix to a given graph.
+#'
+#' @param agr A graph that can be a \code{graphNEL} or an
+#' \code{\link[igraph]{igraph}} object or a vector of length \eqn{3e}, where
+#' \eqn{e} is the number of edges of the graph, that is a sequence of triples
+#' (type, node1label, node2label). The type of edge can be \code{"a"} (arrows
+#' from node1 to node2), \code{"b"} (arcs), and \code{"l"} (lines).
+#' @return A matrix that consists 4 different integers as an \eqn{ij}-element:
+#' 0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
+#' \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
+#' for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
+#' to be associated with multiple edges of different types. The matrix is
+#' symmetric w.r.t full lines and bi-directed arrows.
+#' @author Kayvan Sadeghi
+#' @keywords graphs adjacency matrix mixed graph vector
+#' @examples
+#'
+#' ## Generating the adjacency matrix from a vector
+#' exvec <- c(
+#'   "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11, "a", 10, 8,
+#'   "a", 11, 2, "a", 11, 10, "a", 12, 1, "b", 12, 14, "a", 13, 10, "a", 13, 12
+#' )
+#' grMAT(exvec)
+#'
+#' @export
+grMAT <- function(agr) {
+  if (inherits(agr, "graphNEL")) {
+    agr <- igraph.from.graphNEL(agr)
+  }
+  if (inherits(agr, "igraph")) {
+    return(get.adjacency(agr, sparse = FALSE))
+  }
+  if (is.character(agr)) {
+    if (length(agr) %% 3 != 0) {
+      stop("'The character object' is not in a valid form")
+    }
+    seqt <- seq(1, length(agr), 3)
+    b <- agr[seqt]
+    agrn <- agr[-seqt]
+    bn <- numeric(length(b))
+
+    for (i in 1:length(b)) {
+      if (b[i] != "a" && b[i] != "l" && b[i] != "b") {
+        stop("'The numeric object' is not in a valid form")
+      }
+      if (b[i] == "l") {
+        bn[i] <- 10
+      }
+      if (b[i] == "a") {
+        bn[i] <- 1
+      }
+      if (b[i] == "b") {
+        bn[i] <- 100
+      }
+    }
+
+    # Sostituzione di RR con le funzioni native di R
+    Ragr <- sort(unique(agrn))
+    ma <- length(Ragr)
+    mat <- matrix(0, ma, ma)
+
+    for (i in seq(1, length(agrn), 2)) {
+      idx_i <- SPl(Ragr, agrn[i])
+      idx_next <- SPl(Ragr, agrn[i + 1])
+      edge_type <- bn[(i + 1) / 2]
+
+      if ((edge_type == 1 && mat[idx_i, idx_next] %% 10 != 1) ||
+        (edge_type == 10 && mat[idx_i, idx_next] %% 100 < 10) ||
+        (edge_type == 100 && mat[idx_i, idx_next] < 100)) {
+        mat[idx_i, idx_next] <- mat[idx_i, idx_next] + edge_type
+        if (edge_type == 10 || edge_type == 100) {
+          mat[idx_next, idx_i] <- mat[idx_next, idx_i] + edge_type
+        }
+      }
+    }
+    rownames(mat) <- Ragr
+    colnames(mat) <- Ragr
+    return(mat)
+  }
+}
