@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.9.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Kayvan Sadeghi and Giovanni M. Marchetti">
+<meta name="dcterms.date" content="2026-07-15">
+
+<title>Graphical Markov Models with Mixed Graphs in R</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="mixed-graphs_files/libs/clipboard/clipboard.min.js"></script>
+<script src="mixed-graphs_files/libs/quarto-html/quarto.js" type="module"></script>
+<script src="mixed-graphs_files/libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="mixed-graphs_files/libs/quarto-html/popper.min.js"></script>
+<script src="mixed-graphs_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="mixed-graphs_files/libs/quarto-html/anchor.min.js"></script>
+<link href="mixed-graphs_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="mixed-graphs_files/libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="mixed-graphs_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="mixed-graphs_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="mixed-graphs_files/libs/bootstrap/bootstrap-ae9fb18389b5ab7adbbae99bf69f4bf9.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+</head><body class="quarto-light"><div style="display:none">
+\(
+\newcommand{\b}[1]{\mathbf{#1}}
+\newcommand{\eps}{\varepsilon}
+\newcommand{\iid}{\stackrel{iid}{\sim}}
+\newcommand{\ind}{\stackrel{ind}{\sim}}
+\newcommand{\ci}{\mathrel{\perp\mskip-11mu\perp}}
+\newcommand{\dep}{\mathrel{\perp\mskip-11mu\perp\mskip-18mu\diagup\mskip-1mu}}
+\newcommand{\cov}{\mathrm{cov}}
+\newcommand{\var}{\mathrm{var}}
+\newcommand{\corr}{\mathrm{corr}}
+\newcommand{\gcal}{\mathcal{G}}
+\newcommand{\nd}{\mathrm{nd}}
+\newcommand{\de}{\mathrm{de}}
+\newcommand{\pa}{\mathrm{pa}}
+\newcommand{\pre}{\mathrm{pre}}
+\)
+</div>
+<script>
+window.MathJax = {
+  tex: { tags: 'ams' },
+  chtml: {
+    scale: 0.95,
+    /* Istruzione chiave: eredita il font Helvetica dal documento */
+    mtextInheritFont: true 
+  }
+};
+</script>
+<style>
+  /* I tuoi tuning originali per la dimensione */
+  .mjx-chtml { font-size: 1.1em !important; }
+  
+  /* I nuovi selettori per forzare Helvetica (al posto di .katex) */
+  mjx-utext, mjx-stext, .mjx-utext { 
+    font-family: "Helvetica Neue", Arial, sans-serif !important;
+    font-size: 0.90em !important;
+    font-style: normal !important;
+    letter-spacing: -0.01em;
+  }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script defer="" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN" && texText && texText.data) {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+
+
+
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article toc-left">
+<div id="quarto-sidebar-toc-left" class="sidebar toc-left">
+  <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="99">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul class="collapse">
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#introduction-and-background" id="toc-introduction-and-background" class="nav-link" data-scroll-target="#introduction-and-background"><span class="header-section-number">2</span> Introduction and background</a>
+  <ul class="collapse">
+  <li><a href="#directed-acyclic-graphs" id="toc-directed-acyclic-graphs" class="nav-link" data-scroll-target="#directed-acyclic-graphs"><span class="header-section-number">2.1</span> Directed acyclic graphs</a></li>
+  <li><a href="#hidden-variables-and-induced-graphs" id="toc-hidden-variables-and-induced-graphs" class="nav-link" data-scroll-target="#hidden-variables-and-induced-graphs"><span class="header-section-number">2.2</span> Hidden variables and induced graphs</a></li>
+  <li><a href="#stable-mixed-graphs" id="toc-stable-mixed-graphs" class="nav-link" data-scroll-target="#stable-mixed-graphs"><span class="header-section-number">2.3</span> Stable mixed graphs</a></li>
+  <li><a href="#four-tasks-of-the-current-paper" id="toc-four-tasks-of-the-current-paper" class="nav-link" data-scroll-target="#four-tasks-of-the-current-paper"><span class="header-section-number">2.4</span> Four tasks of the current paper</a></li>
+  <li><a href="#package-ggm" id="toc-package-ggm" class="nav-link" data-scroll-target="#package-ggm"><span class="header-section-number">2.5</span> Package <code>ggm</code></a></li>
+  </ul></li>
+  <li><a href="#defining-mixed-graphs-in-r" id="toc-defining-mixed-graphs-in-r" class="nav-link" data-scroll-target="#defining-mixed-graphs-in-r"><span class="header-section-number">3</span> Defining mixed graphs in R</a>
+  <ul class="collapse">
+  <li><a href="#adjacency-matrices-for-mixed-graphs" id="toc-adjacency-matrices-for-mixed-graphs" class="nav-link" data-scroll-target="#adjacency-matrices-for-mixed-graphs"><span class="header-section-number">3.1</span> Adjacency matrices for mixed graphs</a></li>
+  </ul></li>
+  </ul>
+</nav>
+</div>
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
+</div>
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Graphical Markov Models with Mixed Graphs in R</h1>
+</div>
+
+
+<div class="quarto-title-meta-author">
+  <div class="quarto-title-meta-heading">Author</div>
+  <div class="quarto-title-meta-heading">Affiliation</div>
+  
+    <div class="quarto-title-meta-contents">
+    <p class="author">Kayvan Sadeghi and Giovanni M. Marchetti </p>
+  </div>
+  <div class="quarto-title-meta-contents">
+        <p class="affiliation">
+            DISIA, University of Florence
+          </p>
+      </div>
+  </div>
+
+<div class="quarto-title-meta">
+
+      
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">July 15, 2026</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<section id="introduction" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Introduction</h1>
+<p>We provide a short tutorial illustrating the functions in the package <strong>ggm</strong> that deal with <strong>mixed graphs</strong>. A mixed graph can have 3 types of edges and they are important because they capture the modified independence structure after marginalization over and conditioning on nodes of directed acyclic graphs.</p>
+<p>We provide functions</p>
+<ul>
+<li>to verify whether a mixed graph implies that <span class="math inline">\(A\)</span> is independent of <span class="math inline">\(B\)</span> given <span class="math inline">\(C\)</span> for any disjoint sets of nodes, and</li>
+<li>to generate maximal graphs inducing the same independence structure of non-maximal graphs.</li>
+<li>Finally, we provide functions to decide on the Markov equivalence of two graphs with the same node set but different type of edges.</li>
+</ul>
+</section>
+<section id="introduction-and-background" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Introduction and background</h1>
+<p><strong>Graphical Markov models</strong> have become a part of the mainstream of statistical theory and application in recent years. These models use graphs to represent conditional independencies among sets of random variables. Nodes of the graph correspond to random variables and edges to some type of conditional dependencies.</p>
+<section id="directed-acyclic-graphs" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="directed-acyclic-graphs"><span class="header-section-number">2.1</span> Directed acyclic graphs</h2>
+<p>In the literature of graphical models the two most used classes of graphs are the directed acyclic graphs (DAGs) and the undirected graphs. DAGs have been proven useful, among other things, to specify the data generating processes when the variables satisfy an underlying partial ordering.</p>
+<p>For instance, suppose that we have 4 observed variables <span class="math inline">\(Y\)</span>, the ratio of systolic to diastolic blood pressure, <span class="math inline">\(X\)</span> the diastolic blood pressure, both on log scale, <span class="math inline">\(Z\)</span>, the body mass and <span class="math inline">\(W\)</span>, the age, and that a possible generating process is the following linear recursive regression model <span class="math display">\[
+\begin{split}
+Y &amp;=&amp; \gamma_{YZ} Z + \gamma_{YU} U + \epsilon_Y\\
+X &amp;=&amp; \gamma_{XW} W + \gamma_{XU} U + \epsilon_X\\
+Z &amp;=&amp; \gamma_{ZV} W + \epsilon_Z\\
+W &amp;=&amp; \epsilon_W; \; U = \epsilon_U;
+\end{split}
+\]</span> where all the variables are mean-centered and the <span class="math inline">\(\epsilon\)</span>s are zero mean, mutually independent Gaussian random errors. In this model we assume that there exist a genetic factor <span class="math inline">\(U\)</span> influencing the ratio and levels of blood pressure.</p>
+<p>Then, this model can be represented by the DAG in the following Figure, with nodes associated with the variables and edges, indicating the dependencies, represented by the regression coefficients <span class="math inline">\(\gamma\)</span>s.</p>
+<div class="cell" data-warnings="false">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mixed-graphs_files/figure-html/unnamed-chunk-1-1.png" class="img-fluid figure-img" width="192"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>From the graph it is seen for instance that the ratio of the two blood pressures is directly influenced by body mass but not by age. Thus a consequence of the model is that the variables must satisfy a set of conditional independencies: for example the ratio of the blood pressure <span class="math inline">\(Y\)</span> is independent of age <span class="math inline">\(W\)</span> given body mass <span class="math inline">\(Z\)</span>, written as <span class="math inline">\(Y \ci W \mid Z\)</span>.</p>
+<p>A remarkable result is that the independencies can be deduced from the graph alone, without reference to the equations, by using a criterion called <strong>d-separation</strong>.</p>
+<p>In fact, in the graph of previous Figure the nodes <span class="math inline">\(Y\)</span> and <span class="math inline">\(W\)</span> are d-separated given <span class="math inline">\(Z\)</span> as can be checked using special graph algorithms included for example in packages <strong>gRain</strong> and <strong>ggm</strong>.</p>
+<p>For more details on DAG models and their implementation in R see the extensive discussion in .</p>
+</section>
+<section id="hidden-variables-and-induced-graphs" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="hidden-variables-and-induced-graphs"><span class="header-section-number">2.2</span> Hidden variables and induced graphs</h2>
+<p>The model has 4 observed variables but includes an unobserved variable, that is the genetic factor <span class="math inline">\(U\)</span>. When <span class="math inline">\(U\)</span> is hidden the model becomes <span class="math display">\[\begin{eqnarray*}
+Y &amp;=&amp; \gamma_{YZ} Z + \eta_Y \\
+X &amp;=&amp; \gamma_{XW} W + \eta_X \\
+Z &amp;=&amp; \gamma_{ZV} W + \epsilon_Z\\
+W &amp;=&amp; \epsilon_W;
+\end{eqnarray*}\]</span> with two correlated errors <span class="math inline">\(\eta_{Y} =  \gamma_{YU} U + \epsilon_Y\)</span> and <span class="math inline">\(\eta_X =  \gamma_{XU} U + \epsilon_X\)</span>, such that <span class="math inline">\(\mathrm{cov}(\eta_Y, \eta_X) = \omega){YX}\)</span>.</p>
+<p>As a consequence the model is still a recursive model and the parameters have a regression parameter interpretation, but contains some correlated residuals.</p>
+<p>The induced model is said to be obtained after marginalization over <span class="math inline">\(U\)</span>. In this model some of the original independencies are lost, but we can observe the implied independencies <span class="math inline">\(Y\ci W|Z\)</span> and <span class="math inline">\(X \ci Z \mid  W\)</span>. Also it can be shown that in a DAG model defined for the 4 observed variables is impossible to represent such independencies. Therefore, we say that DAG models are not <strong>stable under marginalization</strong>.</p>
+<p>A mixed graph with arrows and arcs, shown in the following Figure can however be used to represent the induced independence model after marginalization over <span class="math inline">\(U\)</span>.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mixed-graphs_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="192"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In this representation, beside the arrows, represented by the <span class="math inline">\(\gamma\)</span>s, we have the arc <span class="math inline">\(Y \leftrightarrow X\)</span> associated with the (partial) correlation <span class="math inline">\(\omega_{YX}\)</span>.</p>
+<p>The resulting graph belongs to a class of models called <strong>regression chain graph models</strong>. This class generalizes the recursive generating process of DAGs by permitting joint responses, coupled in the graph by arcs, and thus appears an essential extension for applications.</p>
+<p>The class of regression graphs is however itself not stable under marginalization. For instance, suppose that the generating process for the blood pressure data is defined by the more general regression chain graph</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mixed-graphs_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="192"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>where <span class="math inline">\(L\)</span> is a further variable representing a common hidden cause of systolic good pressure and body mass.</p>
+<p>Then, after marginalization over <span class="math inline">\(L\)</span>, the model can still be described by a a linear system of equations with correlated residuals and can be represented by the mixed graph below</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mixed-graphs_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="192"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>but the resulting graph is not a DAG, nor a regression graph because it contains the pair of variables <span class="math inline">\((Y, Z)\)</span> coupled both by a directed edge and by a path composed by bi-directed arcs.</p>
+<p>Thus <span class="math inline">\(Y\)</span> cannot be interpreted as a pure response to <span class="math inline">\(Z\)</span> and in addition <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> are not two joint responses.</p>
+</section>
+<section id="stable-mixed-graphs" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="stable-mixed-graphs"><span class="header-section-number">2.3</span> Stable mixed graphs</h2>
+<p>The previous illustrations show that when there are unobserved variables, DAG or regression chain graph models are no longer appropriate. The discussion could be extended to situations where there are some selection variables, that is hidden variables that are conditioned on.</p>
+<p>This motivates the introduction of a more general class of , which contains three types of edge, denoted by lines, <span class="math inline">\(-\!\!-\)</span>, arrows, <span class="math inline">\(\rightarrow\)</span>, and arcs (bi-directed arrows), <span class="math inline">\(\leftrightarrow\)</span>.</p>
+<p>There are at least three known classes of mixed graphs without self loops that remain in the same class, i.e. that are <strong>stable under marginalisation and conditioning</strong>.</p>
+<ul>
+<li><p>The largest one is that of <strong>ribbonless graphs</strong> (RGs), , defined as a modification of MC-graphs .</p></li>
+<li><p>Then, there is the subclass of <strong>summary graphs</strong> (SGs) ,</p></li>
+<li><p>and finally the smallest class of the <strong>ancestral graphs</strong> (AGs), .</p></li>
+</ul>
+</section>
+<section id="four-tasks-of-the-current-paper" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="four-tasks-of-the-current-paper"><span class="header-section-number">2.4</span> Four tasks of the current paper</h2>
+<p>In this paper, we focus on the implementation of four important tasks performed on the class of mixed graphs in R:</p>
+<ul>
+<li>Generating different types of stable mixed graphs after marginalisation and conditioning.</li>
+<li>Verifying whether an independency of form <span class="math inline">\(Y\ci W\mid Z\)</span> holds by using a separation criterion called <span class="math inline">\(m\)</span>-separation.</li>
+<li>Generating a graph that induces the same independence model as an input mixed graph such that the generated graph is <strong>maximal</strong>, i.e.&nbsp;each missing edge of the generated graph implies at least an independence statement.</li>
+<li>Verifying whether two graphs are <strong>Markov equivalent</strong>, i.e.&nbsp;they induce the same independencies, and whether there is a Markov equivalent graph of a different type to an input graph of a specific type.</li>
+</ul>
+<p>In the next section we give the details on how general mixed graphs are defined in package <code>ggm</code>. Next in each of the following sections we respectively deal with each of the tasks described above. For each task we give a brief introduction at the beginning of its corresponding section.</p>
+</section>
+<section id="package-ggm" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="package-ggm"><span class="header-section-number">2.5</span> Package <code>ggm</code></h2>
+<p>The previous tasks are illustrated by using a set of new functions introduced into the <code>R</code> package <code>ggm</code>. Some of the functions generalize previous contributions of <code>ggm</code> discussed in .</p>
+<p>Package <code>ggm</code> has been improved and it is now more integrated with other contributed packages related to graph theory, such as <code>graph</code>, <code>igraph</code> , and <code>gRbase</code> , which are now required for representing and plotting graphs.</p>
+<p>Specifically, in addition to adjacency matrices, all the functions in the package now accept <code>graphNEL</code> and <code>igraph</code> objects as input, as well as a new character string representation. A more detailed list of available packages for graphical models can be found at CRAN Task View <a href="http://cran.r-project.org/web/views/gR.html">gRaphical Models in R</a>.</p>
+</section>
+</section>
+<section id="defining-mixed-graphs-in-r" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Defining mixed graphs in R</h1>
+<p>For a comprehensive discussion on the ways of defining a directed acyclic a graph, see . A <strong>mixed graph</strong> is a more general graph type with at most three types of edge: directed, undirected and bi-directed, with possibly multiple edges of different types connecting two nodes.</p>
+<p>In <code>ggm</code> we provide some special tools for mixed graphs that are not present in other packages. Here we briefly illustrate some methods to define mixed graphs and we plot them with a new function, <code>plotGraph</code>, which uses a Tk GUI for basic interactive graph manipulation.</p>
+<ul>
+<li><p>The first method is based on a generalization of the adjacency matrix.</p></li>
+<li><p>The second uses a descriptive vector and is easy to use for small graphs.</p></li>
+<li><p>The third uses a special function <code>makeMG</code> that allows to combine the directed, undirected and bi-directed components of a mixed graph.</p></li>
+</ul>
+<section id="adjacency-matrices-for-mixed-graphs" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="adjacency-matrices-for-mixed-graphs"><span class="header-section-number">3.1</span> Adjacency matrices for mixed graphs</h2>
+<p>In the adjacency matrix of a mixed graph we code the three different edges with a binary indicator:</p>
+<ul>
+<li>1 for directed,</li>
+<li>10 for undirected and</li>
+<li>100 for bi-directed edges.</li>
+</ul>
+<p>When there are multiple edges the codes are <strong>added</strong>.</p>
+<p>Thus the <strong>adjacency matrix of a mixed graph</strong> <span class="math inline">\(H\)</span> with node set <span class="math inline">\(N\)</span> and edge set <span class="math inline">\(F\)</span> is an <span class="math inline">\(|N|\times|N|\)</span> matrix obtained as <span class="math inline">\(A=B+S+W\)</span> by adding three matrices <span class="math inline">\(B = (b_{ij})\)</span>, <span class="math inline">\(S = (s_{ij})\)</span> and <span class="math inline">\(W = (w_{ij})\)</span> defined by</p>
+<p><span class="math display">\[
+\begin{split}
+b_{ij} &amp;=&amp;
+  \begin{cases}
+    1, &amp; \text{ if and only if } i \rightarrow j \text{ in } H; \\
+    0, &amp; \text{otherwise.}\\
+  \end{cases}\\
+s_{ij}=s_{ji}&amp;=&amp;
+  \begin{cases}
+    10, &amp; \text{if and only if } i -\!\!\!- j \text{ in } H; \\
+    0, &amp; \text{otherwise.}
+  \end{cases}\\
+w_{ij}=w_{ji}&amp;=&amp;
+  \begin{cases}
+    100, &amp; \text{if and only if } i\leftrightarrow j \text{ in } H; \\
+    0, &amp; \text{otherwise.}
+  \end{cases}
+\end{split}
+\]</span> Notice that because of the symmetric nature of lines and arcs <span class="math inline">\(S\)</span> and <span class="math inline">\(W\)</span> are symmetric, whereas <span class="math inline">\(B\)</span> is not necessarily symmetric.</p>
+<p>For instance the following graph is a mixed graph (Notice that this mixed graph is not even ribbonless and hence of not much interest, and has been only introduced for presentation purposes):</p>
+<div class="cell">
+<details class="code-fold">
+<summary>R</summary>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mg <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>( <span class="dv">0</span>, <span class="dv">101</span>,   <span class="dv">0</span>,   <span class="dv">0</span>, <span class="dv">110</span>,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>              <span class="dv">100</span>,   <span class="dv">0</span>, <span class="dv">100</span>,   <span class="dv">0</span>,   <span class="dv">1</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span>, <span class="dv">110</span>,   <span class="dv">0</span>,   <span class="dv">1</span>,   <span class="dv">0</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                <span class="dv">0</span>,   <span class="dv">0</span>,   <span class="dv">1</span>,   <span class="dv">0</span>, <span class="dv">100</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>              <span class="dv">110</span>,   <span class="dv">0</span>,   <span class="dv">0</span>, <span class="dv">100</span>,   <span class="dv">0</span>), <span class="dv">5</span>,<span class="dv">5</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"X"</span>,<span class="st">"Y"</span>,<span class="st">"Z"</span>,<span class="st">"W"</span>,<span class="st">"Q"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="fu">dimnames</span>(mg) <span class="ot">&lt;-</span> <span class="fu">list</span>(N, N)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">drawGraph</span>(mg, <span class="at">coor =</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">50</span>, <span class="dv">30</span>,<span class="dv">90</span>, <span class="dv">90</span>,<span class="dv">90</span>,  </span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>                              <span class="dv">90</span>, <span class="dv">10</span>, <span class="dv">30</span>, <span class="dv">10</span>),</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>                            <span class="at">ncol =</span> <span class="dv">2</span>, <span class="at">byrow  =</span> <span class="cn">TRUE</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="mixed-graphs_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="864"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The graph can be plotted also with <code>plotGraph(mg)</code>.</p>
+A more convenient way of defining small mixed graphs is based on a simple vector coding as follows. The graph is defined by a character vector of length <span class="math inline">\(3f\)</span>, where <span class="math inline">\(f = |F|\)</span> is the number of edges, and the vector contains a sequence of triples <span class="math inline">\(\langle\)</span><span class="math inline">\(\rangle\)</span>, where the is the edge type and and are the labels of the two nodes. The edge type accepts for an directed arrow , for an arcs and for a line. Notice that isolated nodes may not be created by this method. For example, the vector representation of the previous mixed graph is &lt;&lt;&gt;&gt;= mgv &lt;- c(“b”,“X”,“Y”,“a”,“X”,“Y”,“l”,“X”,“Q”, “b”,“Q”,“X”,“a”,“Y”,“Q”,“b”,“Y”,“Z”, “a”,“Z”,“W”,“a”,“W”,“Z”,“b”,“W”,“Q”) @ Once again as in the DAG case we can use to plot the defined graph.
+Finally the adjacency matrix of a mixed graph may be built up with the function . This function requires three arguments , and , corresponding respectively to the three adjacency matrices <span class="math inline">\(B\)</span>, <span class="math inline">\(S\)</span> and <span class="math inline">\(W\)</span> composing the mixed graph. These may also be obtained by the constructor functions and of for directed and undirected graphs respectively. Thus for the previous mixed graph we can issue the command &lt;&lt;&gt;&gt;= mg &lt;- makeMG(dg = DG(Y~X, Z~W, W~Z), ug = UG(~ X<em>Q), bg = UG(~ Y</em>X + X<em>Q + Q</em>W + Y*Z)) @ obtaining the same adjacency matrix (up to a permutation). %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<p>There are four general classes of stable mixed graphs.</p>
+<p>Ribbonless graphs are mixed graphs without a specific set of subgraphs called ribbons. The lack of ribbons ensures that, for any RG, there is a DAG whose independence structure, i.e.&nbsp;the set of all conditional independence statements that it induces, after marginalisation over and conditioning on two disjoint subsets of its node set can be represented by the given RG. This is particularly essential as it shows that the independence structures corresponding to RGs are probabilistic, that is there exists a probability distribution <span class="math inline">\(P\)</span> that is faithful with respect to any RG, i.e.&nbsp;for random vectors <span class="math inline">\(X_A\)</span>, <span class="math inline">\(X_B\)</span>, and <span class="math inline">\(X_C\)</span> with probability distribution <span class="math inline">\(P\)</span>, <span class="math inline">\(X_A\cip X_B\cd X_C\)</span> if and only if <span class="math inline">\(\langle A,B\cd C\rangle\)</span> is in the induced independence structure by the graph. This probability distribution is the marginal and conditional of a probability distribution that is faithful to the generating DAG.</p>
+<p>Summary graphs have neither arrowheads pointing to lines (i.e.&nbsp;<span class="math inline">\(\arc\circ\ful\)</span> or <span class="math inline">\(\fra\circ\ful\)</span>) nor directed cycles with all its arrows pointing towards one direction. Ancestral graphs have these two constraint together with an additional constraint that these graphs do not contain so-called , see .</p>
+<p>However, notice that for some ribbonless and summary graphs the corresponding parametrisation is sometimes not available even in the case of standard joint Gaussian distribution.</p>
+<p>If we suppose that stable mixed graphs are only used to represent the independence structure after marginalisation and conditioning, we can consider all types as equally appropriate. However, each of the three types has been used in different context and for different purposes. RGs have been introduced in order to straightforwardly deal with the problem of finding a class of graphs that is closed under marginalisation and conditioning by a simple process of deriving them from DAGs. SGs are used when the generating DAG is known and to trace the effects in the sets of regressions as described above. AGs are simple graphs, meaning that they do not contain multiple edges and the lack of bows ensures that they satisfy many desirable statistical properties.</p>
+<p>In addition, when one traces the effects in regression models with latent and selection variables (as described in the introduction) ribbonless graphs are more alerting to possible distortions (due to indirect effects) than summary graphs, and summary graphs are more alerting than ancestral graphs; see also . For the exact definition and a thorough discussion of all such graphs, see .</p>
+<p> also defines the algorithms generating stable mixed graphs of a specific type for a given DAG or for a stable mixed graphs of the same type after marginalisation and conditioning such that they induce the marginal and conditional DAG-independence structure. We implement these algorithms in this paper.</p>
+%
+%We start by illustrating some ways of defining directed acyclic graphs in R. %We shall use four graph representations, that is %(a) by objects, (b) by objects, (c) by adjacency matrices, (d) by character %vectors. These same representations will be extended to general mixed graphs in the next section. %
+<p>The package provides the class for %graphs that are represented in terms of nodes and an edge list. %These graphs can be either directed or undirected, with no multiple edges or self-loops. The package provides the function for easily defining DAGs as % objects. One way in which the graph can be specified is by a list %of formulas. For example, one can define a DAG by the following formula, where, for example, implies that <span class="math inline">\(h\)</span> has parents <span class="math inline">\(p\)</span> and <span class="math inline">\(r\)</span>. For reference, we plot the DAG after the explanations related to the formula, by using the % function . %</p>
+% %&lt;&lt;&gt;&gt;=% 2 %exdag &lt;- dag(~r, ~q<em>r, ~p, ~h</em>p<em>r, ~l, % ~k</em>l, ~j<em>k, ~i</em>h<em>l</em>j) %exdag %@ %Notice that one cannot use integers as node labels in objects. %In addition, instead of <code>*'' a</code>:’’ can be used in the specification. To retrieve the nodes and edges of the DAG the functions and are used. Thus for instance, %&lt;&lt;&gt;&gt;=% 3 %nodes(exdag) %@ %To plot a DAG as a object one can use the function in the package or %various plotting options within the package (see below). %Our recommended way is to use a defined function as follows: %&lt;&lt;eval=false&gt;&gt;= %plotGraph(exdag) %@ %\begin{center} % %\end{center} %
+In package there are many %ways of defining DAGs as objects; for the full list see . %Probably the most handy way of generating small graphs is to use . In this function we use <code>-'' as edges and</code>+’’ as arrowheads. For example, for the same DAG as before, we use %&lt;&lt;&gt;&gt;= % 4 %exdag &lt;- graph.formula(q+-r-+h+-p, % h-+i+-l-+k, i+-j+-k) %exdag %@ %It is always possible to convert graphs to objects or back using the and functions. % %Also, the package contains several options for plotting graphs such as the function % . This is a quite flexible function providing an interactive graph drawing facility based on Tcl-Tk. %Our function is just a convenient wrapper of this function. %
+Any graph can be defined by an . % The adjacency matrix of a loopless directed graph <span class="math inline">\(G\)</span> with node set <span class="math inline">\(V\)</span> and edge set <span class="math inline">\(E\)</span> is the matrix <span class="math inline">\(A=(a_{ij})\)</span> of size <span class="math inline">\(|V|\times |V|\)</span> with zeros on the diagonal and %<span class="math display">\[
+%a_{ij}=\begin{cases}
+%       1, &amp; \text{ if } i\fra j; \\
+%       0  &amp; \text{otherwise.}\\
+%   \end{cases}
+%\]</span> %An adjacency matrix can be defined directly without defining a or object. %For instance the adjacency matrix of the previous DAG can be created via: % %&lt;&lt;&gt;&gt;= % 5 %A &lt;- matrix(0,8,8) %A[8,7] &lt;- A[8,5] &lt;- A[6,5] &lt;- A[5,1] &lt;- %A[4,1] &lt;- A[4,3] &lt;- A[2,1] &lt;- A[3,2] &lt;- 1 %A %@ %All functions in package accept adjacency matrices as defining graphs. If the node names are %not provided, the functions would specify by default as labels the integers <span class="math inline">\(\langle 1,\dots,n\rangle\)</span>, %where <span class="math inline">\(n\)</span> is the number nodes. Thus the defined adjacency matrix defines the following graph: %&lt;&lt;eval=FALSE&gt;&gt;= % 6 %plotGraph(A) %@ %\begin{center} % %\end{center} %The node labels are obtained by including appropriate to the matrix: %&lt;&lt;&gt;&gt;= %V &lt;- c(“i”,“j”,“k”,“l”,“h”,“p”,“q”,“r”) %dimnames(A) = list(V, V) %@ %An adjacency matrix for the DAG can be also obtained using the function in . %This function accepts as input a model formula an returns the adjacency matrix with the appropriate labels. %For the same DAG, which we call , we can write %&lt;&lt;&gt;&gt;= %exdag &lt;- DAG(i ~ j+l+h, k~l, h~r+p, q ~ r) %@ %The function also verifies whether the resulting graph is acyclic. By ``generating graphs’’ we mean applying the defined algorithms, e.g.&nbsp;those for generating stable mixed to graphs, in order to generate new graphs.
+<p>Three main functions , , and are available to generate and plot ribbonless, summary, and ancestral graphs from DAGs, using the algorithms in . These algorithms look for the paths with three nodes and two edges in the graph whose inner nodes are being marginalized over or condition on, and generate appropriate edges between the endpoints. These have two important properties: (a) they are well-defined in the sense that the process can be performed in any order and produces always the same final graph; (b) the generated graphs induce the modified independence structure after marginalization and conditioning; see for more details.</p>
+<p>The functions , , and all have three arguments: the given input graph, , the marginalization set and , the conditioning set. The graph may be of class or of class or may be represented by a character vector, or by an adjacency matrix, as explained in the previous sections. The sets and (default ) must be disjoint vectors of node labels, and they may possibly be empty sets. The output is always the adjacency matrix of the generated graph. There are two additional logical arguments and to specify whether the adjacency matrix must be explicitly printed (default ) and the graph must be plotted (default ).</p>
+We start from a DAG defined in two ways, as an adjacency matrix and as a character vector: &lt;&lt;&gt;&gt;= % 9 ex &lt;- matrix(c(0,1,0,0,0,0,0,0, 0,0,1,0,0,0,0,0, 0,0,0,0,0,0,0,0, 0,0,1,0,1,0,1,0, 0,0,0,0,0,1,0,0, 0,0,0,0,0,0,0,0, 0,0,0,0,0,1,0,0, 0,0,0,0,0,1,1,0),8,8,byrow=TRUE) exvec &lt;- c(“a”,1,2,“a”,2,3,“a”,4,3, “a”,4,5,“a”,4,7,“a”,5,6, “a”,7,6,“a”,8,6,“a”,8,7) @ &lt;&lt;eval=FALSE&gt;&gt;= % 10 plotGraph(ex) @ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+Then we define two disjoint sets <span class="math inline">\(M\)</span> and <span class="math inline">\(C\)</span> to marginalize over and condition on &lt;&lt;&gt;&gt;= M &lt;- c(5,8) C &lt;- 3 @ and we generate the ribbonless, summary and ancestral graphs from the DAG with the associated plot. &lt;&lt;eval = false&gt;&gt;= % 11 RG(ex, M, C, plot = TRUE) @ &lt;&lt;echo = false&gt;&gt;= RG(ex, M, C) @
+The summary graph is plotted with dashed undirected edges instead of bi-directed edges: &lt;&lt;eval = false&gt;&gt;= % 12 plotGraph(SG(ex,M,C), dashed = TRUE) @ &lt;&lt;echo = false&gt;&gt;= SG(ex, M, C) @
+The induced ancestral graph is obtained from the DAG defined as a vector. &lt;&lt;eval = false&gt;&gt;= % 13 AG(exvec,M,C,showmat=FALSE, plot=TRUE) @
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<p>To globally verifying whether an independence statement of form <span class="math inline">\(A\ci B \ci C\)</span> is implied by a mixed graph we use a separation criterion called . This has been defined in for the general class of loopless mixed graphs and is the same as the <span class="math inline">\(m\)</span>-separation criterion defined in for ancestral graphs. It is also a generalisation of the <span class="math inline">\(d\)</span>-separation criterion for DAGs . This is a graphical criterion that looks if the graph contains special paths connecting two sets <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> and involving a third set <span class="math inline">\(C\)</span> of the nodes. These special paths are said to be active or <span class="math inline">\(m\)</span>-connecting. For example, a directed path from a node in <span class="math inline">\(A\)</span> to a node in <span class="math inline">\(B\)</span> that does not contain any node of <span class="math inline">\(C\)</span> is <span class="math inline">\(m\)</span> connecting <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>. However, if such a path intercepts a node in <span class="math inline">\(C\)</span> then <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are said to be <span class="math inline">\(m\)</span>-separated given <span class="math inline">\(C\)</span>. However, this behaviour can change if the path connecting <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> contains a collision node or a for short, that is a node <span class="math inline">\(c\)</span> where the edges meet head-to-head, like e.g., <span class="math inline">\(\fra c\fla\)</span> or $c $.</p>
+In general, a path is said to be given <span class="math inline">\(C\)</span> if all its collider nodes are in <span class="math inline">\(C\)</span> or in the set of ancestors of <span class="math inline">\(C\)</span>, and all its non-collider nodes are outside <span class="math inline">\(C\)</span>. For two disjoint subsets of the node set <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span>, we say that <span class="math inline">\(C\)</span> <span class="math inline">\(m\)</span>-separates <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> if there is no <span class="math inline">\(m\)</span>-connecting path between <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> given <span class="math inline">\(C\)</span>. This separation criterion has been implemented in R and the related function is provided in .
+<p>The fundamental way to verify if a graphical model implies an independence <span class="math inline">\(A \cip B |C\)</span> is to test whether the disjoint subsets <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> of the node set are <span class="math inline">\(m\)</span>-separated given a third set <span class="math inline">\(C\)</span>, and this may be done with the function . Note that there is still a function in for <span class="math inline">\(d\)</span>-separation, although it is superseded by .</p>
+<p>The function has 4 arguments, where the first is the graph , in one of the forms discussed before, and the other three are the disjoint sets , and . For example, consider the DAG of Figure~<span class="math inline">\(\ref{dags}\)</span>(a): &lt;&lt;&gt;&gt;= % 18.2 a &lt;- DAG(Y ~ U + Z, X ~ U + W, Z ~ W) @</p>
+<p>Then, we see that <span class="math inline">\(Y\)</span> and <span class="math inline">\(W\)</span> are <span class="math inline">\(m\)</span>-separated given <span class="math inline">\(Z\)</span>: &lt;&lt;&gt;&gt;= %18.3 msep(a,“Y”,“W”,“Z”) @ and the same statement holds for the induced ancestral graph after marginalization over : &lt;&lt;&gt;&gt;= %18.4 b &lt;- AG(a, M = “U”) msep(b,“Y”,“W”,“Z”) @ This was expected because the induced ancestral graph respects all the <span class="math inline">\(m\)</span>-separation statements present in the DAG, and not involving the variable .</p>
+As a more complex example, consider the following mixed graph, &lt;&lt;&gt;&gt;= % 19 a &lt;- makeMG(dg= DG(W ~ Z, Z ~ Y + X), bg= UG(~ Y*Z)) @ &lt;&lt;eval = false&gt;&gt;= % 20 plotGraph(a) @ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<p>Then, the two following statements verify whether is <span class="math inline">\(m\)</span>-separated from given , and whether is <span class="math inline">\(m\)</span>-separated from (given the empty set): &lt;&lt;&gt;&gt;= %21 msep(a,“X”,“Y”,“Z”) msep(a,“X”,“Y”) @ In this example <span class="math inline">\(m\)</span>-separation is equivalent to its special case, the <span class="math inline">\(d\)</span>-separation criterion for DAGs.</p>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<p>While for many subclasses of graphs a missing edge corresponds to some independence statement, for the more complex classes of mixed graphs this is not necessarily true. A graph where each of its missing edges is related to an independence statement is called a . For a more detailed discussion on maximality of graphs and graph-theoretical conditions for maximal graphs, see and . also gave an algorithm for generating maximal ribbonless graphs that induce the same independence structure to an input non-maximal ribbonless graph. This algorithm has been implemented here in as illustrated below.</p>
+Given a non-maximal graph, we can obtain the adjacency matrix of a maximal graph that induces the same independence statements with the function . This function uses the algorithm by , which is an extension of the implicit algorithm presented in . The related functions , , and , are just handy wrappers to obtain maximal AGs, SGs and AGs, respectively. For example, &lt;&lt;&gt;&gt;= % 14 H &lt;- matrix(c(0 ,100, 1, 0, 100,0 ,100, 0, 0 ,100, 0,100, 0, 1 ,100, 0),4,4) @ &lt;&lt;eval=FALSE&gt;&gt;= %15 plotGraph(H) @ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+is a mixed non-maximal graph, with the missing edge between nodes 1 and 4 that is not associated with any independence statement. Its associated maximal graph is obtained by &lt;&lt;&gt;&gt;= %16 Max(H) @ &lt;&lt;eval=FALSE&gt;&gt;= %17 plotGraph(Max(H)) @
+<p>As the graph is an ancestral graph (as may be verified by the function ), we obtain the same result with &lt;&lt;&gt;&gt;= %18 MAG(H) @</p>
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+<p>Two graphical models are said to be Markov equivalent when their associated graphs, although nonidentical, imply the same independence structure, that is the same set of independence statements. Thus two Markov equivalent models cannot be discriminated on the basis of statistical tests of independence, even for arbitrary large samples. For instance, the two directed acyclic graphs models <span class="math inline">\(X \fla U \fra Y\)</span> and <span class="math inline">\(X \fla U \fla Y\)</span> both imply the same single independence statement between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> conditionally on <span class="math inline">\(U\)</span>.</p>
+<p>Sometimes, we can check whether graphs of different types are Markov equivalent. For instance the DAG <span class="math inline">\(X \fra U \fla Y\)</span> is Markov equivalent to the bi-directed graph <span class="math inline">\(X \arc U \arc Z\)</span>.</p>
+<p>Markov equivalent models may be useful in applications because (a) the may suggest alternative interpretations of a given well-fitting model or (b) on the basis of the equivalence one can choose a simpler fitting algorithm. For instance, the previous bi-directed graph model may be fitted, using the Markov equivalent DAG, in terms of a sequence of univariate regressions.</p>
+<p>In the literature several problems related to Markov equivalences have been discussed. These include (a) verifying the Markov equivalence of given graphs, (b) presenting conditions under which a graph of a specific type can be Markov equivalent to a graph of another type, and (c) providing algorithms for generating Markov equivalent graphs of a certain type from a given graph.</p>
+<p>The function tests whether two regression chain graphs are Markov equivalent. This function simply finds the skeleton and all unshielded collider V-configurations in both graphs and tests whether they are identical, see . The arguments of this function are the two graphs and in one of the allowed forms. For example,</p>
+&lt;&lt;&gt;&gt;= H1 = makeMG(dg = DAG(<code>4</code> ~ <code>1</code>, <code>5</code> ~ <code>3</code>), bg = UG(~ <code>1</code><em><code>2</code> + <code>2</code></em><code>3</code> + <code>4</code><em><code>5</code>)) H2 = makeMG(dg = DAG(<code>4</code> ~ <code>1</code>, <code>5</code>~ <code>3</code>, <code>2</code> ~ <code>1</code> + <code>3</code>), bg = UG(~ <code>4</code></em><code>5</code>)) H3 = DAG(<code>4</code>~<code>1</code>, <code>5</code>~<code>3</code> + <code>4</code>,<code>2</code>~<code>1</code> + <code>3</code>) @ &lt;&lt;eval = false&gt;&gt;= plotGraph(H1); plotGraph(H2); plotGraph(H3) @
+We can now verify Markov equivalence as follows &lt;&lt;&gt;&gt;= MarkEqRcg(H1,H2) MarkEqRcg(H1,H3) MarkEqRcg(H2,H3) @ To test Markov equivalence for maximal ancestral graphs the algorithm is computationally much more demanding (see ) and, for this purpose, the function has been provided. Of course, one can use this function for Markov equivalence of regression chain graphs (which are a subclass of MAGs). For example, &lt;&lt;&gt;&gt;= A1&lt;- makeMG(dg = DG(<code>4</code>~<code>2</code>), bg = UG(~ <code>1</code><em><code>2</code> + <code>2</code></em><code>3</code> + <code>3</code><em><code>4</code>)) A2&lt;- makeMG(dg = DG(<code>4</code>~<code>2</code>, <code>2</code>~<code>1</code>), bg = UG(~ <code>2</code></em><code>3</code> + <code>3</code><em><code>4</code>)) A3&lt;- makeMG(dg = DG(<code>4</code>~<code>2</code>, <code>2</code>~<code>1</code>, <code>3</code>~<code>1</code>), bg = UG(~ <code>3</code></em><code>4</code>)) @ &lt;&lt;eval = false&gt;&gt;= plotGraph(A1); plotGraph(A2); plotGraph(A3) @ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+&lt;&lt;&gt;&gt;= MarkEqMag(H1,H2) MarkEqMag(H1,H3) MarkEqMag(H2,H3) @
+Sometimes is important to verify if a given graph is capable of being Markov equivalent to a graph of a specific class of graphs (such as DAGs, undirected graphs, or bidirected graphs), and if so, to obtain as a result such a graph. The functions , , and do this for DAGs, undirected graphs, or bidirected graphs, respectively. For associated conditions and algorithms, see . For example, given the following graph &lt;&lt;&gt;&gt;= H &lt;- matrix(c( 0,10, 0, 0, 10, 0, 0, 0, 0, 1, 0,100, 0, 0,100, 0),4,4) @ &lt;&lt;eval=FALSE&gt;&gt;= plotGraph(H) @ %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+we can see that it is Markov equivalent to a DAG, by &lt;&lt;&gt;&gt;= RepMarDAG(H) @ &lt;&lt;eval=FALSE&gt;&gt;= plotGraph(RepMarDAG(H)) @
+On the other hand it is not Markov equivalent to an undirected graph or to a bidirected graph. &lt;&lt;&gt;&gt;= RepMarUG(H) RepMarBG(H) @ %This has consequence on the possibility of using %standard fitting algorithms for DAG models to estimate %the parameters of a model for the first graph.
+The authors are grateful to Steffen Lauritzen for helpful suggestions on codes and comments on an earlier version of the paper and Nanny Wermuth and the referees for their insightful comments.
+<p>\end{document}</p>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp('/' + window.location.host + '/');
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

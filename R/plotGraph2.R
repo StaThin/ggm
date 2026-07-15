@@ -24,8 +24,6 @@
 #' \item{tkp.id}{\code{NULL} (retained solely for backward compatibility with older package versions).}
 #' \item{igraph}{The processed internal graph object of class \code{igraph}.}
 #'
-#' @export
-#'
 #' @examples
 #'
 #' exvec <- c(
@@ -61,9 +59,9 @@
 #' G4[1, 2] <- 111
 #' G4[2, 1] <- 111
 #' plotGraph2(G4)
-#' @export
+#' @export plotGraph2
 plotGraph2 <- function(a,
-                       dashed = FALSE,
+                       dashed = TRUE,
                        layout = igraph::layout_nicely,
                        directed = FALSE,
                        noframe = FALSE,

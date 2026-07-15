@@ -85,10 +85,101 @@ d <- c('a', 2, 1, 'a', 3, 2, 'a', 4, 1, 'a', 4, 2)
 plotGraph(d)
 plotGraph2(d, dashed = TRUE)
 
+M = 4
+
+plotGraph2(SG(d,M),dashed = TRUE)
+SG(d,M,plot=TRUE, plotfun = plotGraph2)
+
+nanny <- c('a', 5, 4, 'a', 5, 3,'a', 6, 4, 'a', 6, 1, 'a', 4, 2, 'a', 2, 1, 'a', 3, 1)
+M <- c(5, 6)
+plotGraph2(nanny, layout  = layout_on_grid)
+plotGraph2(SG(nanny,M))
+
+#########################
+
+mg <- makeMG(dg = DG(Y ~ X, Z ~ W, W ~ Z),
+             ug = UG(~ X*Q), bg = UG(~ Y*X + X*Q + Q*W + Y*Z))
+
+
+#######
+
+ex <- matrix(c(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0, ##The adjacency matrix of a DAG
+               0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,
+               0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,
+               0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,
+               0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,
+               0,0,0,0,1,0,1,0,1,1,0,0,0,0,0,0,
+               1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,
+               0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+               1,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,
+               0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0),16,16, byrow = TRUE)
+M <- c(3,5,6,15,16)
+C <- c(4,7)
+
+SG(ex, M, C, plot = TRUE)
+
+
+par(mfrow = c(1,1))
+plotGraph(mg)
+plotGraph2(mg)
+
+
+exvec <- c("a",1,2,"a",2,3,"a",4,3,
+           "a",4,5,"a",4,7,"a",5,6, 
+           "a",7,6,"a",8,6,"a",8,7)
+
+M <- c(5,8)
+C<- 3 
+par(mfrow =c(1,2))
+# RG(exvec, M, C, plot = TRUE)
+SG(exvec, M, C, plot = TRUE)
+AG(exvec, M, C, plot = TRUE)
 
 
 
-G <- matrix(c(0, 100, 101, 0), 2, 2)
-plotGraph2(G)
-plotGraph2(t(G))
+
+a <- makeMG(dg= DG(W ~ Z, Z ~ Y + X),
+            bg= UG(~ Y*Z))
+par(mfrow = c(1,1))
+plotGraph2(a)
+
+par(mfrow = c(1,2))
+H <- matrix(c(0 ,100, 1, 0,
+              100,0 ,100, 0, 
+              0 ,100, 0,100, 
+              0, 1 ,100, 0), 4, 4)
+plotGraph2(H)
+plotGraph2(Max(H))
+
+par(mfrow = c(1,3))
+
+H1 <- makeMG(dg = DAG(W ~ X, Q ~ Z),
+             bg = UG(~ X*Y + Y*Z + W*Q))
+H2 <- makeMG(dg = DAG(W ~ X, Q ~ Z, Y ~ X + Z),bg = UG(~ W*Q))
+H3 <- DAG(W ~ X, Q ~ Z + W, Y ~ X + Z)
+
+plotGraph2(H1); plotGraph2(H2); plotGraph2(H3)
+
+A1 <- makeMG(dg = DG(W ~ Y),
+             bg = UG(~ X*Y + Y*Z + Z*W))
+A2 <- makeMG(dg = DG(W ~ Y, Y ~ X),
+               bg = UG(~ Y*Z + Z*W))
+A3 <- makeMG(dg = DG(W ~ Y, Y ~ X, Z ~ Y), bg = UG(~ Z*W))
+
+plotGraph2(A1); plotGraph2(A2); plotGraph2(A3)
+
+H <- matrix(c( 0,10, 0, 0,
+               10, 0, 0, 0,
+               0, 1, 0,100,
+               0, 0,100, 0), 4, 4)
+ plotGraph2(H)
+
+
+
 

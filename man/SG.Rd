@@ -2,7 +2,7 @@
 % Please edit documentation in R/all_functions.R
 \name{SG}
 \alias{SG}
-\title{summary graph}
+\title{Summary graph}
 \usage{
 SG(
   amat,

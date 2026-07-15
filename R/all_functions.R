@@ -4731,7 +4731,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 
 
 
-#' summary graph
+#' Summary graph
 #' 
 #' \code{SG} generates and plots summary graphs after marginalization and
 #' conditioning.

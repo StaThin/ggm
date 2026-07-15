@@ -6,7 +6,7 @@
 \usage{
 plotGraph2(
   a,
-  dashed = FALSE,
+  dashed = TRUE,
   layout = igraph::layout_nicely,
   directed = FALSE,
   noframe = FALSE,
