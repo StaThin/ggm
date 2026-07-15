@@ -97,9 +97,6 @@ plotGraph2(SG(nanny,M))
 
 #########################
 
-mg <- makeMG(dg = DG(Y ~ X, Z ~ W, W ~ Z),
-             ug = UG(~ X*Q), bg = UG(~ Y*X + X*Q + Q*W + Y*Z))
-
 
 #######
 

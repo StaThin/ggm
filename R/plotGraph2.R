@@ -167,7 +167,7 @@ plotGraph2 <- function(a,
       stile_list$caso100 <- rep(100, sum(id100))
     }
     
-    # === CASO 101 UNIFICATO ANTI-BUG (Gestisce entrambe le direzioni) ===
+    # === CASO 101 UNIFICATO ANTI-BUG ===
     if (any(id101)) {
       l1_101 <- c()
       l2_101 <- c()
@@ -178,16 +178,14 @@ plotGraph2 <- function(a,
         node_j <- j[k]
         
         if (id101_diretto[k]) {
-          # Freccia in avanti: 1 -> 2 (Grafico di sinistra)
           archi <- as.vector(rbind(
             node_i, node_j,  # 1. Freccia nativa dritta
             node_i, node_j,  # 2. Andata dell'arco
             node_j, node_i   # 3. Ritorno dell'arco
           ))
         } else {
-          # Freccia all'indietro: 1 <- 2 (Grafico di destra)
           archi <- as.vector(rbind(
-            node_j, node_i,  # 1. Freccia nativa invertita (2 -> 1)
+            node_j, node_i,  # 1. Freccia nativa invertita
             node_i, node_j,  # 2. Andata dell'arco
             node_j, node_i   # 3. Ritorno dell'arco
           ))
@@ -203,12 +201,28 @@ plotGraph2 <- function(a,
       stile_list$caso101 <- stile_101
     }
     
-    # Caso 110
+    # === CASO 110 UNIFICATO CON TRUCCO ANTI-BUG A 3 ARCHI ===
     id110 <- (valori == 110)
     if (any(id110)) {
-      l1_list$caso110 <- as.vector(rbind(i[id110], j[id110], i[id110], j[id110]))
-      l2_list$caso110 <- as.vector(rbind(rep(0, sum(id110)), rep(3, sum(id110))))
-      stile_list$caso110 <- as.vector(rbind(rep(110, sum(id110)), rep(110, sum(id110))))
+      l1_110 <- c()
+      l2_110 <- c()
+      stile_110 <- c()
+      
+      for (k in which(id110)) {
+        node_i <- i[k]
+        node_j <- j[k]
+        archi <- as.vector(rbind(
+          node_i, node_j,  # 1. Linea non orientata nativa (mode = 0)
+          node_i, node_j,  # 2. Andata dell'arco bidiretto (mode = 2)
+          node_j, node_i   # 3. Ritorno dell'arco bidiretto (mode = 2)
+        ))
+        l1_110 <- c(l1_110, archi)
+        l2_110 <- c(l2_110, c(0, 2, 2))
+        stile_110 <- c(stile_110, c(10, 100, 100))
+      }
+      l1_list$caso110 <- l1_110
+      l2_list$caso110 <- l2_110
+      stile_list$caso110 <- stile_110
     }
     
     # Caso 111
@@ -251,14 +265,23 @@ plotGraph2 <- function(a,
       n_ripetizioni <- length(g)
       U <- ed0[g, , drop = FALSE]
       
+      # Gestione dei casi sdoppiati a 3 ripetizioni (Caso 101 e Caso 110)
       if (n_ripetizioni == 3) {
-        idx_freccia_nat <- g[stile_originale[g] == 1]
-        idx_archi_bid   <- g[stile_originale[g] == 100]
-        
-        curve[idx_freccia_nat] <- 0.0     # La freccia rimane perfettamente DRITTA
-        
-        curve[idx_archi_bid[1]] <- 0.7
-        curve[idx_archi_bid[2]] <- -0.7
+        if (any(stile_originale[g] == 1)) {
+          # Caso 101: la freccia rimane DRITTA
+          idx_freccia_nat <- g[stile_originale[g] == 1]
+          idx_archi_bid   <- g[stile_originale[g] == 100]
+          curve[idx_freccia_nat] <- 0.0
+          curve[idx_archi_bid[1]] <- 0.7
+          curve[idx_archi_bid[2]] <- -0.7
+        } else if (any(stile_originale[g] == 10)) {
+          # Caso 110: la linea non orientata rimane DRITTA, l'arco rosso si curva
+          idx_linea_nat <- g[stile_originale[g] == 10]
+          idx_archi_bid <- g[stile_originale[g] == 100]
+          curve[idx_linea_nat] <- 0.0
+          curve[idx_archi_bid[1]] <- 0.7
+          curve[idx_archi_bid[2]] <- -0.7
+        }
         
       } else if (n_ripetizioni == 2) {
         if (all(is.element(c(0, 3), l2[g]))) {
@@ -322,6 +345,7 @@ plotGraph2 <- function(a,
   
   return(invisible(list(tkp.id = NULL, igraph = agr)))
 }
+
 
 
 #' Graph to adjacency matrix
