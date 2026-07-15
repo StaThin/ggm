@@ -64,10 +64,31 @@ plotGraph2(conf, dashed = TRUE)
 
 
 
-v <- c('l', 1,2, 'a', 1,2 )
+v <- c('b', 1,2, 'a', 1,2 )
 plotGraph(v)
-plotGraph2(v)
+plotGraph2(v, dashed = TRUE)
 
-v4 <- matrix(c(0, 111, 111, 0), 2, 2)
-plotGraph(v4, dashed = TRUE)
-plotGraph2(v4, dashed = TRUE)
+# v4 <- matrix(c(0, 111, 111, 0), 2, 2)
+# plotGraph(v4, dashed = TRUE)
+# plotGraph2(v4, dashed = TRUE)
+
+d <- c('a', 2, 1, 'a', 3, 2, 'a', 4, 1, 'a', 4, 3)
+plotGraph(d)
+plotGraph2(d, dashed = TRUE)
+
+M = 4
+
+SG(d,M,plot=TRUE, plotfun = plotGraph2)
+AG(d,M,plot=TRUE, plotfun = plotGraph2)
+
+d <- c('a', 2, 1, 'a', 3, 2, 'a', 4, 1, 'a', 4, 2)
+plotGraph(d)
+plotGraph2(d, dashed = TRUE)
+
+
+
+
+G <- matrix(c(0, 100, 101, 0), 2, 2)
+plotGraph2(G)
+plotGraph2(t(G))
+

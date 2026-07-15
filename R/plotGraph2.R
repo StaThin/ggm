@@ -61,6 +61,7 @@
 #' G4[1, 2] <- 111
 #' G4[2, 1] <- 111
 #' plotGraph2(G4)
+#' @export
 plotGraph2 <- function(a,
                        dashed = FALSE,
                        layout = igraph::layout_nicely,
@@ -110,7 +111,6 @@ plotGraph2 <- function(a,
   
   l1 <- c()
   l2 <- c()
-  # Vettore ausiliario per ricordarci lo stile originale dell'arco (per colori e tratteggi)
   stile_originale <- c() 
   
   if (nrow(celle_attive) > 0) {
@@ -120,20 +120,25 @@ plotGraph2 <- function(a,
     valori <- a[celle_attive]
     valori_trasposti <- t(a)[celle_attive]
     
+    # Identifichiamo PRIMA i casi 101 (sia diretti che inversi) per poterli escludere dagli altri filtri
+    id101_diretto <- (valori == 101)
+    id101_inverso <- (valori_trasposti == 101)
+    id101 <- id101_diretto | id101_inverso
+    
     l1_list <- list()
     l2_list <- list()
     stile_list <- list()
     
-    # Caso 1
-    id1 <- (valori == 1)
+    # Caso 1 (Escludendo i blocchi già gestiti dal 101)
+    id1 <- (valori == 1) & !id101
     if (any(id1)) {
       l1_list$caso1 <- as.vector(rbind(i[id1], j[id1]))
       l2_list$caso1 <- rep(2, sum(id1))
       stile_list$caso1 <- rep(1, sum(id1))
     }
     
-    # Caso %% 10 == 1
-    id_speciale <- (valori_trasposti %% 10 == 1)
+    # Caso %% 10 == 1 (Escludendo i blocchi già gestiti dal 101)
+    id_speciale <- (valori_trasposti %% 10 == 1) & !id101
     if (any(id_speciale)) {
       l1_list$caso_sp <- as.vector(rbind(j[id_speciale], i[id_speciale]))
       l2_list$caso_sp <- rep(2, sum(id_speciale))
@@ -156,25 +161,48 @@ plotGraph2 <- function(a,
       stile_list$caso11 <- as.vector(rbind(rep(11, sum(id11)), rep(11, sum(id11))))
     }
     
-    # Caso 100
-    id100 <- (valori == 100)
+    # Caso 100 (Escludendo i blocchi già gestiti dal 101)
+    id100 <- (valori == 100) & !id101
     if (any(id100)) {
       l1_list$caso100 <- as.vector(rbind(i[id100], j[id100]))
       l2_list$caso100 <- rep(3, sum(id100))
       stile_list$caso100 <- rep(100, sum(id100))
     }
     
-    # Caso 101: Sdoppiamento perfetto anti-bug.
-    # Creiamo 3 frecce a punta singola (mode = 2): la freccia nativa (i->j), l'andata dell'arco (i->j), il ritorno dell'arco (j->i)
-    id101 <- (valori == 101)
+    # === CASO 101 UNIFICATO ANTI-BUG (Gestisce entrambe le direzioni) ===
     if (any(id101)) {
-      l1_list$caso101 <- as.vector(rbind(
-        i[id101], j[id101],  # 1. Freccia nativa
-        i[id101], j[id101],  # 2. Andata dell'arco
-        j[id101], i[id101]   # 3. Ritorno dell'arco
-      ))
-      l2_list$caso101 <- rep(2, sum(id101) * 3) # Tutte frecce singole (immuni al bug di igraph)
-      stile_list$caso101 <- as.vector(rbind(rep(1, sum(id101)), rep(100, sum(id101)), rep(100, sum(id101))))
+      l1_101 <- c()
+      l2_101 <- c()
+      stile_101 <- c()
+      
+      for (k in which(id101)) {
+        node_i <- i[k]
+        node_j <- j[k]
+        
+        if (id101_diretto[k]) {
+          # Freccia in avanti: 1 -> 2 (Grafico di sinistra)
+          archi <- as.vector(rbind(
+            node_i, node_j,  # 1. Freccia nativa dritta
+            node_i, node_j,  # 2. Andata dell'arco
+            node_j, node_i   # 3. Ritorno dell'arco
+          ))
+        } else {
+          # Freccia all'indietro: 1 <- 2 (Grafico di destra)
+          archi <- as.vector(rbind(
+            node_j, node_i,  # 1. Freccia nativa invertita (2 -> 1)
+            node_i, node_j,  # 2. Andata dell'arco
+            node_j, node_i   # 3. Ritorno dell'arco
+          ))
+        }
+        
+        l1_101 <- c(l1_101, archi)
+        l2_101 <- c(l2_101, rep(2, 3)) 
+        stile_101 <- c(stile_101, c(1, 100, 100))
+      }
+      
+      l1_list$caso101 <- l1_101
+      l2_list$caso101 <- l2_101
+      stile_list$caso101 <- stile_101
     }
     
     # Caso 110
@@ -225,17 +253,12 @@ plotGraph2 <- function(a,
       n_ripetizioni <- length(g)
       U <- ed0[g, , drop = FALSE]
       
-      # Gestione del nostro Caso 101 sdoppiato (3 archi totali tra la coppia di nodi)
       if (n_ripetizioni == 3) {
-        # Identifichiamo i 3 pezzi in base allo stile salvato al punto 3
         idx_freccia_nat <- g[stile_originale[g] == 1]
         idx_archi_bid   <- g[stile_originale[g] == 100]
         
-        curve[idx_freccia_nat] <- 0.0     # La freccia normale rimane perfettamente DRITTA
+        curve[idx_freccia_nat] <- 0.0     # La freccia rimane perfettamente DRITTA
         
-        # Le due metà dell'arco bidirezionale devono fare la stessa curva visiva.
-        # Poiché uno va da i->j e uno da j->i, per farli sovrapporre e apparire come un unico arco
-        # dobbiamo dare segno positivo a uno e segno negativo all'altro!
         curve[idx_archi_bid[1]] <- 0.7
         curve[idx_archi_bid[2]] <- -0.7
         
@@ -258,7 +281,6 @@ plotGraph2 <- function(a,
   
   # 6. Colori e Stili degli Archi
   col <- rep(coloth, ne)
-  # Coloriamo di rosso (colbid) sia i vecchi casi 100 sia i nuovi pezzi sdoppiati del caso 101
   col[stile_originale == 100 | l2 == 3] <- colbid
   
   if (dashed) {
@@ -284,7 +306,7 @@ plotGraph2 <- function(a,
     edge.lty = ety,
     edge.width = ew,
     edge.arrow.size = eas,
-    edge.arrow.width = eaw + 0.3, # Allarga leggermente la base per stabilizzare l'aggancio sulla tangente
+    edge.arrow.width = eaw + 0.3, 
     vertex.label = rownames(a),
     vertex.label.family = "sans",
     vertex.size = nodesize,
@@ -302,7 +324,6 @@ plotGraph2 <- function(a,
   
   return(invisible(list(tkp.id = NULL, igraph = agr)))
 }
-
 
 
 #' Graph to adjacency matrix
