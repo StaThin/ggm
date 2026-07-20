@@ -7,14 +7,14 @@
 checkIdent(amat, latent)
 }
 \arguments{
-\item{amat}{a square matrix with dimnames, representing the adjacency matrix
+\item{amat}{A square matrix with dimnames, representing the adjacency matrix
 of a DAG.}
 
-\item{latent}{an integer representing the latent variables among the nodes,
+\item{latent}{An integer representing the latent variables among the nodes,
 or the name of the node.}
 }
 \value{
-a vector of length four, indicating if the model is identified
+A vector of length four, indicating if the model is identified
 according to the conditions of theorems 1 and 2 in Stanghellini & Wermuth
 (2005). The answer is \code{TRUE} if the condition holds and thus the model
 is globally identified or \code{FALSE} if the condition fails, and thus we
@@ -27,12 +27,11 @@ model with one latent variable.
 \details{
 Stanghellini and Wermuth (2005) give some sufficient conditions for checking
 if a Gaussian model that factorizes according to a DAG is identified when
-there is one hidden node over which we marginalize.  Specifically, the
+there is one hidden node over which we marginalize. Specifically, the
 function checks the conditions of Theorem 1, (i) and (ii) and of Theorem 2
 (i) and (ii).
 }
 \examples{
-
 ## See DAG in Figure 4 (a) in Stanghellini & Wermuth (2005)
 d <- DAG(y1 ~ y3, y2 ~ y3 + y5, y3 ~ y4 + y5, y4 ~ y6)
 checkIdent(d, "y3")  # Identifiable
@@ -44,7 +43,6 @@ checkIdent(d, "y4")  # Identifiable
 checkIdent(d, "y5")  # Identifiable
 
 ## A simple function to check identifiability for each node
-
 is.ident <- function(amat){
 ### Check suff. conditions on each node of a DAG.
    p <- nrow(amat)
@@ -69,7 +67,7 @@ path-analysis models with one hidden variable. \emph{Biometrika}, 92(2),
 337-350.
 }
 \seealso{
-\code{\link{isGident}}, \code{\link{InducedGraphs}}
+\code{\link[=isGident]{isGident()}}, \code{\link[=InducedGraphs]{InducedGraphs()}}
 }
 \author{
 Giovanni M. Marchetti

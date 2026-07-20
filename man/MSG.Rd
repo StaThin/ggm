@@ -10,7 +10,7 @@ MSG(
   C = c(),
   showmat = TRUE,
   plot = FALSE,
-  plotfun = plotGraph2,
+  plotfun = plotGraph,
   ...
 )
 }

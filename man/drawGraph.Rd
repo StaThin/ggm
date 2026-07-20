@@ -17,56 +17,34 @@ drawGraph(
 )
 }
 \arguments{
-\item{amat}{the adjacency matrix representation of the graph. This can be an
-undirected graph, a directed acyclic graph or a mixed graph with at most a
-summary graph structure. See also \code{\link{plotGraph}}}
+\item{amat}{the adjacency matrix representation of the graph. This can be an undirected graph, a directed acyclic graph or a mixed graph with at most a summary graph structure. See also \code{\link[=plotGraph]{plotGraph()}}.}
 
-\item{coor}{an optional matrix of dimensions \code{p} x 2 where \eqn{p} is
-the number of vertices of the graph. If \code{coor=NULL} then the function
-chooses a default position for the nodes.}
+\item{coor}{an optional matrix of dimensions \eqn{p \rimes 2}  where \eqn{p} is the number of vertices of the graph. If \code{coor=NULL} then the function chooses a default position for the nodes.}
 
-\item{adjust}{a logical value, defaults to \code{FALSE}. If \code{TRUE} the
-graph is plotted and the system waits until the mouse button is pressed
-(same behaviour of \code{locator} function.}
+\item{adjust}{a logical value, defaults to \code{FALSE}. If \code{TRUE} the graph is plotted and the system waits until the mouse button is pressed (same behaviour of \code{locator()} function.}
 
-\item{alpha}{a positive value between controlling the distance from the end
-of the edges to the nodes of the graph.}
+\item{alpha}{a positive value between controlling the distance from the end of the edges to the nodes of the graph.}
 
-\item{beta}{a positive value controlling the distance of the labels of the
-variables from the nodes.}
+\item{beta}{a positive value controlling the distance of the labels of the variables from the nodes.}
 
 \item{lwd}{line width of the edges (default: 1).}
 
-\item{ecol}{color of the edges (default: "blue").}
+\item{ecol}{color of the edges (\code{default: "blue"}).}
 
 \item{bda}{bidirected edge arrow length (default: 0.1).}
 
-\item{layout}{The name of a function used to compute the (initial) layout of
-the graph. The default is \code{layout.auto}. This can be further adjusted
-if \code{adjust} is \code{TRUE}.}
+\item{layout}{The name of a function used to compute the (initial) layout of the graph. The default is \code{igraph::layout_nicely}. This can be further adjusted if \code{adjust =TRUE}.}
 }
 \value{
-The function plots the graph with a initial positioning of the
-nodes, as specified by \code{coor} and remains in a waiting state.  The
-position of each node can be shifted by pointing and clicking (with the
-first mouse button) close to the node.  When the mouse button is pressed the
-node which is closer to the selected point is moved to that position.  Thus,
-one must be careful to click closer to the selected node than to any other
-node.  The nodes can be moved to any position by repeating the previous
-operation.  The adjustment process is terminated by pressing any mouse
-button other than the first.
-
-At the end of the process, the function returns invisibly the coordinates of
-the nodes. The coordinates may be used later to redisplay the graph.
+A plot of the graph with a initial positioning of the nodes, as specified by \code{coor} and remains in a waiting state.  The position of each node can be shifted by pointing and clicking (with the first mouse button) close to the node.  When the mouse button is pressed the node which is closer to the selected point is moved to that position.
+Thus, one must be careful to click closer to the selected node than to any other node.  The nodes can be moved to any position by repeating the previous operation.  The adjustment process is terminated by pressing any mouse button other than the first.
+At the end of the process, the function returns invisibly the coordinates of the nodes. The coordinates may be used later to redisplay the graph.
 }
 \description{
 Draw a graph from its adjacency matrix representation.
 }
 \details{
-The function is a very simple tool useful for displaying small graphs, with
-a rudimentary interface for moving nodes and edges of a given graph and
-adjusting the final plot. For better displays use \pkg{dynamicGraph} or
-\pkg{Rgraphviz} package in Bioconductor project.
+The function is a very simple tool useful for displaying small graphs, with a rudimentary interface for moving nodes and edges of a given graph and adjusting the final plot. For better displays use \code{dynamicGraph} or \code{Rgraphviz} package in Bioconductor project.
 }
 \examples{
 
@@ -138,15 +116,12 @@ drawGraph(Unix, coor=xy, adjust=FALSE)
 
 }
 \references{
-\pkg{dynamicGraph}, \pkg{Rgraphwiz},
-\url{https://www.bioconductor.org}.
+\code{dynamicGraph}: Interactive Graphical Models. \url{https://r-project.org}
 
-GraphViz, Graph Visualization Project. AT&T Research.
-\url{https://www.graphviz.org}.
+\code{Rgraphviz}: Plotting capabilities for R graph objects. Bioconductor Project. \url{https://bioconductor.org}
 }
 \seealso{
-\code{\link{UG}}, \code{\link{DAG}}, \code{\link{makeMG}},
-\code{\link{plotGraph}}
+\code{\link[=UG]{UG()}}, \code{\link[=DAG]{DAG()}}, \code{\link[=makeMG]{makeMG()}}, \code{\link[=plotGraph]{plotGraph()}}
 }
 \author{
 Giovanni M. Marchetti

@@ -7,10 +7,10 @@
 cmpGraph(amat)
 }
 \arguments{
-\item{amat}{the adjacency matrix of an undirected graph}
+\item{amat}{The adjacency matrix of an undirected graph.}
 }
 \value{
-the edge matrix of the complementary graph.
+The edge matrix of the complementary graph.
 }
 \description{
 Finds the complementary graph of an undirected graph.
@@ -21,7 +21,6 @@ and an undirected edge connecting \eqn{i} and \eqn{j} whenever there is not
 an \eqn{(i,j)} edge in the original UG.
 }
 \examples{
-
 ## A chordless four-cycle
 four <- UG(~ a*b + b*d + d*e + e*a)
 four
@@ -33,7 +32,7 @@ Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon
 Press.
 }
 \seealso{
-\code{\link{UG}}, \code{\link{DAG}}
+\code{\link[=UG]{UG()}}, \code{\link[=DAG]{DAG()}}
 }
 \author{
 Giovanni M. Marchetti

@@ -7,12 +7,12 @@
 cycleMatrix(amat)
 }
 \arguments{
-\item{amat}{a symmetric matrix with dimnames denoting the adjacency matrix
+\item{amat}{A symmetric matrix with dimnames denoting the adjacency matrix
 of the undirected graph. The graph must be connected, otherwise the function
 returns an error message.}
 }
 \value{
-a Boolean matrix of the fundamental cycles of the undirected graph.
+A Boolean matrix of the fundamental cycles of the undirected graph.
 If there is no cycle the function returns \code{NULL}.
 }
 \description{
@@ -26,11 +26,10 @@ graph. If an entry is one then the edge associated to that column belongs to
 the cycle associated to the row.
 }
 \note{
-This function is used by \code{isGident}. The row sum of the matrix
+This function is used by \code{\link[=isGident]{isGident()}}. The row sum of the matrix
 gives the length of the cycles.
 }
 \examples{
-
 ## Three cycles
 cycleMatrix(UG(~a*b*d+d*e+e*a*f))
 ## No cycle
@@ -45,8 +44,7 @@ Thulasiraman, K. & Swamy, M.N.S. (1992). \emph{Graphs: theory
 and algorithms}. New York: Wiley.
 }
 \seealso{
-\code{\link{UG}}, \code{\link{findPath}}, \code{\link{fundCycles}},
-\code{\link{isGident}}, \code{\link{bfsearch}}
+\code{\link[=UG]{UG()}}, \code{\link[=findPath]{findPath()}}, \code{\link[=fundCycles]{fundCycles()}}, \code{\link[=isGident]{isGident()}}, \code{\link[=bfsearch]{bfsearch()}}
 }
 \author{
 Giovanni M. Marchetti

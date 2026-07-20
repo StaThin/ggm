@@ -10,7 +10,7 @@ SG(
   C = c(),
   showmat = TRUE,
   plot = FALSE,
-  plotfun = plotGraph2,
+  plotfun = plotGraph,
   ...
 )
 }
@@ -34,7 +34,7 @@ generated matrix.}
 the generated graph.}
 
 \item{plotfun}{Function to plot the graph when \code{plot == TRUE}. Can be
-\code{plotGraph2} (the default) or \code{drawGraph}.}
+\code{plotGraph} (the default) or \code{drawGraph}.}
 
 \item{\dots}{Further arguments passed to \code{plotfun}.}
 }

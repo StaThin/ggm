@@ -7,29 +7,29 @@
 DAG(..., order = FALSE)
 }
 \arguments{
-\item{\dots}{a sequence of model formulae}
+\item{\dots}{A sequence of model formulae.}
 
-\item{order}{logical, defaulting to \code{FALSE}. If \code{TRUE} the nodes
+\item{order}{Logical, defaulting to \code{FALSE}. If \code{TRUE} the nodes
 of the DAG are permuted according to the topological order. If \code{FALSE}
 the nodes are in the order they first appear in the model formulae (from
 left to right).}
 }
 \value{
-the adjacency matrix of the DAG, i.e.  a square Boolean matrix of
+The adjacency matrix of the DAG, i.e. a square Boolean matrix of
 order equal to the number of nodes of the graph and a one in position
 \eqn{(i,j)} if there is an arrow from \eqn{i} to \eqn{j} and zero otherwise.
 The rownames of the adjacency matrix are the nodes of the DAG.
 
 If \code{order = TRUE} the adjacency matrix is permuted to have parents
-before children.  This can always be done (in more than one way) for DAGs.
+before children. This can always be done (in more than one way) for DAGs.
 The resulting adjacency matrix is upper triangular.
 }
 \description{
 A simple way to define a DAG by means of regression model formulae.
 }
 \details{
-The DAG is defined by a sequence of recursive regression models.  Each
-regression is defined by a model formula.  For each formula the response
+The DAG is defined by a sequence of recursive regression models. Each
+regression is defined by a model formula. For each formula the response
 defines a node of the graph and the explanatory variables the parents of
 that node. If the regressions are not recursive the function returns an
 error message.
@@ -41,7 +41,6 @@ The model formulae may contain interactions, but they are ignored in
 the graph.
 }
 \examples{
-
 ## A Markov chain
 DAG(y ~ x, x ~ z, z ~ u)
 
@@ -72,8 +71,7 @@ Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon
 Press.
 }
 \seealso{
-\code{\link{UG}}, \code{\link{topSort}}, \code{\link{edgematrix}},
-\code{\link{fitDag}}
+\code{\link[=UG]{UG()}}, \code{\link[=topSort]{topSort()}}, \code{\link[=edgematrix]{edgematrix()}}, \code{\link[=fitDag]{fitDag()}}
 }
 \author{
 G. M. Marchetti

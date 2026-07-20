@@ -7,11 +7,11 @@
 basiSet(amat)
 }
 \arguments{
-\item{amat}{a square matrix with dimnames representing the adjacency matrix
+\item{amat}{A square matrix with dimnames representing the adjacency matrix
 of a DAG.}
 }
 \value{
-a list of vectors representing several conditional independence
+A list of vectors representing several conditional independence
 statements. Each vector contains the names of two non adjacent nodes
 followed by the names of nodes in the conditioning set (which may be empty).
 }
@@ -28,7 +28,6 @@ has higher causal order than \eqn{i}, the set of independency statements
 the property to lead to independent test statistics.
 }
 \examples{
-
 ## See Shipley (2000), Figure 2, p. 213
 A <- DAG(x5~ x3+x4, x3~ x2, x4~x2, x2~ x1)
 basiSet(A)
@@ -40,7 +39,7 @@ on directed acyclic graphs. \emph{Structural Equation Modeling}, 7(2),
 206--218.
 }
 \seealso{
-\code{\link{shipley.test}}, \code{\link{dSep}}, \code{\link{DAG}}
+\code{\link[=shipley.test]{shipley.test()}}, \code{\link[=dSep]{dSep()}}, \code{\link[=DAG]{DAG()}}
 }
 \author{
 Giovanni M. Marchetti

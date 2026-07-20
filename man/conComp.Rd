@@ -7,19 +7,18 @@
 conComp(amat, method = 1)
 }
 \arguments{
-\item{amat}{a square matrix with dimnames, the adjacency matrix of an UG.}
+\item{amat}{A square matrix with dimnames, the adjacency matrix of an UG.}
 
-\item{method}{an integer 1 or 2 to choose the method used to find the
+\item{method}{An integer 1 or 2 to choose the method used to find the
 components. Method 2 is more efficient for large graphs.}
 }
 \value{
-an integer vector representing a partition of the set of nodes.
+An integer vector representing a partition of the set of nodes.
 }
 \description{
 Finds the connectivity components of a graph.
 }
 \examples{
-
 ## three connected components
 conComp(UG(~a*c+c*d+e+g*o*u))
 ## a connected graph
@@ -31,7 +30,7 @@ Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon
 Press.
 }
 \seealso{
-\code{\link{UG}}
+\code{\link[=UG]{UG()}}
 }
 \author{
 Giovanni M. Marchetti

@@ -7,27 +7,30 @@
 bfsearch(amat, v = 1)
 }
 \arguments{
-\item{amat}{a symmetric matrix with dimnames specifying the adjacency matrix
-of the undirected graph}
+\item{amat}{A symmetric matrix with dimnames specifying the adjacency matrix
+of the undirected graph.}
 
-\item{v}{an integer, indicating the starting node of the search. Defaults to
+\item{v}{An integer, indicating the starting node of the search. Defaults to
 the first node.}
 }
 \value{
-\item{tree}{the edge matrix of the resulting spanning tree}
-\item{branches}{a matrix with two columns, giving the indices of the
-branches of the spanning tree} \item{chords}{a matrix with two columns,
-giving the indices of the chords of the spanning tree}
+A list with the following components:
+\itemize{
+\item \code{tree}: the edge matrix of the resulting spanning tree.
+\item \code{branches}: a matrix with two columns, giving the indices of the
+branches of the spanning tree.
+\item \code{chords}: a matrix with two columns, giving the indices of the chords of
+the spanning tree.
+}
 }
 \description{
 Breadth-first search of a connected undirected graph.
 }
 \details{
-Breadth-first search is a systematic method for exploring a graph.  The
+Breadth-first search is a systematic method for exploring a graph. The
 algorithm is taken from Aho, Hopcroft & Ullman (1983).
 }
 \examples{
-
 ## Finding a spanning tree of the butterfly graph
 bfsearch(UG(~ a*b*o + o*u*j))
 ## Starting from another node
@@ -42,7 +45,7 @@ Thulasiraman, K. & Swamy, M.N.S. (1992). \emph{Graphs: theory and
 algorithms}. New York: Wiley.
 }
 \seealso{
-\code{\link{UG}}, \code{\link{findPath}}, \code{\link{cycleMatrix}}
+\code{\link[=UG]{UG()}}, \code{\link[=findPath]{findPath()}}, \code{\link[=cycleMatrix]{cycleMatrix()}}
 }
 \author{
 Giovanni M. Marchetti
