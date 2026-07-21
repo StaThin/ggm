@@ -26,7 +26,7 @@ If \code{sort == FALSE} the sets are in inverse lexicographical order.
 }
 \examples{
 
-powerset(c("A", "B", "C"), nonempty = FALSE)  
+powerset(c("A", "B", "C"), nonempty = FALSE)
 powerset(1:3, sort = FALSE, nonempty = TRUE)
 
 }

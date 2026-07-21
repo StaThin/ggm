@@ -2,59 +2,71 @@
 % Please edit documentation in R/all_functions.R
 \name{MarkEqRcg}
 \alias{MarkEqRcg}
-\title{Markov equivalence for regression chain graphs.}
+\title{Markov equivalence for regression chain graphs}
 \usage{
 MarkEqRcg(amat, bmat)
 }
 \arguments{
-\item{amat}{An adjacency matrix of an RCG or a graph that can be a
-\code{graphNEL} or an \code{\link[igraph]{igraph}} object or a vector of
-length \eqn{3e}, where \eqn{e} is the number of edges of the graph, that is
-a sequence of triples (type, node1label, node2label). The type of edge can
-be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), and
-\code{"l"} (lines).}
+\item{amat}{An adjacency matrix of an RCG, or a graph that can be a
+\code{graphNEL} object, an \link[igraph:igraph]{igraph::igraph} object, or a character vector of
+length \verb{3e} (where \code{e} is the number of edges). If a vector, it must be
+a sequence of triples (type, node1label, node2label). The type of edge
+can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), or \code{"l"} (lines).}
 
 \item{bmat}{The same as \code{amat}.}
 }
 \value{
-"Markov Equivalent" or "NOT Markov Equivalent".
+@return A character string: either \code{"Markov Equivalent"} or \code{"NOT Markov Equivalent"}.
 }
 \description{
-\code{MarkEqMag} determines whether two RCGs (or subclasses of RCGs) are
-Markov equivalent.
+\code{MarkEqRcg} determines whether two regression chain graphs (RCGs) or
+subclasses of RCGs are Markov equivalent.
 }
 \details{
 The function checks whether the two graphs have the same skeleton and
-unshielded colliders.
+"unshielded colliders".
 }
 \examples{
+H1 <- matrix(c(
+  0, 100, 0, 0, 0, 
+  100, 0, 100, 0, 0, 
+  0, 100, 0, 0, 0, 
+  1, 0, 0, 0, 100, 
+  0, 0, 1, 100, 0
+), 5, 5)
 
-H1<-matrix(c(0,100,0,0,0,100,0,100,0,0,0,100,0,0,0,1,0,0,0,100,0,0,1,100,0),5,5)
-H2<-matrix(c(0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,100,0,0,1,100,0),5,5)
-H3<-matrix(c(0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,1,1,0),5,5)
-#MarkEqRcg(H1,H2)
-#MarkEqRcg(H1,H3)
-#MarkEqRcg(H2,H3)
+H2 <- matrix(c(
+  0, 0, 0, 0, 0, 
+  1, 0, 1, 0, 0, 
+  0, 0, 0, 0, 0, 
+  1, 0, 0, 0, 100, 
+  0, 0, 1, 100, 0
+), 5, 5)
+
+H3 <- matrix(c(
+  0, 0, 0, 0, 0, 
+  1, 0, 1, 0, 0, 
+  0, 0, 0, 0, 0, 
+  1, 0, 0, 0, 0, 
+  0, 0, 1, 1, 0
+), 5, 5)
+
+MarkEqRcg(H1, H2)
+MarkEqRcg(H1, H3)
+MarkEqRcg(H2, H3)
 
 }
 \references{
 Wermuth, N. and Sadeghi, K. (2012). Sequences of regressions and
-their independences. Test 21:215–252.
+their independences. \emph{Test}, 21:215-252.
 }
 \seealso{
-\code{\link{MarkEqMag}}, \code{\link{msep}}
+\link{msep}, \link{grMAT}
 }
 \author{
 Kayvan Sadeghi
 }
-\keyword{Markov}
-\keyword{acyclic}
-\keyword{bidirected}
-\keyword{chain}
-\keyword{directed}
-\keyword{equivalence}
-\keyword{graph}
+\keyword{Markov-equivalence}
 \keyword{graphs}
-\keyword{multivariate}
-\keyword{regression}
-\keyword{undirected}
+\keyword{regression-chain-graph}
+\keyword{undirected-graph}

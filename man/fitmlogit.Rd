@@ -37,11 +37,11 @@ Fits a logistic regression model to multivariate binary responses.
 See Evans and Forcina (2011).
 }
 \examples{
-    
-data(surdata)                     
-out1 <- fitmlogit(A ~X, B ~ Z, cbind(A, B) ~ X*Z, data = surdata)     
+
+data(surdata)
+out1 <- fitmlogit(A ~ X, B ~ Z, cbind(A, B) ~ X * Z, data = surdata)
 out1$beta
-out2 <- fitmlogit(A ~X, B ~ Z, cbind(A, B) ~ 1, data = surdata)        
+out2 <- fitmlogit(A ~ X, B ~ Z, cbind(A, B) ~ 1, data = surdata)
 out2$beta
 
 }

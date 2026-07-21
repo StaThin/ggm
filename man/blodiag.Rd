@@ -21,8 +21,8 @@ Split a vector x into a block diagonal matrix.
 }
 \examples{
 
-blodiag(1:10, blo = c(2, 3, 5)) 
-blodiag(1:10, blo = c(3,4,0,1))
+blodiag(1:10, blo = c(2, 3, 5))
+blodiag(1:10, blo = c(3, 4, 0, 1))
 
 }
 \seealso{

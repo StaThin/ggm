@@ -4,10 +4,10 @@
 \alias{adjMatrix}
 \title{Adjacency matrix of a graph}
 \usage{
-adjMatrix(A)
+adjMatrix(E)
 }
 \arguments{
-\item{A}{A square matrix representing the edge matrix of a graph.}
+\item{E}{A square matrix representing the edge matrix of a graph.}
 }
 \value{
 The adjacency matrix of the graph.
@@ -20,8 +20,8 @@ Given the edge matrix \eqn{A} of a graph, this can be transformed into an
 adjacency matrix \eqn{E} with the formula \eqn{E = (A-I)^T}.
 }
 \examples{
-amat <- DAG(y ~ x+z, z~u+v)
-E <- edgematrix(amat)
+A <- DAG(y ~ x + z, z ~ u + v)
+E <- edgematrix(A)
 adjMatrix(E)
 
 }

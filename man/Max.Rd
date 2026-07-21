@@ -31,10 +31,12 @@ primitive inducing paths, and connect such pairs by an appropriate edge.
 }
 \examples{
 
-H <- matrix(c(  0,100,  1,  0,
-	          100,  0,100,  0,
-	            0,100,  0,100,
-	            0,  1,100,  0), 4, 4)
+H <- matrix(c(
+  0, 100, 1, 0,
+  100, 0, 100, 0,
+  0, 100, 0, 100,
+  0, 1, 100, 0
+), 4, 4)
 Max(H)
 
 }

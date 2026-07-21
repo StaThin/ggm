@@ -26,7 +26,7 @@ from a multivariate normal \eqn{N(0, I)}.
 \examples{
 
 ## 100 points on circle
-z <- rsphere(100,2)
+z <- rsphere(100, 2)
 plot(z)
 
 ## 100 points on a sphere

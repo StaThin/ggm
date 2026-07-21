@@ -32,9 +32,9 @@ algorithm is taken from Aho, Hopcroft & Ullman (1983).
 }
 \examples{
 ## Finding a spanning tree of the butterfly graph
-bfsearch(UG(~ a*b*o + o*u*j))
+bfsearch(UG(~ a * b * o + o * u * j))
 ## Starting from another node
-bfsearch(UG(~ a*b*o + o*u*j), v=3)
+bfsearch(UG(~ a * b * o + o * u * j), v = 3)
 
 }
 \references{

@@ -7,12 +7,10 @@
 essentialGraph(dagx)
 }
 \arguments{
-\item{dagx}{a square binary matrix, the adjacency matrix of a directed
-acyclic graph. The names of rows and of the columns are the nodes of the
-DAG.}
+\item{dagx}{the adjacency matrix of a directed acyclic graph. The names of rows and of the columns are the nodes of the DAG.}
 }
 \value{
-returns the adjacency matrix of the essential graph.
+the adjacency matrix of the essential graph. Note that the essential graph is a mixed graph where the edges can be arrows and/or lines. Then, the elements of the adjacency matrix are coded with \verb{(0,1)} if \eqn{i \rightarrow j} and \verb{(1,0)} if   \eqn{i \leftarrow j} and \verb{(10, 10)} if \eqn{ i - j}.
 }
 \description{
 Find the essential graph from a given directed acyclic graph.
@@ -23,18 +21,15 @@ D.M.Chickering (1995).
 }
 \examples{
 
-dag = DAG(U ~ Y+Z, Y~X, Z~X)
-essentialGraph(dag)
+dag <- DAG(U ~ Y + Z, Y ~ X, Z ~ X)
+plotGraph(essentialGraph(dag))
 
 }
 \references{
-Chickering, D.M. (1995). A transformational characterization of
-equivalent Bayesian network structures. \emph{Proceedings of Eleventh
-Conference on Uncertainty in Artificial Intelligence}, Montreal, QU, 87-98.
-Morgan Kaufmann.
+Chickering, D.M. (1995). A transformational characterization of equivalent Bayesian Network structures. \emph{Proceedings of Eleventh Conference on Uncertainty in Artificial Intelligence}, Montreal, QU, 87-98.  Morgan Kaufmann.
 }
 \seealso{
-\code{\link{DAG}}, \code{\link{InducedGraphs}}
+\code{\link[=makeMG]{makeMG()}} \code{\link[=DAG]{DAG()}}, \code{\link[=InducedGraphs]{InducedGraphs()}}.
 }
 \author{
 Giovanni M. Marchetti, from a MATLAB function by Tomas Kocka, AAU

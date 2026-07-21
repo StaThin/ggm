@@ -7,42 +7,41 @@
 findPath(amat, st, en, path = c())
 }
 \arguments{
-\item{amat}{a square Boolean matrix with dimnames, the adjacency matrix of a
+\item{amat}{A square Boolean matrix with dimnames, the adjacency matrix of a
 graph.}
 
-\item{st}{an integer, the starting node.}
+\item{st}{An integer, the starting node index.}
 
-\item{en}{an integer, the ending node.}
+\item{en}{An integer, the ending node index.}
 
-\item{path}{a vector of integers, used in recursive calls. At the beginning
-is \code{NULL}. It should not be modified by the user.}
+\item{path}{A vector of integers, used in recursive calls. Defaults to an
+empty vector \code{c()}. It should not be modified by the user.}
 }
 \value{
-a vector of integers, the sequence of nodes of a path, starting from
-\code{st} to \code{en}. In some graphs (spanning trees) there is only one
-path between two nodes.
+A vector of integers containing the sequence of nodes forming a path
+from \code{st} to \code{en}. If no path is found, it returns \code{NULL}.
+In some graphs (like spanning trees) there is only one path between two nodes.
 }
 \description{
 Finds one path between two nodes of a graph.
 }
-\note{
-This function is not intended to be directly called by the user.
+\details{
+This function is an internal utility and is not intended to be
+directly called by the user.
 }
 \examples{
-
 ## A (single) path on a spanning tree
-findPath(bfsearch(UG(~ a*b*c + b*d + d*e+ e*c))$tree, st=1, en=5)
+findPath(bfsearch(UG(~ a * b * c + b * d + d * e + e * c))$tree, st = 1, en = 5)
 
 }
 \references{
-Python Softftware Foundation (2003). Python Patterns ---
-Implementing Graphs. \url{https://www.python.org/doc/essays/graphs/}.
+Python Software Foundation (2003). Python Patterns Implementing Graphs.
+\url{https://www.python.org/doc/essays/graphs/}.
 }
 \seealso{
 \code{\link{fundCycles}}
 }
 \author{
-Giovanni M. Marchetti, translating the original \pkg{Python} code
-(see references).
+Giovanni M. Marchetti, translating the original Python code (see references).
 }
 \keyword{graphs}

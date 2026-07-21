@@ -33,8 +33,8 @@ interactions are returned in order of dimension, like e.g., 1, 2, 3, 12, 13,
 23, 123.
 }
 \examples{
-    
-marg.param(c(3,3), c("l", "g"))
+
+marg.param(c(3, 3), c("l", "g"))
 
 }
 \references{

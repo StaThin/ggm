@@ -25,7 +25,7 @@ ones, assuming a multivariate normal distribution.
 
 ## Are 2,3 independent given 1?
 data(marks)
-pcor.test(pcor(c(2,3,1), var(marks)), 1, n=88)
+pcor.test(pcor(c(2, 3, 1), var(marks)), 1, n = 88)
 
 }
 \seealso{

@@ -54,16 +54,18 @@ DAG(v ~ v, y ~ x + z, z ~ w + u)
 DAG(y ~ x + u + v, y ~ z, u ~ v + z)
 
 ## Interactions are ignored
-DAG(y ~ x*z + z*v, x ~ z)
+DAG(y ~ x * z + z * v, x ~ z)
 
 ## A cyclic graph returns an error!
-\dontrun{DAG(y ~ x, x ~ z, z ~ y)}
+\dontrun{
+DAG(y ~ x, x ~ z, z ~ y)
+}
 
 ## The order can be changed
-DAG(y ~ z, y ~ x + u + v,  u ~ v + z)
+DAG(y ~ z, y ~ x + u + v, u ~ v + z)
 
 ## If you want to order the nodes (topological sort of the DAG)
-DAG(y ~ z, y ~ x + u + v,  u ~ v + z, order=TRUE)
+DAG(y ~ z, y ~ x + u + v, u ~ v + z, order = TRUE)
 
 }
 \references{

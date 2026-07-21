@@ -8,44 +8,56 @@ MarkEqMag(amat, bmat)
 }
 \arguments{
 \item{amat}{An adjacency matrix of a MAG, or a graph that can be a
-\code{graphNEL} or an \code{\link[igraph]{igraph}} object or a vector of
-length \eqn{3e}, where \eqn{e} is the number of edges of the graph, that is
-a sequence of triples (type, node1label, node2label). The type of edge can
-be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), and
-\code{"l"} (lines).}
+\code{graphNEL} object, an \link[igraph:igraph]{igraph::igraph} object, or a character vector of
+length \verb{3e} (where \code{e} is the number of edges). If a vector, it must be
+a sequence of triples (type, node1label, node2label). The type of edge
+can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), or \code{"l"} (lines).}
 
 \item{bmat}{The same as \code{amat}.}
 }
 \value{
-"Markov Equivalent" or "NOT Markov Equivalent".
+A character string: either \code{"Markov Equivalent"} or \code{"NOT Markov Equivalent"}.
 }
 \description{
-\code{MarkEqMag} determines whether two MAGs are Markov equivalent.
+\code{MarkEqMag} determines whether two maximal ancestral graphs (MAGs) are
+Markov equivalent.
 }
 \details{
 The function checks whether the two graphs have the same skeleton and
 colliders with order.
 }
 \examples{
+H1 <- matrix(c(
+  0, 100, 0, 0,
+  100, 0, 100, 0,
+  0, 100, 0, 100,
+  0, 1, 100, 0
+), 4, 4)
 
-H1<-matrix(  c(0,100,  0,  0,
-	         100,  0,100,  0,
-               0,100,  0,100,
-               0,  1,100,  0), 4, 4)
-H2<-matrix(c(0,0,0,0,1,0,100,0,0,100,0,100,0,1,100,0),4,4)
-H3<-matrix(c(0,0,0,0,1,0,0,0,0,1,0,100,0,1,100,0),4,4)
-MarkEqMag(H1,H2)
-MarkEqMag(H1,H3)
-MarkEqMag(H2,H3)
+H2 <- matrix(c(
+  0, 0, 0, 0, 
+  1, 0, 100, 0, 
+  0, 100, 0, 100, 
+  0, 1, 100, 0
+), 4, 4)
+
+H3 <- matrix(c(
+  0, 0, 0, 0, 
+  1, 0, 0, 0, 
+  0, 1, 0, 100, 
+  0, 1, 100, 0
+), 4, 4)
+
+MarkEqMag(H1, H2)
+MarkEqMag(H1, H3)
+MarkEqMag(H2, H3)
 
 }
 \references{
-Ali, R.A., Richardson, T.S. and Spirtes, P. (2009) Markov
-equivalence for ancestral graphs. \emph{Annals of Statistics},
-37(5B),2808-2837.
+Ali, R.A., Richardson, T.S. and Spirtes, P. (2009) Markov equivalence for ancestral graphs. \emph{Annals of Statistics}, 37(5B), 2808-2837.
 }
 \seealso{
-\code{\link{MarkEqRcg}}, \code{\link{msep}}
+\link{MarkEqRcg}, \link{msep}
 }
 \author{
 Kayvan Sadeghi

@@ -21,10 +21,10 @@ the graph is undirected and the set of arrows if the graph is directed.
 }
 \examples{
 ## A UG graph
-allEdges(UG(~ y*v*k +v*k*d+y*d))
+allEdges(UG(~ y * v * k + v * k * d + y * d))
 
 ## A DAG
-allEdges(DAG(u~h+o+p, h~o, o~p))
+allEdges(DAG(u ~ h + o + p, h ~ o, o ~ p))
 
 }
 \seealso{

@@ -19,7 +19,7 @@ zero.
 }
 \examples{
 
- null(c(1,1,1))
+null(c(1, 1, 1))
 
 }
 \seealso{

@@ -35,9 +35,11 @@ basis set.  Shipley (2002) calls this test Fisher's C test.
 
 ## A decomposable model for the mathematics marks data
 data(marks)
-dag <- DAG(mechanics ~ vectors+algebra, vectors ~ algebra, 
-statistics ~ algebra+analysis, analysis ~ algebra)
-shipley.test(dag, cov(marks), n=88)
+dag <- DAG(
+  mechanics ~ vectors + algebra, vectors ~ algebra,
+  statistics ~ algebra + analysis, analysis ~ algebra
+)
+shipley.test(dag, cov(marks), n = 88)
 
 }
 \references{

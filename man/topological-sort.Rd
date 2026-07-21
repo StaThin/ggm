@@ -28,7 +28,7 @@ according to the topological order.
 \details{
 The topological order needs not to be unique. After the permutation the
 adjacency matrix of the graph is upper triangular. The function is a
-translation of the Matlab function \code{topological_sort} in Toolbox
+translation of the Matlab function \code{topological_sort} in Matlab Toolbox
 \strong{BNT} written by Kevin P. Murphy.
 }
 \note{
@@ -38,7 +38,7 @@ appearance in the model formulae (from left to right).
 \examples{
 if (requireNamespace("ggm", quietly = TRUE)) {
   library(ggm)
-  
+
   ## A simple example
   dag <- DAG(a ~ b, c ~ a + b, d ~ c + b)
   dag

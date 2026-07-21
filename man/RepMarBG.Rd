@@ -37,7 +37,7 @@ V-configuration in graph.
 }
 \examples{
 
-H<-matrix(c(0,10,0,0,10,0,0,0,0,1,0,100,0,0,100,0),4,4)
+H <- matrix(c(0, 10, 0, 0, 10, 0, 0, 0, 0, 1, 0, 100, 0, 0, 100, 0), 4, 4)
 RepMarBG(H)
 
 }

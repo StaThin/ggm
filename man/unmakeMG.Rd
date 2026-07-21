@@ -30,7 +30,7 @@ The matrices \code{ug}, and \code{bg} are just symmetric Boolean matrices.
 }
 \examples{
 
-ag <- makeMG(ug=UG(~y0*y1), dg=DAG(y4~y2, y2~y1), bg=UG(~y2*y3+y3*y4))
+ag <- makeMG(ug = UG(~ y0 * y1), dg = DAG(y4 ~ y2, y2 ~ y1), bg = UG(~ y2 * y3 + y3 * y4))
 isAG(ag)
 unmakeMG(ag)
 

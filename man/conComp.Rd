@@ -20,9 +20,9 @@ Finds the connectivity components of a graph.
 }
 \examples{
 ## three connected components
-conComp(UG(~a*c+c*d+e+g*o*u))
+conComp(UG(~ a * c + c * d + e + g * o * u))
 ## a connected graph
-conComp(UG(~ a*b+b*c+c*d+d*a))
+conComp(UG(~ a * b + b * c + c * d + d * a))
 
 }
 \references{

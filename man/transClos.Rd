@@ -30,7 +30,7 @@ d <- DAG(y ~ x, x ~ z)
 transClos(d)
 
 ## Closure of an UG
-g <- UG(~ x*y*z+z*u+u*v)
+g <- UG(~ x * y * z + z * u + u * v)
 transClos(g)
 
 }

@@ -10,39 +10,40 @@ isAG(amat)
 \item{amat}{An adjacency matrix.}
 }
 \value{
-A logical value, \code{TRUE} if it is an ancestral graph and
+A logical value. \code{TRUE} if it is an ancestral graph and
 \code{FALSE} otherwise.
 }
 \description{
-Check if it is an adjacency matrix of an ancestral graph
+Check if it is an adjacency matrix of an ancestral graph.
 }
 \details{
-Checks if the following conditions must hold: (i) no undirected edge meets
-an arrowhead; (ii) no directed cycles; (iii) spouses cannot be ancestors.
+Checks if the following conditions hold:
+\itemize{
+\item no undirected edge meets an arrowhead
+\item no directed cycles
+\item spouses cannot be ancestors.
 For details see Richardson and Spirtes (2002).
 }
+}
 \examples{
-
-	## Examples from Richardson and Spirtes (2002)
-	a1 <- makeMG(dg=DAG(a~b, b~d, d~c), bg=UG(~a*c))
-	isAG(a1)    # Not an AG. (a2) p.969
-	a2 <- makeMG(dg=DAG(b ~ a, d~c), bg=UG(~a*c+c*b+b*d))           # Fig. 3 (b1) p.969
-	isAG(a2)
+## Examples from Richardson and Spirtes (2002)
+a1 <- makeMG(dg = DAG(a ~ b, b ~ d, d ~ c), bg = UG(~ a * c))
+suppressWarnings(isAG(a1)) # Not an AG. (a2) p.969
+a2 <- makeMG(dg = DAG(b ~ a, d ~ c), bg = UG(~ a * c + c * b + b * d)) # Fig. 3 (b1) p.969
+isAG(a2)
 
 }
 \references{
 Richardson, T. S. and Spirtes, P. (2002). Ancestral Graph Markov
-Models. \emph{Annals of Statistics}, 30(4), 962--1030.
+Models. \emph{Annals of Statistics}, 30(4), 962-1030.
 }
 \seealso{
-\code{\link{makeMG}}, \code{\link{isADMG}}
+\code{\link[=makeMG]{makeMG()}}, \code{\link[=isADMG]{isADMG()}}
 }
 \author{
 Giovanni M. Marchetti, Mathias Drton
 }
-\keyword{ancestral}
-\keyword{graph}
+\keyword{ancestral.graph}
 \keyword{graphs}
-\keyword{mixed}
-\keyword{models}
+\keyword{mixed.graph.models}
 \keyword{multivariate}

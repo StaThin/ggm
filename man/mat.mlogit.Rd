@@ -23,7 +23,7 @@ parameterization.
 The power set is in the order of dimensions of the sets.
 }
 \examples{
- 
+
 mat.mlogit(2)
 
 }

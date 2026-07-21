@@ -22,7 +22,7 @@ an \eqn{(i,j)} edge in the original UG.
 }
 \examples{
 ## A chordless four-cycle
-four <- UG(~ a*b + b*d + d*e + e*a)
+four <- UG(~ a * b + b * d + d * e + e * a)
 four
 cmpGraph(four)
 

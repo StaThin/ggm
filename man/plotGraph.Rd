@@ -24,35 +24,39 @@ plotGraph(
 )
 }
 \arguments{
-\item{a}{A square adjacency matrix, an \code{igraph} object, a \code{graphNEL} object, or a character vector.}
+\item{a}{A square adjacency matrix, an \link[igraph:igraph]{igraph::igraph} object, a \code{graphNEL}
+object, or a character vector.}
 
-\item{dashed}{Logical. If \code{FALSE} (default), bidirected edges will be drawn as continuous arcs. Otherwise they will drawn as dashed arcs.}
+\item{dashed}{Logical. If \code{TRUE} (default), bidirected edges will be drawn
+as dashed arcs. Otherwise they will drawn as continuous arcs.}
 
-\item{layout}{An \code{igraph} layout function or matrix (e.g., \code{layout_nicely}).}
+\item{layout}{An \code{igraph} layout function or matrix. Defaults to \link[igraph:layout_nicely]{igraph::layout_nicely}.}
 
-\item{directed}{Logical. Indicates whether the graph should be treated as directed.}
+\item{directed}{Logical. Indicates whether the graph should be treated as
+directed. Defaults to \code{FALSE}.}
 
-\item{noframe}{Logical. If \code{TRUE}, removes vertex frames and sets node backgrounds to white.}
+\item{noframe}{Logical. If \code{TRUE}, removes vertex frames and sets node
+backgrounds to white. Defaults to \code{FALSE}.}
 
 \item{nodesize}{Numeric. The size of the vertices (nodes). Default is 20.}
 
-\item{vld}{Numeric. Distance of the vertex labels from the nodes.}
+\item{vld}{Numeric. Distance of the vertex labels from the nodes. Defaults to 0.}
 
-\item{vc}{Character. The fill color of the nodes.}
+\item{vc}{Character. The fill color of the nodes. Defaults to \code{"gray80"}.}
 
-\item{vfc}{Character. The frame (border) color of the nodes.}
+\item{vfc}{Character. The frame (border) color of the nodes. Defaults to \code{NA}.}
 
-\item{colbid}{Character. Color for bidirectional or special edges.}
+\item{colbid}{Character. Color for bidirectional or special edges. Defaults to \code{"FireBrick3"}.}
 
-\item{coloth}{Character. Color for standard edges.}
+\item{coloth}{Character. Color for standard edges. Defaults to \code{"gray40"}.}
 
-\item{cex}{Numeric. Text expansion factor for vertex labels.}
+\item{cex}{Numeric. Text expansion factor for vertex labels. Defaults to 1.}
 
-\item{ew}{Numeric. The width (thickness) of the edges.}
+\item{ew}{Numeric. The width (thickness) of the edges. Defaults to 1.8.}
 
-\item{eas}{Numeric. The size of the edge arrowheads.}
+\item{eas}{Numeric. The size of the edge arrowheads. Defaults to 0.7.}
 
-\item{eaw}{Numeric. The size of the edge arrow width.}
+\item{eaw}{Numeric. The size of the edge arrow width. Defaults to 1.}
 
 \item{...}{Additional arguments passed directly to the underlying \code{plot.igraph} function.}
 }
@@ -62,42 +66,44 @@ An invisible list containing two elements:
 \item{igraph}{The processed internal graph object of class \code{igraph}.}
 }
 \description{
-This function takes an adjacency matrix or a graph object
-and generates a highly customizable, clean static visual representation of the network.
+This function takes an adjacency matrix or a graph object and generates a
+highly customizable, clean static visual representation of the network.
 }
 \examples{
-
+## Generating the adjacency matrix from a vector and plotting
 exvec <- c(
   "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11,
   "a", 10, 8, "a", 11, 2, "a", 11, 9, "a", 11, 10,
   "a", 12, 1, "b", 12, 14, "a", 13, 10, "a", 13, 12
 )
 plotGraph(exvec)
-######################################
+
+## Plotting from a direct adjacency matrix
 amat <- matrix(c(0, 11, 0, 0, 10, 0, 100, 0, 0, 100, 0, 1, 0, 0, 1, 0), 4, 4)
 plotGraph(amat)
+
+## Examples using mixed graphs generation (makeMG)
 plotGraph(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)))
-plotGraph(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)), dashed = TRUE)
+plotGraph(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)), dashed = FALSE)
+
 # A graph with double and triple edges
-G <-
-  structure(c(
-    0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0,
-    111, 100, 0
-  ), .Dim = c(4L, 4L), .Dimnames = list(c(
-    "X", "Z",
-    "Y", "W"
-  ), c("X", "Z", "Y", "W")))
+G <- structure(c(
+    0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0, 111, 100, 0
+  ), .Dim = c(4L, 4L), .Dimnames = list(c("X", "Z", "Y", "W"), c("X", "Z", "Y", "W")))
 plotGraph(G)
+
 # A regression chain graph
-G <- makeMG(
+G_chain <- makeMG(
   bg = UG(~ Love * C + C * R + A * D),
   dg = DAG(L ~ A + D, C ~ D, R ~ D, A ~ F, D ~ F),
   ug = UG(~ F * S + S * Age)
 )
-plotGraph(G, noframe = TRUE)
-# A graph with 4 edges between two nodes.
+plotGraph(G_chain, noframe = TRUE)
+
+# A graph with 4 edges between two nodes
 G4 <- matrix(0, 2, 2)
 G4[1, 2] <- 111
 G4[2, 1] <- 111
 plotGraph(G4)
+
 }

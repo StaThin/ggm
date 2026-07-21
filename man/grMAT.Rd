@@ -7,30 +7,44 @@
 grMAT(agr)
 }
 \arguments{
-\item{agr}{A graph that can be a \code{graphNEL} or an
-\link[igraph:igraph]{igraph::igraph} object or a vector of length \eqn{3e} \eqn{3e}, where
-\eqn{e} is the number of edges of the graph, that is a sequence of triples (type, node1label, node2label). The type of edge can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), and \code{"l"} (lines).}
+\item{agr}{A graph object. This can be a \code{graphNEL} object, an
+\code{\link[igraph:igraph]{igraph}} object, or a character vector of length
+\eqn{3e}{3e}, where \eqn{e} is the number of edges. If it is a vector, it must
+be a sequence of triples (type, node1label, node2label). The type of edge
+can be \code{"a"} (arrow from node1 to node2), \code{"b"} (bi-directed arc),
+and \code{"l"} (undirected line).}
 }
 \value{
-A matrix that consists of 4 different integers as an \eqn{ij}-element:
+A matrix consisting of 4 different integers representing the \eqn{ij}{ij}-elements:
 0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
 \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
 for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
-to be associated with multiple edges of different types. The matrix is
-symmetric w.r.t. full lines and bi-directed arrows.
+when multiple edges of different types are present. The matrix is
+symmetric with respect to full lines and bi-directed arrows.
 }
 \description{
 \code{grMAT} converts graph objects to a mixed adjacency matrix.
 }
+\details{
+Support for \code{graphNEL} objects requires the \code{graph} package
+from Bioconductor, which is a suggested dependency. If the package is missing,
+passing a \code{graphNEL} object will trigger an informative error.
+}
 \examples{
-igraph::graph_from_literal() 
-
 ## Generating the adjacency matrix from a vector
 exvec <- c(
   "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11, "a", 10, 8,
   "a", 11, 2, "a", 11, 10, "a", 12, 1, "b", 12, 14, "a", 13, 10, "a", 13, 12)
 grMAT(exvec)
 
+\dontrun{
+## Example with graphNEL (requires the 'graph' package from Bioconductor)
+if (requireNamespace("graph", quietly = TRUE)) {
+  V <- c("a", "b", "c")
+  g <- graph::graphNEL(nodes = V, edgemode = "undirected")
+  grMAT(g)
+ }
+}
 }
 \author{
 Kayvan Sadeghi

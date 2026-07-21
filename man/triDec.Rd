@@ -34,10 +34,12 @@ on the variables \eqn{i+1, \dots, d}.  The elements on the diagonal of
 \examples{
 
 ## Triangular decomposition of a covariance matrix
-B <- matrix(c(1,  -2, 0, 1,
-              0,   1, 0, 1,
-              0,   0, 1, 0,
-              0,   0, 0, 1), 4, 4, byrow=TRUE)
+B <- matrix(c(
+  1, -2, 0, 1,
+  0, 1, 0, 1,
+  0, 0, 1, 0,
+  0, 0, 0, 1
+), 4, 4, byrow = TRUE)
 B
 D <- diag(c(3, 1, 2, 1))
 S <- B \%*\% D \%*\% t(B)

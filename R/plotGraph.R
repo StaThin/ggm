@@ -1,92 +1,101 @@
 #' Plot mixed graphs
 #'
-#' @description This function takes an adjacency matrix or a graph object
-#' and generates a highly customizable, clean static visual representation of the network.
+#' This function takes an adjacency matrix or a graph object and generates a 
+#' highly customizable, clean static visual representation of the network.
 #'
-#' @param a A square adjacency matrix, an \code{igraph} object, a \code{graphNEL} object, or a character vector.
-#' @param dashed Logical. If \code{FALSE} (default), bidirected edges will be drawn as continuous arcs. Otherwise they will drawn as dashed arcs.
-#' @param layout An \code{igraph} layout function or matrix (e.g., \code{layout_nicely}).
-#' @param directed Logical. Indicates whether the graph should be treated as directed.
-#' @param noframe Logical. If \code{TRUE}, removes vertex frames and sets node backgrounds to white.
+#' @param a A square adjacency matrix, an [igraph::igraph] object, a `graphNEL` 
+#'   object, or a character vector.
+#' @param dashed Logical. If `TRUE` (default), bidirected edges will be drawn 
+#'   as dashed arcs. Otherwise they will drawn as continuous arcs.
+#' @param layout An `igraph` layout function or matrix. Defaults to [igraph::layout_nicely].
+#' @param directed Logical. Indicates whether the graph should be treated as 
+#'   directed. Defaults to `FALSE`.
+#' @param noframe Logical. If `TRUE`, removes vertex frames and sets node 
+#'   backgrounds to white. Defaults to `FALSE`.
 #' @param nodesize Numeric. The size of the vertices (nodes). Default is 20.
-#' @param vld Numeric. Distance of the vertex labels from the nodes.
-#' @param vc Character. The fill color of the nodes.
-#' @param vfc Character. The frame (border) color of the nodes.
-#' @param colbid Character. Color for bidirectional or special edges.
-#' @param coloth Character. Color for standard edges.
-#' @param cex Numeric. Text expansion factor for vertex labels.
-#' @param ew Numeric. The width (thickness) of the edges.
-#' @param eas Numeric. The size of the edge arrowheads.
-#' @param eaw Numeric. The size of the edge arrow width.
-#' @param ... Additional arguments passed directly to the underlying \code{plot.igraph} function.
+#' @param vld Numeric. Distance of the vertex labels from the nodes. Defaults to 0.
+#' @param vc Character. The fill color of the nodes. Defaults to `"gray80"`.
+#' @param vfc Character. The frame (border) color of the nodes. Defaults to `NA`.
+#' @param colbid Character. Color for bidirectional or special edges. Defaults to `"FireBrick3"`.
+#' @param coloth Character. Color for standard edges. Defaults to `"gray40"`.
+#' @param cex Numeric. Text expansion factor for vertex labels. Defaults to 1.
+#' @param ew Numeric. The width (thickness) of the edges. Defaults to 1.8.
+#' @param eas Numeric. The size of the edge arrowheads. Defaults to 0.7.
+#' @param eaw Numeric. The size of the edge arrow width. Defaults to 1.
+#' @param ... Additional arguments passed directly to the underlying `plot.igraph` function.
 #'
 #' @return An invisible list containing two elements:
-#' \item{tkp.id}{\code{NULL} (retained solely for backward compatibility with older package versions).}
-#' \item{igraph}{The processed internal graph object of class \code{igraph}.}
+#' \item{tkp.id}{`NULL` (retained solely for backward compatibility with older package versions).}
+#' \item{igraph}{The processed internal graph object of class `igraph`.}
 #'
 #' @examples
-#'
+#' ## Generating the adjacency matrix from a vector and plotting
 #' exvec <- c(
 #'   "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11,
 #'   "a", 10, 8, "a", 11, 2, "a", 11, 9, "a", 11, 10,
 #'   "a", 12, 1, "b", 12, 14, "a", 13, 10, "a", 13, 12
 #' )
 #' plotGraph(exvec)
-#' ######################################
+#' 
+#' ## Plotting from a direct adjacency matrix
 #' amat <- matrix(c(0, 11, 0, 0, 10, 0, 100, 0, 0, 100, 0, 1, 0, 0, 1, 0), 4, 4)
 #' plotGraph(amat)
+#' 
+#' ## Examples using mixed graphs generation (makeMG)
 #' plotGraph(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)))
-#' plotGraph(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)), dashed = TRUE)
+#' plotGraph(makeMG(bg = UG(~ a * b * c + c * d), dg = DAG(a ~ x + z, b ~ z)), dashed = FALSE)
+#' 
 #' # A graph with double and triple edges
-#' G <-
-#'   structure(c(
-#'     0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0,
-#'     111, 100, 0
-#'   ), .Dim = c(4L, 4L), .Dimnames = list(c(
-#'     "X", "Z",
-#'     "Y", "W"
-#'   ), c("X", "Z", "Y", "W")))
+#' G <- structure(c(
+#'     0, 101, 0, 0, 100, 0, 100, 100, 0, 100, 0, 100, 0, 111, 100, 0
+#'   ), .Dim = c(4L, 4L), .Dimnames = list(c("X", "Z", "Y", "W"), c("X", "Z", "Y", "W")))
 #' plotGraph(G)
+#' 
 #' # A regression chain graph
-#' G <- makeMG(
+#' G_chain <- makeMG(
 #'   bg = UG(~ Love * C + C * R + A * D),
 #'   dg = DAG(L ~ A + D, C ~ D, R ~ D, A ~ F, D ~ F),
 #'   ug = UG(~ F * S + S * Age)
 #' )
-#' plotGraph(G, noframe = TRUE)
-#' # A graph with 4 edges between two nodes.
+#' plotGraph(G_chain, noframe = TRUE)
+#' 
+#' # A graph with 4 edges between two nodes
 #' G4 <- matrix(0, 2, 2)
 #' G4[1, 2] <- 111
 #' G4[2, 1] <- 111
 #' plotGraph(G4)
-#' @export 
+#' 
+#' @export
+
 plotGraph <- function(a,
-                       dashed = TRUE,
-                       layout = igraph::layout_nicely,
-                       directed = FALSE,
-                       noframe = FALSE,
-                       nodesize = 20,
-                       vld = 0,
-                       vc = "gray80",
-                       vfc = NA,
-                       colbid = "FireBrick3",
-                       coloth = "gray40",
-                       cex = 1,
-                       ew = 1.8,
-                       eas = 0.7,
-                       eaw = 1,
-                       ...) {
-  # 1. Controllo sicuro del tipo di oggetto
+                      dashed = TRUE,
+                      layout = igraph::layout_nicely,
+                      directed = FALSE,
+                      noframe = FALSE,
+                      nodesize = 20,
+                      vld = 0,
+                      vc = "gray80",
+                      vfc = NA,
+                      colbid = "FireBrick3",
+                      coloth = "gray40",
+                      cex = 1,
+                      ew = 1.8,
+                      eas = 0.7,
+                      eaw = 1,
+                      ...) {
+  
+  # 1. Controllo sicuro del tipo di oggetto (compatibile anche con graphNEL da Suggests)
   if (inherits(a, "igraph") || inherits(a, "graphNEL") || is.character(a)) {
     a <- grMAT(a)
   }
   
-  if (!is(a, "matrix")) {
-    stop("'object' is not in a valid format")
+  # Uso di is.matrix al posto del vecchio is()
+  if (!is.matrix(a)) {
+    stop("'object' is not in a valid format", call. = FALSE)
   }
   
   if (nrow(a) != ncol(a)) {
-    stop("'object' is not in a valid adjacency matrix form")
+    stop("'object' is not in a valid adjacency matrix form", call. = FALSE)
   }
   
   # 2. Configurazione nomi righe/colonne se mancanti
@@ -345,45 +354,66 @@ plotGraph <- function(a,
   
   return(invisible(list(tkp.id = NULL, igraph = agr)))
 }
-
 #' Graph to adjacency matrix
 #'
 #' \code{grMAT} converts graph objects to a mixed adjacency matrix.
 #'
-#' @param agr A graph that can be a `graphNEL` or an
-#' [igraph::igraph] object or a vector of length \eqn{3e} \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of triples (type, node1label, node2label). The type of edge can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), and \code{"l"} (lines).
+#' @details Support for \code{graphNEL} objects requires the \code{graph} package 
+#'   from Bioconductor, which is a suggested dependency. If the package is missing, 
+#'   passing a \code{graphNEL} object will trigger an informative error.
 #'
-#' @returns A matrix that consists of 4 different integers as an \eqn{ij}-element:
-#' 0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
-#' \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
-#' for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
-#' to be associated with multiple edges of different types. The matrix is
-#' symmetric w.r.t. full lines and bi-directed arrows.
+#' @param agr A graph object. This can be a \code{graphNEL} object, an 
+#'   \code{\link[igraph:igraph]{igraph}} object, or a character vector of length 
+#'   \eqn{3e}{3e}, where \eqn{e} is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (type, node1label, node2label). The type of edge 
+#'   can be \code{"a"} (arrow from node1 to node2), \code{"b"} (bi-directed arc), 
+#'   and \code{"l"} (undirected line).
+#'
+#' @return A matrix consisting of 4 different integers representing the \eqn{ij}{ij}-elements:
+#'   0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
+#'   \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
+#'   for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
+#'   when multiple edges of different types are present. The matrix is
+#'   symmetric with respect to full lines and bi-directed arrows.
+#' 
 #' @author Kayvan Sadeghi
 #' @keywords graphs adjacency matrix mixed graph vector
+#' 
 #' @examples
-#' igraph::graph_from_literal() 
-#'
 #' ## Generating the adjacency matrix from a vector
 #' exvec <- c(
 #'   "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11, "a", 10, 8,
 #'   "a", 11, 2, "a", 11, 10, "a", 12, 1, "b", 12, 14, "a", 13, 10, "a", 13, 12)
 #' grMAT(exvec)
 #'
-#' @export grMAT
-
-`grMAT` <- function(agr) {
+#' \dontrun{
+#' ## Example with graphNEL (requires the 'graph' package from Bioconductor)
+#' if (requireNamespace("graph", quietly = TRUE)) {
+#'   V <- c("a", "b", "c")
+#'   g <- graph::graphNEL(nodes = V, edgemode = "undirected")
+#'   grMAT(g)
+#'  }
+#' }
+#' @export
+grMAT <- function(agr) {
+  # Safe check for graphNEL using inherits (S4 compatible)
   if (inherits(agr, "graphNEL") || inherits(agr, "graph")) {
     if (!requireNamespace("graph", quietly = TRUE)) {
-      stop("Package 'graph' (Bioconductor) is required to convert graphNEL objects.\n", "It can be installed as: BiocManager::install('graph')", call. = FALSE)
+      stop(
+        "Package 'graph' (Bioconductor) is required to convert graphNEL objects.\n", 
+        "It can be installed as: BiocManager::install('graph')", 
+        call. = FALSE
+      )
     }
     agr <- methods::as(agr, "matrix")
   }
-  if (class(agr)[1] == "igraph") {
+  
+  # Safe check for igraph objects avoiding class()[1]
+  if (inherits(agr, "igraph")) {
     return(as_adjacency_matrix(agr, sparse = FALSE))
   }
-  if (class(agr)[1] == "character") {
+  
+  if (inherits(agr, "character")) {
     if (length(agr) %% 3 != 0) {
       stop("'The character object' is not in a valid form")
     }

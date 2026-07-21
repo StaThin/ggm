@@ -68,10 +68,10 @@ obtained (Kauermann, 1996; Edwards, 2000, section 7.4).
 data(stress)
 
 ## A chordless 4-cycle covariance graph
-G <- UG(~ Y*X + X*U + U*V + V*Y)
+G <- UG(~ Y * X + X * U + U * V + V * Y)
 
-fitCovGraph(G, S = stress, n=72)
-fitCovGraph(G, S = stress, n=72, alg="dual")
+fitCovGraph(G, S = stress, n = 72)
+fitCovGraph(G, S = stress, n = 72, alg = "dual")
 
 }
 \references{
