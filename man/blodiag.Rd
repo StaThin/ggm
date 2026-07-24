@@ -12,8 +12,8 @@ blodiag(x, blo)
 \item{blo}{A vector of positive integers such that \code{sum(blo) == n}.}
 }
 \value{
-A block-diagonal matrix with as many row as elements of \code{blo}
-and \code{n} columns. The vector \code{x} is split into \code{length(blo)}
+A block-diagonal matrix with as many row as elements of
+\code{blo} and \code{n} columns. The vector \code{x} is split into \code{length(blo)}
 sub-vectors and these are the blocks of the resulting matrix.
 }
 \description{
@@ -22,11 +22,13 @@ Split a vector x into a block diagonal matrix.
 \examples{
 
 blodiag(1:10, blo = c(2, 3, 5))
-blodiag(1:10, blo = c(3, 4, 0, 1))
+blodiag(1:8, blo = c(3, 4, 0, 1))
+blodiag(1:4, blo = c(2,0,2))
+blodiag(1:4, blo = c(2,2,0))
 
 }
 \seealso{
-\code{\link{blkdiag}}, \code{\link{diag}}
+\code{\link[=blkdiag]{blkdiag()}}, \code{\link[=diag]{diag()}}, \code{\link[=fitmlogit]{fitmlogit()}}.
 }
 \author{
 Giovanni M. Marchetti

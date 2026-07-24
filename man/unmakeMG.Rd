@@ -7,43 +7,54 @@
 unmakeMG(amat)
 }
 \arguments{
-\item{amat}{a square matrix, with dimnames, representing a loopless mixed
-graph. The matrix consists of 4 different integers as an \eqn{ij}-element: 0
-for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from \eqn{i}
-to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100 for a
-bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added to be
-associated with multiple edges of different types. The matrix is symmetric
-w.r.t full lines and bi-directed arrows.}
+\item{amat}{a square matrix, with dimnames, representing
+a loopless mixed graph. The matrix consists of 4
+different integers as an \eqn{ij}-element:
+\itemize{
+\item 0 for a missing edge between \eqn{i} and \eqn{j},
+\item 1 for an arrow from \eqn{i} to \eqn{j},
+\item 10 for a full line between \eqn{i} and \eqn{j} and
+\item 100 for a bi-directed arrow between \eqn{i} and
+\eqn{j}.
+These numbers are added to be associated with multiple
+edges of different types. The matrix is symmetric
+w.r.t full lines and bi-directed arrows.
+}}
 }
 \value{
-It is the inverse of \code{makeAG}. It returns the following
-components.  \item{dg}{the adjacency matrix of the directed edges.}
-\item{ug}{the adjacency matrix of the undirected edges.} \item{bg}{the
-adjacency matrix of the bi-directed edges.}
+the inverse of \code{makeAG}. It returns the
+following components.
+\itemize{
+\item \code{dg} the adjacency matrix of the directed edges
+\item \code{ug} the adjacency matrix of the undirected edges
+\item \code{bg} the adjacency matrix of the bi-directed edges
+}
 }
 \description{
-Splits the adjacency matrix of a loopless mixed graph into three components:
-directed, undirected and bi-directed.
+Splits the adjacency matrix of a loopless mixed graph
+into three components: directed, undirected and
+bi-directed.
 }
 \details{
 The matrices \code{ug}, and \code{bg} are just symmetric Boolean matrices.
 }
 \examples{
 
-ag <- makeMG(ug = UG(~ y0 * y1), dg = DAG(y4 ~ y2, y2 ~ y1), bg = UG(~ y2 * y3 + y3 * y4))
+ag <- makeMG(ug = UG(~ y0 * y1), 
+             dg = DAG(y4 ~ y2, y2 ~ y1), 
+             bg = UG(~ y2 * y3 + y3 * y4))
 isAG(ag)
 unmakeMG(ag)
 
 }
 \seealso{
-\code{\link{makeMG}}
+\code{\link[=makeMG]{makeMG()}}
 }
 \author{
-Mathias Drton, Giovanni M. Marchetti
+Mathias Drton, Giovanni M. Marchetti, Kayvan Sadeghi
 }
-\keyword{ancestral}
-\keyword{graph}
+\keyword{ancestral-graphs}
 \keyword{graphs}
-\keyword{mixed}
+\keyword{mixed-graphs}
 \keyword{models}
 \keyword{multivariate}

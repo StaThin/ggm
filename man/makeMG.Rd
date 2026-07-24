@@ -7,77 +7,95 @@
 makeMG(dg = NULL, ug = NULL, bg = NULL)
 }
 \arguments{
-\item{dg}{The adjacency matrix of a directed graph specifying the arrows of
-the mixed graph.}
+\item{dg}{The adjacency matrix of a directed graph
+specifying the arrows of the mixed graph.}
 
-\item{ug}{The adjacency matrix of an undirected graph specifying the lines
-of the mixed graph.}
+\item{ug}{The adjacency matrix of an undirected graph
+specifying the lines of the mixed graph.}
 
-\item{bg}{The adjacency matrix of an undirected graph specifying the
-bidirected edges of the mixed graph.}
+\item{bg}{The adjacency matrix of an undirected graph
+specifying the bidirected edges of the mixed graph.}
 }
 \value{
-A square matrix obtained by combining the three graph components
-into an adjacency matrix of a mixed graph. The matrix consists of 4
-different integers as an \eqn{ij}-element: 0 for a missing edge between
-\eqn{i} and \eqn{j}, 1 for an arrow from \eqn{i} to \eqn{j}, 10 for a full
-line between \eqn{i} and \eqn{j}, and 100 for a bi-directed arrow between
-\eqn{i} and \eqn{j}. These numbers are added to be associated with multiple
-edges of different types. The matrix is symmetric w.r.t full lines and
-bi-directed arrows.
+A square matrix obtained by combining the three
+graph components into an adjacency matrix of a mixed
+graph. The matrix consists of 4 different integers as
+an \eqn{ij}-element:
+\itemize{
+\item 0 for a missing edge between \eqn{i} and \eqn{j},
+\item 1 for an arrow from \eqn{i} to \eqn{j},
+\item 10 for a full line between \eqn{i} and \eqn{j}, and
+\item 100 for a bi-directed arrow between  \eqn{i} and
+\eqn{j}.
+}
+
+\if{html}{\out{<div class="sourceCode">}}\preformatted{These numbers are added to be associated with
+multiple edges of different types. The matrix is
+symmetric w.r.t full lines and bi-directed arrows.
+}\if{html}{\out{</div>}}
 }
 \description{
-Defines a loopless mixed graph from the directed, undirected and undirected
-components.
+Defines a loopless mixed graph from directed,
+undirected and bidirected components.
 }
 \details{
-A loopless mixed graph is a mixed graph with three types of edges:
-undirected, directed and bi-directed edges. Note that the three adjacency
-matrices must have labels and may be defined using the functions \code{DG},
-\code{DAG} or \code{UG}. The adjacency matrices of the undirected graphs
+Note that the three adjacency matrices must have labels
+and may be defined using the functions \code{DG} (or 'DAG'),
+\code{UG}. The adjacency matrices of the undirected graphs
 may be just symmetric Boolean matrices.
 }
 \examples{
-## Examples from Richardson and Spirtes (2002)
-a1 <- makeMG(dg = DAG(a ~ b, b ~ d, d ~ c), bg = UG(~ a * c))
+# Examples from Richardson and Spirtes (2002)
+a1 <- makeMG(dg = DAG(a ~ b, b ~ d, d ~ c), 
+             bg = UG(~ a * c))
 suppressWarnings(isAG(a1)) # Not an AG. (a2) p.969
-a2 <- makeMG(dg = DAG(b ~ a, d ~ c), bg = UG(~ a * c + c * b + b * d)) # Fig. 3 (b1) p.969
+
+a2 <- makeMG(dg = DAG(b ~ a, d ~ c), 
+bg = UG(~ a * c + c * b + b * d)) # Fig. 3 (b1) p.969
 isAG(a2)
-a3 <- makeMG(ug = UG(~ a * c), dg = DAG(b ~ a, d ~ c), bg = UG(~ b * d)) # Fig. 3 (b2) p.969
-a5 <- makeMG(bg = UG(~ alpha * beta + gamma * delta), dg = DAG(
-  alpha ~ gamma,
-  delta ~ beta
-)) # Fig. 6 p. 973
 
-## Another Example
-a4 <- makeMG(ug = UG(~ y0 * y1), dg = DAG(y4 ~ y2, y2 ~ y1), bg = UG(~ y2 * y3 + y3 * y4))
+a3 <- makeMG(ug = UG(~ a * c), 
+             dg = DAG(b ~ a, d ~ c), 
+             bg = UG(~ b * d))   # Fig. 3 (b2) p.969
+a3
 
-## A mixed graphs with double edges
+a5 <- makeMG(bg = UG(~ alpha * beta + gamma * delta), 
+             dg = DAG(alpha ~ gamma, delta ~ beta)) # Fig. 6 p. 973
+a5
+
+# Another Example
+a4 <- makeMG(ug = UG(~ y0 * y1), 
+             dg = DAG(y4 ~ y2, y2 ~ y1), 
+             bg = UG(~ y2 * y3 + y3 * y4))
+a4
+
+# A mixed graphs with double edges
 mg <- makeMG(
-  dg = DG(Y ~ X, Z ~ W, W ~ Z, Q ~ X), ug = UG(~ X * Q),
+  dg = DG(Y ~ X, Z ~ W, W ~ Z, Q ~ X), 
+  ug = UG(~ X * Q),
   bg = UG(~ Y * X + X * Q + Q * W + Y * Z)
 )
+mg
 
-## Chronic pain data: a regression graph
-chronic.pain <- makeMG(dg = DAG(
-  Y ~ Za, Za ~ Zb + A, Xa ~ Xb,
-  Xb ~ U + V, U ~ A + V, Zb ~ B, A ~ B
-), bg = UG(~ Za * Xa + Zb * Xb))
-
+# Chronic pain data: a regression graph
+chronic_pain <- makeMG(
+     dg = DAG(Y ~ Za, Za ~ Zb + A, Xa ~ Xb,
+              Xb ~ U + V, U ~ A + V, Zb ~ B, A ~ B), 
+     bg = UG(~ Za * Xa + Zb * Xb)
+     )
+ chronic_pain
 }
 \references{
-Richardson, T. S. and Spirtes, P. (2002). Ancestral Graph Markov
-Models. \emph{Annals of Statistics}, 30(4), 962--1030.
+Richardson, T. S. and Spirtes, P. (2002). Ancestral Graph Markov  Models. \emph{Annals of Statistics}, 30(4), 962--1030.
 }
 \seealso{
-\code{\link[=UG]{UG()}}, \code{\link[=DAG]{DAG()}}
+\code{\link[=DG]{DG()}}, \code{\link[=UG]{UG()}}, \code{\link[=DAG]{DAG()}}
 }
 \author{
-Giovanni M. Marchetti, Mathias Drton
+Giovanni M. Marchetti, Mathias Drton, Kayvan Sadeghi
 }
-\keyword{ancestral}
-\keyword{graph}
+\keyword{ancestral-graph}
 \keyword{graphs}
-\keyword{mixed}
+\keyword{mixed-graph}
 \keyword{models}
 \keyword{multivariate}

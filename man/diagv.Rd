@@ -20,7 +20,7 @@ Computes faster the product of a diagonal matrix times a full matrix.
 }
 \details{
 Computes \eqn{N = D_v M} where \eqn{D_v} is diagonal avoiding the
-\code{diag} operator.
+\code{\link[base:diag]{base::diag()}} operator.
 }
 \examples{
 
@@ -30,6 +30,6 @@ dim(diagv(v, M))
 
 }
 \seealso{
-\code{\link{diag}}
+\code{\link[base:diag]{base::diag()}}.
 }
 \keyword{matrix}

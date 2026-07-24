@@ -9,20 +9,15 @@ powerset(set, sort = TRUE, nonempty = TRUE)
 \arguments{
 \item{set}{A numeric or character vector.}
 
-\item{sort}{Logical value. If \code{TRUE} the subsets are sorted according
-to dimension.  Default is \code{TRUE}.}
+\item{sort}{Logical value. If \code{TRUE} (the default) the subsets are sorted according to set dimension. Otherwise the sets are in inverse lexicographical order.}
 
-\item{nonempty}{Logical value. If \code{TRUE} the empty set is omitted.
-Default is \code{TRUE}.}
+\item{nonempty}{Logical value. If \code{TRUE} (the default)  the empty set is omitted.}
 }
 \value{
 A list of all subsets of \code{set}.
 }
 \description{
-Finds the list of all subsets of a set.
-}
-\details{
-If \code{sort == FALSE} the sets are in inverse lexicographical order.
+Finds the power set, that is the list of all subsets of a set.
 }
 \examples{
 
@@ -30,7 +25,11 @@ powerset(c("A", "B", "C"), nonempty = FALSE)
 powerset(1:3, sort = FALSE, nonempty = TRUE)
 
 }
+\seealso{
+\code{\link[=hypercube]{hypercube()}}, \code{\link[utils:combn]{utils::combn()}}
+}
 \author{
 Giovanni M. Marchetti
 }
-\keyword{sets}
+\keyword{powerset}
+\keyword{set}

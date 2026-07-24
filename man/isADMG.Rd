@@ -24,15 +24,21 @@ Checks if the following conditions must hold:
 }
 }
 \examples{
-## Examples from Richardson and Spirtes (2002)
-a1 <- makeMG(dg = DAG(a ~ b, b ~ d, d ~ c), bg = UG(~ a * c))
+# Examples from Richardson and Spirtes (2002)
+a1 <- makeMG(dg = DAG(a ~ b, b ~ d, d ~ c), 
+             bg = UG(~ a * c))
 isADMG(a1) # Not an AG. (a2) p.969
-a2 <- makeMG(dg = DAG(b ~ a, d ~ c), bg = UG(~ a * c + c * b + b * d)) # Fig. 3 (b1) p.969
+
+a2 <- makeMG(dg = DAG(b ~ a, d ~ c), 
+             bg = UG(~ a * c + c * b + b * d)) 
+             # Fig. 3 (b1) p.969
 isADMG(a2)
 
 }
 \references{
-Richardson, T. S. and Spirtes, P. (2002). Ancestral Graph Markov Models. \emph{Annals of Statistics}, 30(4), 962-1030.
+Richardson, T. S. and Spirtes, P. (2002).
+Ancestral Graph Markov Models. \emph{Annals of Statistics},
+30(4), 962-1030.
 }
 \seealso{
 \code{\link[=makeMG]{makeMG()}}, \code{\link[=isAG]{isAG()}}
@@ -40,6 +46,6 @@ Richardson, T. S. and Spirtes, P. (2002). Ancestral Graph Markov Models. \emph{A
 \author{
 Giovanni M. Marchetti, Mathias Drton
 }
-\keyword{acyclic.directed.mixed.graphs}
+\keyword{acyclic-directed-mixed}
 \keyword{graphs}
 \keyword{multivariate}

@@ -6,7 +6,7 @@
 \usage{
 plotGraph(
   a,
-  dashed = TRUE,
+  dashed = FALSE,
   layout = igraph::layout_nicely,
   directed = FALSE,
   noframe = FALSE,
@@ -27,8 +27,8 @@ plotGraph(
 \item{a}{A square adjacency matrix, an \link[igraph:igraph]{igraph::igraph} object, a \code{graphNEL}
 object, or a character vector.}
 
-\item{dashed}{Logical. If \code{TRUE} (default), bidirected edges will be drawn
-as dashed arcs. Otherwise they will drawn as continuous arcs.}
+\item{dashed}{Logical. If \code{FALSE} (default),
+bidirected edges will be drawn as continuous arcs. Otherwise they will drawn as dashed arcs}
 
 \item{layout}{An \code{igraph} layout function or matrix. Defaults to \link[igraph:layout_nicely]{igraph::layout_nicely}.}
 

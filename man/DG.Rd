@@ -10,47 +10,51 @@ DG(...)
 \item{\dots}{a sequence of model formulae}
 }
 \value{
-the adjacency matrix of the directed graph, i.e., a square Boolean
-matrix of order equal to the number of nodes of the graph and a one in
-position \eqn{(i,j)} if there is an arrow from \eqn{i} to \eqn{j} and zero
-otherwise.  The dimnames of the adjacency matrix are the labels for the
-nodes of the graph.
+the adjacency matrix of the directed graph,
+i.e., a square Boolean matrix of order equal to the
+number of nodes of the graph and a one in
+position \eqn{(i,j)} if there is an arrow from \eqn{i}
+to \eqn{j} and zero otherwise. The dimnames of the
+adjacency matrix are the labels for the nodes of the
+graph.
 }
 \description{
-Defines the adjacency of a directed graph.
+Defines the adjacency matrix of a directed graph.
 }
 \details{
-The directed graph is defined by a sequence of models formulae.  For each
-formula the response defines a node of the graph and its parents. The graph
-contains no loops.
+The directed graph is defined by a sequence of models
+formulae.  For each formula the response defines a node
+of the graph and its parents. The graph contains no
+loops, but can have directed cycles.
 }
 \examples{
 
-## A DAG
+# A DAG
 DG(y ~ x, x ~ z, z ~ u)
 
-## A cyclic directed graph
+# A cyclic directed graph
 DG(y ~ x, x ~ z, z ~ y)
 
-## A graph with two arrows between two nodes
-DG(y ~ x, x ~ y)
+# A graph with two arrows between two nodes
+double <- DG(y ~ x, x ~ y)
+double
+plotGraph(double, directed = TRUE)
 
-## There can be isolated nodes
+# There can be isolated nodes
 DG(y ~ x, x ~ x)
 
 }
 \references{
-Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon
-Press.
+Lauritzen, S., L. (1996). \emph{Graphical models}
+2nd ed. Oxford: Oxford University Press.
 }
 \seealso{
-\code{\link{DAG}}, \code{\link{UG}}
+\code{\link[=DAG]{DAG()}}, [\code{\link{UG}}, \code{\link[=UG]{UG()}}
 }
 \author{
 G. M. Marchetti
 }
-\keyword{directed}
-\keyword{graph}
+\keyword{directed-graphs}
 \keyword{graphs}
 \keyword{models}
 \keyword{multivariate}

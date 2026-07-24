@@ -7,11 +7,11 @@
 isAG(amat)
 }
 \arguments{
-\item{amat}{An adjacency matrix.}
+\item{amat}{an adjacency matrix.}
 }
 \value{
-A logical value. \code{TRUE} if it is an ancestral graph and
-\code{FALSE} otherwise.
+a logical value. \code{TRUE} if it is an ancestral
+graph and \code{FALSE} otherwise.
 }
 \description{
 Check if it is an adjacency matrix of an ancestral graph.
@@ -26,16 +26,21 @@ For details see Richardson and Spirtes (2002).
 }
 }
 \examples{
-## Examples from Richardson and Spirtes (2002)
-a1 <- makeMG(dg = DAG(a ~ b, b ~ d, d ~ c), bg = UG(~ a * c))
-suppressWarnings(isAG(a1)) # Not an AG. (a2) p.969
-a2 <- makeMG(dg = DAG(b ~ a, d ~ c), bg = UG(~ a * c + c * b + b * d)) # Fig. 3 (b1) p.969
+# Examples from Richardson and Spirtes (2002)
+a1 <- makeMG(dg = DAG(a ~ b, b ~ d, d ~ c), 
+             bg = UG(~ a * c))
+suppressWarnings(isAG(a1)) # Not an AG. (a2) p. 969
+
+a2 <- makeMG(dg = DAG(b ~ a, d ~ c), 
+             bg = UG(~ a * c + c * b + b * d)) 
+# Fig. 3 (b1) p.969
 isAG(a2)
 
 }
 \references{
-Richardson, T. S. and Spirtes, P. (2002). Ancestral Graph Markov
-Models. \emph{Annals of Statistics}, 30(4), 962-1030.
+Richardson, T. S. and Spirtes, P. (2002). Ancestral
+Graph Markov Models. \emph{Annals of Statistics}, 30(4),
+962-1030.
 }
 \seealso{
 \code{\link[=makeMG]{makeMG()}}, \code{\link[=isADMG]{isADMG()}}
@@ -43,7 +48,8 @@ Models. \emph{Annals of Statistics}, 30(4), 962-1030.
 \author{
 Giovanni M. Marchetti, Mathias Drton
 }
-\keyword{ancestral.graph}
+\keyword{ancestral-graphs}
 \keyword{graphs}
-\keyword{mixed.graph.models}
+\keyword{mixed-graphs}
+\keyword{models}
 \keyword{multivariate}

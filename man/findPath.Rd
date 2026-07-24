@@ -39,7 +39,7 @@ Python Software Foundation (2003). Python Patterns Implementing Graphs.
 \url{https://www.python.org/doc/essays/graphs/}.
 }
 \seealso{
-\code{\link{fundCycles}}
+\code{\link[=fundCycles]{fundCycles()}}
 }
 \author{
 Giovanni M. Marchetti, translating the original Python code (see references).

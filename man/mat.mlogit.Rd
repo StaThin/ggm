@@ -2,25 +2,31 @@
 % Please edit documentation in R/all_functions.R
 \name{mat.mlogit}
 \alias{mat.mlogit}
-\title{Multivariate logistic parametrization}
+\title{Multivariate logistic parameterization}
 \usage{
 mat.mlogit(d, P = powerset(1:d))
 }
 \arguments{
-\item{d}{A positive integer, the number of binary responses.}
+\item{d}{A positive integer, the number of binary
+responses.}
 
-\item{P}{A list of vectors of integers specifying margins. For instance
-\code{list(1, 2, c(1,2))}. Default: the power set of \code{1:d}.}
+\item{P}{A list of vectors of integers specifying the
+margins. For instance: \code{list(1, 2, c(1,2))}.
+Default: the power set of \code{1:d}}
 }
 \value{
-\item{C}{A contrast matrix.} \item{L}{A marginalization matrix.}
+\itemize{
+\item \code{C} A contrast matrix
+\item \code{L} A marginalization matrix
+}
 }
 \description{
-Find matrices \code{C} and \code{M} of e binary multivariate logistic
-parameterization.
+Find matrices \code{C} (contrast) and \code{M} (marginalization)
+of a binary multivariate logistic parameterization
 }
 \details{
-The power set is in the order of dimensions of the sets.
+The power set used in the marginal model is
+listed in the order of dimensions of the sets.
 }
 \examples{
 
@@ -28,14 +34,16 @@ mat.mlogit(2)
 
 }
 \references{
-Glonek, G. J. N. and McCullagh, P. (1995). Multivariate logistic
-models. Journal of the Royal Statistical Society, Ser. B 57, 533-546.
+Glonek, G. J. N. and McCullagh, P. (1995).
+Multivariate logistic models. \emph{Journal of the
+Royal Statistical Society}, Ser. B, 57, 533-546.
 }
 \seealso{
-\code{\link{binomial}, \link{marg.param}}
+\code{\link[stats:binomial]{stats::binomial()}}, \code{\link[=marg.param]{marg.param()}}.
 }
 \author{
 Giovanni M. Marchetti
 }
 \keyword{logistic}
 \keyword{model}
+\keyword{multivariate}

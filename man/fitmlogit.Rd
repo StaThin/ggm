@@ -4,58 +4,60 @@
 \alias{fitmlogit}
 \title{Multivariate logistic models}
 \usage{
-fitmlogit(..., C = c(), D = c(), data, mit = 100, ep = 1e-80, acc = 1e-04)
+fitmlogit(..., C = c(), D = c(), mit = 100, ep = 1e-80, acc = 1e-04, daf)
 }
 \arguments{
-\item{\dots}{Model formulae of marginal logistic models for each response
-and for each association parameters (log-odds ratios).}
+\item{...}{Model formulae of marginal logistic models for each
+response and for each association parameters (log-odds ratios).}
 
 \item{C}{Matrix of equality constraints.}
 
-\item{D}{Matrix of inequality cosntraints.}
+\item{D}{Matrix of inequality constraints.}
 
-\item{data}{A data frame containing the responses and the explanatory
-variables.}
+\item{mit}{A positive integer: maximum number of iterations.
+(default: \code{100}).}
 
-\item{mit}{A positive integer: maximum number of iterations.  Default:
-\code{100}.}
+\item{ep}{A tolerance used in the algorithm (default \code{1e-80}).}
 
-\item{ep}{A tolerance used in the algorithm: default \code{1e-80}.}
+\item{acc}{A tolerance used in the algorithm (default \code{1e-4}).}
 
-\item{acc}{A tolerance used in the algorithm: default \code{1e-4}.}
+\item{daf}{A data frame for the individual units containing the responses and the explanatory variables.}
 }
 \value{
-\item{LL}{The maximized log-likelihood.} \item{be}{The vector of the
-Maximum likelihood estimates of the parameters.} \item{S}{The estimated
-asymptotic covariance matrix.} \item{P}{The estimated cell probabilities for
-each individual.}
+\itemize{
+\item \code{LL} The maximized log-likelihood.
+\item \code{be} The vector of the ML estimates of the parameters.
+\item \code{S}  The estimated asymptotic covariance matrix.
+\item \code{P}  The estimated cell probabilities for each individual.
+}
 }
 \description{
 Fits a logistic regression model to multivariate binary responses.
+The explanatory variables can be binary and/or individual-level
+continuous covariates.
 }
 \details{
-See Evans and Forcina (2011).
+See Evans and Forcina (2013).
 }
 \examples{
 
 data(surdata)
-out1 <- fitmlogit(A ~ X, B ~ Z, cbind(A, B) ~ X * Z, data = surdata)
+out1 <- fitmlogit(A ~ X, B ~ Z, cbind(A, B) ~ X * Z, daf = surdata)
 out1$beta
-out2 <- fitmlogit(A ~ X, B ~ Z, cbind(A, B) ~ 1, data = surdata)
+out2 <- fitmlogit(A ~ X, B ~ Z, cbind(A, B) ~ 1, daf = surdata)
 out2$beta
 
 }
 \references{
-Evans, R.J. and Forcina, A. (2013). Two algorithms for fitting
-constrained marginal models. \emph{Computational Statistics and Data
-Analysis}, 66, 1-7.
+Evans, R.J. and Forcina, A. (2013). Two algorithms
+for fitting constrained marginal models. \emph{Computational Statistics
+and Data Analysis}, 66, 1-7.
 }
 \seealso{
-\code{\link{glm}}
+\code{\link[stats:glm]{stats::glm()}}
 }
 \author{
 Antonio Forcina, Giovanni M. Marchetti
 }
-\keyword{logistic}
-\keyword{model}
-\keyword{multivariate}
+\keyword{multivariate-logistic}
+\keyword{regression}

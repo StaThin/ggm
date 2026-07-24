@@ -5,8 +5,8 @@
 #'
 #' @param a A square adjacency matrix, an [igraph::igraph] object, a `graphNEL` 
 #'   object, or a character vector.
-#' @param dashed Logical. If `TRUE` (default), bidirected edges will be drawn 
-#'   as dashed arcs. Otherwise they will drawn as continuous arcs.
+#' @param dashed Logical. If `FALSE` (default), 
+#' bidirected edges will be drawn as continuous arcs. Otherwise they will drawn as dashed arcs
 #' @param layout An `igraph` layout function or matrix. Defaults to [igraph::layout_nicely].
 #' @param directed Logical. Indicates whether the graph should be treated as 
 #'   directed. Defaults to `FALSE`.
@@ -68,7 +68,7 @@
 #' @export
 
 plotGraph <- function(a,
-                      dashed = TRUE,
+                      dashed = FALSE,
                       layout = igraph::layout_nicely,
                       directed = FALSE,
                       noframe = FALSE,

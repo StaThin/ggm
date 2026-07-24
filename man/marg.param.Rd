@@ -21,8 +21,8 @@ with elements 0 and 1.} \item{G}{Corresponding design matrix for the
 corresponding log-linear model.}
 }
 \description{
-Provides the contrast and marginalization matrices for the marginal
-parametrization of a probability vector.
+Provides the contrast and marginalization matrices
+for the marginal parametrization of a probability vector.
 }
 \details{
 See Bartolucci, Colombi and Forcina (2007).

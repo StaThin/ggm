@@ -14,8 +14,8 @@ The matrix \code{N} with the basis for the null space, or an empty
 vector if the matrix \code{M} is square and of maximal rank.
 }
 \description{
-Given a matrix \code{M} find a matrix \code{N} such that \eqn{N^T M} is
-zero.
+Given a matrix \code{M} find a matrix \code{N} such that
+\eqn{N^T M = 0}{N^T M = 0}.
 }
 \examples{
 
@@ -23,6 +23,6 @@ null(c(1, 1, 1))
 
 }
 \seealso{
-\code{\link[MASS]{Null}}, ~~~
+\code{\link[MASS:Null]{MASS::Null()}}
 }
 \keyword{matrix}
