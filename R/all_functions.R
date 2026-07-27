@@ -3654,7 +3654,7 @@ binve <- function(eta, C, M, G, maxit = 500, print = FALSE, tol = 1e-10) {
 #' mat.mlogit(2)
 #'
 #' @export 
-`mat.mlogit` <- function(d, P = powerset(1:d)) {
+mat.mlogit <- function(d, P = powerset(1:d)) {
   `margmat` <- function(bi, mar) {
     ### Defines the marginalization matrix
     if (mar == FALSE) {
@@ -4076,7 +4076,7 @@ fitmlogit <- function(..., C = c(), D = c(), mit = 100, ep = 1e-80, acc = 0.0001
 }
 
 
-#' Link function of marginal log-linear parameterization
+#' Link function of the marginal log-linear parameterization
 #'
 #' Provides the contrast and marginalization matrices 
 #' for the marginal parametrization of a probability vector.
@@ -4084,59 +4084,41 @@ fitmlogit <- function(..., C = c(), D = c(), mit = 100, ep = 1e-80, acc = 0.0001
 #' See Bartolucci, Colombi and Forcina (2007).
 #'
 #' @param lev Integer vector containing the number of levels of each variable.
-#' @param type A character vector with elements \code{"l"}, \code{"g"},
-#' \code{"c"}, or \code{"r"} indicating the type of logit. The meaning is as
-#' follows: \code{"g"} for global, \code{"c"} for continuation, \code{"r"} for
-#' reverse continuation and \code{"l"} for local.
-#' @return \item{C}{Matrix of constrasts (the first \code{sum(lev)-length(r)}
-#' elements are referred to univariate logits)} \item{M}{Marginalization matrix
-#' with elements 0 and 1.} \item{G}{Corresponding design matrix for the
-#' corresponding log-linear model.}
-#' @note Assumes that the vector of probabilities is in inv lex order.  The
-#' interactions are returned in order of dimension, like e.g., 1, 2, 3, 12, 13,
-#' 23, 123.
-#' @author Francesco Bartolucci, Antonio Forcina, Giovanni M. Marchetti
-#' @seealso \code{\link{mat.mlogit}}
-#' @references Bartolucci, F., Colombi, R. and Forcina, A. (2007). An extended
-#' class of marginal link functions for modelling contingency tables by
-#' equality and inequality constraints. Statist. Sinica 17, 691-711.
-#' @keywords logistic models ordinal models
+#' @param type A character vector with elements `"l"`, `"g"`,
+#' `"c"`, or `"r"` indicating the type of logit. The meaning is as
+#' follows: 
+#' * `"g"` for global logit
+#' * `"c"` for continuation logit 
+#' * `"r"` for the reverse continuation logit 
+#' * `"l"` for local logit.
+#' @return  a list  with slots
+#' * `C` Matrix of constrasts (the first `sum(lev)-length(r)`
+#' elements are referred to univariate logits)
+#' * `M` Marginalization matrix with elements 0 and 1
+#' * `G` The design matrix for the corresponding log-linear model.
+#' 
+#' @details The function assumes that the vector of probabilities 
+#' is in inverse lexicographic order.  The interactions are returned 
+#' in order of dimension, like e.g., `1`, `2`, `3`, `12`, `13`, `23`, `123`.
+#' @author Francesco Bartolucci, Antonio Forcina. Giovanni M. 
+#' Marchetti translated the Matlab function by Bartolucci and Forcina.
+#' @seealso [mat.mlogit()].
+#' @references Bartolucci, F., Colombi, R. and Forcina, A. (2007). 
+#' An extended class of marginal link functions for modelling 
+#' contingency tables by equality and inequality constraints. 
+#' *Statistica Sinica*,  17, 691-711.
+#' @keywords logistic models ordinal.
 #' @examples
 #'
 #' marg.param(c(3, 3), c("l", "g"))
 #'
-#' @export marg.param
-`marg.param` <- function(lev, type)
-                         # Creates matrices C and M for the marginal parametrization
-                         # of the probability vector for a vector of categorical variables.
-                         # INPUT:
-                         # lev:  vector containing the number of levels of each variable
-                         # type: vector with elements 'l', 'g', 'c', 'r' indicating the type of logit
-                         #       'g' for global,
-                         #       'c' for continuation,
-                         #       'r' for reverse continuation,
-                         #       'l' for local.
-                         # OUTPUT:
-                         # C:    matrix of constrats (the first sum(lev)-length(r) elements are
-                         #       referred to univariate logits)
-                         # M:    marginalization matrix with elements 0 and 1
-                         # G:    corresponding design matrix for the corresponding log-linear model
-                         # Translated from a Matlab function by Bartolucci and Forcina.
-                         # NOTE: assumes that the vector of probabilities is in inv lex order.
-#       The interactions are returned in order of dimension, like e.g.,  1 2 3 12 13 23 123.
-{
+#' @export
+marg.param <- function(lev, type){
   # preliminaries
-
-  `powset` <- function(d)
-  # Power set P(d).
-  {
-    P <- expand.grid(rep(list(1:2), d))
-    P[order(apply(P, 1, sum)), ] - 1
-  }
 
   r <- length(lev)
   # create sets of parameters
-  S <- powset(r)
+  S <- hypercube(r) * 1L
   S <- S[-1, ] # drop the empty set
   C <- c()
   M <- c()
@@ -4191,11 +4173,10 @@ fitmlogit <- function(..., C = c(), D = c(), mit = 100, ep = 1e-80, acc = 0.0001
 #'
 #' Block diagonal concatenation of input arguments.
 #'
-#'
-#' @param \dots Variable number of matrices \code{M1, M2, ...}.
-#' @return A block diagonal matrix \code{diag(M1, M2, ...)}.
+#' @param ... Variable number of matrices `M1, M2, ...`.
+#' @return A block diagonal matrix `diag(M1, M2, ...)`.
 #' @author Giovanni M. Marchetti
-#' @seealso \code{\link{diag}}
+#' @seealso [base::diag()], [blodiag()]
 #' @keywords matrix
 #' @examples
 #'
@@ -4204,73 +4185,134 @@ fitmlogit <- function(..., C = c(), D = c(), mit = 100, ep = 1e-80, acc = 0.0001
 #' A <- factor(c(1, 2, 2, 2))
 #' blkdiag(model.matrix(~ X + Z), model.matrix(~A))
 #'
-#' @export blkdiag
-`blkdiag` <- function(...) {
-  ### Block diagonal concatenation of input arguments.
-  a <- list(...)
-  Y <- matrix(0, 0, 0)
-  for (M in a) {
-    if (is.null(M)) {
-      M <- matrix(0, 0, 0)
+#' @export 
+# blkdiag <- function(...) {
+#   #Block diagonal concatenation of input arguments.
+#   a <- list(...)
+#   Y <- matrix(0, 0, 0)
+#   for (M in a) {
+#     if (is.null(M)) {
+#       M <- matrix(0, 0, 0)
+#     }
+#     M <- as.matrix(M)
+#     dY <- dim(Y)
+#     dM <- dim(M)
+#     zeros1 <- matrix(0, dY[1], dM[2])
+#     zeros2 <- matrix(0, dM[1], dY[2])
+#     Y <- rbind(cbind(Y, zeros1), cbind(zeros2, M))
+#   }
+#   Y
+# }
+
+blkdiag <- function(...) {
+  lista_matrici <- list(...)
+  lista_matrici <- lista_matrici[!vapply(lista_matrici, is.null, logical(1))]
+  if (length(lista_matrici) == 0) return(matrix(0, 0, 0))
+  lista_matrici <- lapply(lista_matrici, as.matrix)
+  
+  # 2. Rename columns to avoid conflicts (handling empty matrices safely)
+  for (i in seq_along(lista_matrici)) {
+    nc <- ncol(lista_matrici[[i]])
+    if (nc > 0) {
+      cols <- colnames(lista_matrici[[i]])
+      if (is.null(cols)) {
+        cols <- paste0("V", seq_len(nc))
+      }
+      # Adds the block suffix (e.g., _B1, _B2) to distinguish intercepts
+      colnames(lista_matrici[[i]]) <- paste0(cols, "_B", i)
     }
-    M <- as.matrix(M)
-    dY <- dim(Y)
-    dM <- dim(M)
-    zeros1 <- matrix(0, dY[1], dM[2])
-    zeros2 <- matrix(0, dM[1], dY[2])
-    Y <- rbind(cbind(Y, zeros1), cbind(zeros2, M))
   }
-  Y
+  
+  # 3. Calculate final dimensions for efficient pre-allocation
+  dimensioni <- t(vapply(lista_matrici, dim, integer(2)))
+  righe_totali <- sum(dimensioni[, 1])
+  colonne_totali <- sum(dimensioni[, 2])
+  
+  # Extract column names safely (prevents element loss with unlist)
+  nomi_colonne_totali <- character(0)
+  for (i in seq_along(lista_matrici)) {
+    cols <- colnames(lista_matrici[[i]])
+    if (!is.null(cols)) {
+      nomi_colonne_totali <- c(nomi_colonne_totali, cols)
+    }
+  }
+  
+  # 4. Allocate the matrix of zeros
+  Y <- matrix(0, nrow = righe_totali, ncol = colonne_totali)
+  if (length(nomi_colonne_totali) == colonne_totali && colonne_totali > 0) {
+    colnames(Y) <- nomi_colonne_totali
+  }
+  
+  # 5. Insert blocks diagonally using indices
+  r_corr <- 0
+  c_corr <- 0
+  
+  for (i in seq_along(lista_matrici)) {
+    M <- lista_matrici[[i]]
+    r_blocco <- dimensioni[i, 1]
+    c_blocco <- dimensioni[i, 2]
+    
+    if (r_blocco > 0 && c_blocco > 0) {
+      Y[(r_corr + 1):(r_corr + r_blocco), (c_corr + 1):(c_corr + c_blocco)] <- M
+    }
+    
+    r_corr <- r_corr + r_blocco
+    c_corr <- c_corr + c_blocco
+  }
+  return(Y)
 }
-
-# source("~/Documents/R/graphical_models/fitmlogit.R")
-# fitmlogit(A ~X, B ~ Z, cbind(A, B) ~ 1, data = datisim)
-# source("~/Documents/R/graphical_models/ilaria/sim-blogit.R")
-
-
-#### Functions by Kayvan Sadeghi 2011-2012
-## May 2012 Changed the return values of some functions to TRUE FALSE
-
 
 #' Ribbonless graph
 #'
-#' \code{RG} generates and plots ribbonless graphs (a modification of MC graph
+#' `RG` generates and plots ribbonless graphs (a modification of MC graph
 #' to use m-separation) after marginalization and conditioning.
 #'
 #'
-#' @param amat An adjacency matrix, or a graph that can be a \code{graphNEL} or
-#' an \code{\link[igraph]{igraph}} object or a vector of length \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of triples
-#' (type, node1label, node2label). The type of edge can be \code{"a"} (arrows
-#' from node1 to node2), \code{"b"} (arcs), and \code{"l"} (lines).
-#' @param M A subset of the node set of \code{a} that is going to be
-#' marginalized over
-#' @param C Another disjoint subset of the node set of \code{a} that is going
-#' to be conditioned on.
-#' @param showmat A logical value. \code{TRUE} (by default) to print the
+#' @param amat An adjacency matrix, or a graph that can be a `
+#'  graphNEL` or an [igraph::igraph] object or a vector of length
+#'  \eqn{3e}, where \eqn{e} is the number of edges of the graph, that is
+#'  a sequence of triples `(type, node1label, node2label`. The type of
+#'  edge can be 
+#'  * `"a"` (arrows from `node1` to `node2`)
+#'  * `"b"` (arcs), and 
+#'  * `"l"` (lines).
+#' @param M A subset of the node set of `amat` that is going to be
+#'  marginalized over.
+#' @param C Another disjoint subset of the node set of `amat` that is
+#'  going to be conditioned on.
+#' @param showmat A logical value. `TRUE` (by default) to print the
 #' generated matrix.
-#' @param plot A logical value, \code{FALSE} (by default). \code{TRUE} to plot
+#' @param plot A logical value, `FALSE` (by default). `TRUE` to plot
 #' the generated graph.
-#' @param plotfun Function to plot the graph when \code{plot == TRUE}. Can be
-#' \code{plotGraph} (the default) or \code{drawGraph}.
-#' @param \dots Further arguments passed to \code{plotfun}.
-#' @return A matrix that consists 4 different integers as an \eqn{ij}-element:
-#' 0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
-#' \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
-#' for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
-#' to be associated with multiple edges of different types. The matrix is
-#' symmetric w.r.t full lines and bi-directed arrows.
+#' @param plotfun Function to plot the graph when `plot = TRUE`. 
+#' Can be `plotGraph` (the default) or `drawGraph`.
+#' @param ... Further arguments passed to `plotfun`.
+#' @return A matrix that consists of 4 different integers 
+#' as an \eqn{ij}-element:
+#' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
+#' * 1 for an arrow from \eqn{i} to \eqn{j}, 
+#' * 10 for a full line between \eqn{i} and \eqn{j}, and 
+#' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
+#' 
+#' These numbers are added to be associated with multiple edges of
+#' different types. The matrix is symmetric w.r.t full lines and 
+#' bi-directed arrows.
 #' @author Kayvan Sadeghi
-#' @seealso \code{\link{AG}},, \code{\link{MRG}}, \code{\link{SG}}
-#' @references Koster, J.T.A. (2002). Marginalizing and conditioning in
-#' graphical models. \emph{Bernoulli}, 8(6), 817-840.
+#' @seealso [AG()], [MRG()], [SG()]
+#' 
+#' @references 
+#' Koster, J.T.A. (2002). Marginalizing and conditioning in
+#' graphical models. *Bernoulli*, 8(6), 817-840.
 #'
-#' Sadeghi, K. (2013). Stable mixed graphs. \emph{Bernoulli} 19(5B), 2330–2358.
-#' @keywords graphs directed acyclic graph marginalisation and conditioning MC graph ribbonless graph
+#' Sadeghi, K. (2013). Stable mixed graphs. *Bernoulli* 19(5B), 
+#' 2330–2358.
+#' 
+#' @keywords DAG marginalization conditioning MC-graph ribbonless-graph
+
 #' @examples
-#'
+#' # The adjacency matrix of a DAG
 #' ex <- matrix(c(
-#'   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ## The adjacency matrix of a DAG
+#'   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 #'   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 #'   1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 #'   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -4292,7 +4334,7 @@ fitmlogit <- function(..., C = c(), D = c(), mit = 100, ep = 1e-80, acc = 0.0001
 #' C <- c(4, 7)
 #' RG(ex, M, C, plot = TRUE)
 #'
-#' @export RG
+#' @export 
 RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
   if (class(amat)[1] == "igraph" || class(amat)[1] == "graphNEL" || class(amat)[1] == "character") {
     amat <- grMAT(amat)
@@ -4310,8 +4352,6 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
   if (!is(amat, "matrix")) {
     stop("'object' is not in a valid form")
   }
-
-
   S <- C
   St <- c()
   while (identical(S, St) == FALSE) {
@@ -4397,7 +4437,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat23 + amatr
 
-    ################################################################## 4
+    ############################################################## 4
     amat24 <- matrix(rep(0, length(amat)), dim(amat))
     for (kk in M) {
       idx <- which(amatr[, kk] %% 100 > 9)
@@ -4416,7 +4456,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat24 + amatr
 
-    #################################################################### 5
+    ########################################################### 5
 
 
     amat35 <- t(amatr)
@@ -4436,7 +4476,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat25 + t(amat25) + amatr
 
-    ###################################################################### 6
+    ############################################################### 6
     amat36 <- t(amatr)
     amat26 <- matrix(rep(0, length(amat)), dim(amat))
     for (kk in M) {
@@ -4512,7 +4552,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat29 + t(amat29) + amatr
 
-    ################################################################## 10
+    ################################################################ 10
 
     amat20 <- matrix(rep(0, length(amat)), dim(amat))
     for (kk in M) {
@@ -4559,50 +4599,58 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     return(fr)
   }
 }
-##############################################################################
-##############################################################################
-
 
 #' Summary graph
 #'
-#' \code{SG} generates and plots summary graphs after marginalization and
+#' `SG` generates and plots summary graphs after marginalization and
 #' conditioning.
 #'
 #'
-#' @param amat An adjacency matrix, or a graph that can be a \code{graphNEL} or
-#' an \code{\link[igraph]{igraph}} object or a vector of length \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of triples
-#' (type, node1label, node2label). The type of edge can be \code{"a"} (arrows
-#' from node1 to node2), \code{"b"} (arcs), and \code{"l"} (lines).
-#' @param M A subset of the node set of \code{a} that is going to be
-#' marginalised over
-#' @param C Another disjoint subset of the node set of \code{a} that is going
-#' to be conditioned on.
-#' @param showmat A logical value. \code{TRUE} (by default) to print the
-#' generated matrix.
-#' @param plot A logical value, \code{FALSE} (by default). \code{TRUE} to plot
+#' @param amat An adjacency matrix, or a graph that can be a
+#'  \code{graphNEL} or an [igraph::igraph()] object or a vector of 
+#'  length \eqn{3e}, where \eqn{e} is the number of edges of the graph,
+#'  that is a sequence of triples `(type, node1label, node2label)`. 
+#'  The type of edge can be 
+#'  * `"a"` (arrows from `node1` to `node2`) 
+#'  * `"b"` (arcs), and 
+#'  * `"l"` (lines).
+#' @param M A subset of the node set of `amat` that is going to be
+#'  marginalised over. 
+#' @param C Another disjoint subset of the node set of `amat` that is
+#'  going to be conditioned on.
+#' @param showmat A logical value. `TRUE` (by default) to print the
+#'  generated matrix.
+#' @param plot A logical value, `FALSE` (by default). `TRUE` to plot
 #' the generated graph.
-#' @param plotfun Function to plot the graph when \code{plot == TRUE}. Can be
-#' \code{plotGraph} (the default) or \code{drawGraph}.
-#' @param \dots Further arguments passed to \code{plotfun}.
-#' @return A matrix that consists 4 different integers as an \eqn{ij}-element:
-#' 0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
-#' \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
-#' for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
-#' to be associated with multiple edges of different types. The matrix is
-#' symmetric w.r.t full lines and bi-directed arrows.
+#' @param plotfun Function to plot the graph when `plot = TRUE`. 
+#' Can be `plotGraph` (the default) or `drawGraph`.
+#' @param ... Further arguments passed to `plotfun`.
+#' @return A matrix that consists 4 different integers as an 
+#' \eqn{ij}-element:
+#' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
+#' * 1 for an arrow from \eqn{i} to \eqn{j}, 
+#' * 10 for a full line between \eqn{i} and \eqn{j}, and 
+#' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
+#' 
+#' These numbers are added to be associated with multiple edges 
+#' of different types. The matrix is symmetric w.r.t full lines 
+#' and bi-directed arrows.
+#' 
 #' @author Kayvan Sadeghi
-#' @seealso \code{\link{AG}}, \code{\link{MSG}}, \code{\link{RG}}
-#' @references Sadeghi, K. (2013). Stable mixed graphs. \emph{Bernoulli}
-#' 19(5B), 2330–2358.
+#' 
+#' @seealso [AG()], [MSG()], [RG()]
+#' @references 
+#' Sadeghi, K. (2013). Stable mixed graphs. *Bernoulli*, 19(5B),
+#'  2330–2358.
 #'
-#' Wermuth, N. (2011). Probability distributions with summary graph structure.
-#' \emph{Bernoulli}, 17(3),845-879.
-#' @keywords graphs directed acyclic graph marginalization and conditioning summary graph
+#' Wermuth, N. (2011). Probability distributions with summary graph
+#' structure. *Bernoulli*, 17(3),845-879.
+#' 
+#' @keywords DAG marginalization conditioning summary-graph
 #' @examples
-#'
+#' # The adjacency matrix of a DAG
 #' ex <- matrix(c(
-#'   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ## The adjacency matrix of a DAG
+#'   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 #'   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 #'   1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 #'   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -4624,8 +4672,8 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' SG(ex, M, C, plot = TRUE)
 #' SG(ex, M, C, plot = TRUE, plotfun = drawGraph, adjust = FALSE)
 #'
-#' @export SG
-`SG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
+#' @export
+SG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
   if (class(amat)[1] == "igraph" || class(amat)[1] == "graphNEL" || class(amat)[1] == "character") {
     amat <- grMAT(amat)
   }
@@ -4746,7 +4794,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat24 + amatr
 
-    #################################################################### 5
+    ############################################################# 5
 
 
     amat35 <- t(amatr)
@@ -4766,7 +4814,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat25 + t(amat25) + amatr
 
-    ###################################################################### 6
+    ############################################################# 6
     amat36 <- t(amatr)
     amat26 <- matrix(rep(0, length(amat)), dim(amat))
     for (kk in M) {
@@ -4786,7 +4834,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat26 + t(amat26) + amatr
 
-    ################################################################# 7
+    ############################################################### 7
 
     amat27 <- matrix(rep(0, length(amat)), dim(amat))
     for (kk in S) {
@@ -4842,7 +4890,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat29 + t(amat29) + amatr
 
-    ################################################################## 10
+    ############################################################## 10
 
     amat20 <- matrix(rep(0, length(amat)), dim(amat))
     for (kk in M) {
@@ -4927,47 +4975,50 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     return(fr)
   }
 }
-##############################################################################
-##############################################################################
-
 
 #' Ancestral graph
 #'
-#' \code{AG} generates and plots ancestral graphs after marginalization and
+#' `AG` generates and plots ancestral graphs after marginalization and
 #' conditioning.
 #'
-#'
 #' @param amat An adjacency matrix, or a graph that can be of class
-#' \code{graphNEL-class} or an \code{\link[igraph]{igraph}} object, or a vector
-#' of length \eqn{3e}, where \eqn{e} is the number of edges of the graph, that
-#' is a sequence of triples (type, node1label, node2label). The type of edge
-#' can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), and
-#' \code{"l"} (lines).
-#' @param M A subset of the node set of \code{a} that is going to be
-#' marginalized over
-#' @param C Another disjoint subset of the node set of \code{a} that is going
-#' to be conditioned on.
-#' @param showmat A logical value. \code{TRUE} (by default) to print the
+#' `graphNEL` or an [igraph::igraph()] object, or a vector of length
+#'  \eqn{3e}, where \eqn{e} is the number of edges of the graph, 
+#'  that is a sequence of triples (`type`, `node1label`, `node2label`).
+#'  The type of edge can be 
+#'  * `"a"` (arrows from `node1` to `node2`),
+#'  * `"b"` (arcs), and
+#'  * `"l"` (lines).
+#' @param M A subset of the node set of `amat` that is going to be
+#' marginalized over.
+#' @param C Another disjoint subset of the node set of `amat` that is
+#' going to be conditioned on.
+#' @param showmat A logical value. `TRUE` (by default) to print the
 #' generated matrix.
-#' @param plot A logical value, \code{FALSE} (by default). \code{TRUE} to plot
+#' @param plot A logical value, `FALSE` (by default). `TRUE` to plot
 #' the generated graph.
-#' @param plotfun Function to plot the graph when \code{plot == TRUE}. Can be
-#' \code{plotGraph} (the default) or \code{drawGraph}.
-#' @param \dots Further arguments passed to \code{plotfun}.
-#' @return A matrix that is the adjacency matrix of the generated graph. It
-#' consists of 4 different integers as an \eqn{ij}-element: 0 for a missing
-#' edge between \eqn{i} and \eqn{j}, 1 for an arrow from \eqn{i} to \eqn{j}, 10
-#' for a full line between \eqn{i} and \eqn{j}, and 100 for a bi-directed arrow
-#' between \eqn{i} and \eqn{j}. These numbers are added to be associated with
-#' multiple edges of different types. The matrix is symmetric w.r.t full lines
+#' @param plotfun Function to plot the graph when `plot = TRUE`. 
+#' Can be `plotGraph` (the default) or `drawGraph`.
+#' @param ... Further arguments passed to `plotfun`.
+#' @return A matrix that is the adjacency matrix of the generated graph.
+#' It consists of 4 different integers as an \eqn{ij}-element: 
+#' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
+#' * 1 for an arrow from \eqn{i} to \eqn{j}, 
+#' * 10 for a full line between \eqn{i} and \eqn{j}, and 
+#' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
+#' These numbers are added to be associated with multiple edges 
+#' of different types. The matrix is symmetric w.r.t full lines
 #' and bi-directed arrows.
 #' @author Kayvan Sadeghi
-#' @seealso \code{\link{MAG}}, \code{\link{RG}}, \code{\link{SG}}
-#' @references Richardson, T.S. and Spirtes, P. (2002).  Ancestral graph Markov
-#' models. \emph{Annals of Statistics}, 30(4), 962-1030.
+#' @seealso [MAG()], [RG()], [SG()]
+#' @references 
+#' Richardson, T.S. and Spirtes, P. (2002). Ancestral graph Markov
+#' models. *Annals of Statistics*, 30(4), 962-1030.
 #'
-#' Sadeghi, K. (2013). Stable mixed graphs. \emph{Bernoulli} 19(5B), 2330–2358.
-#' @keywords graphs ancestral graph directed acyclic graph marginalization and conditioning
+#' Sadeghi, K. (2013). Stable mixed graphs. \emph{Bernoulli}, 
+#' 19(5B), 2330–2358.
+#' 
+#' @keywords ancestral-graph DAG marginalization conditioning
 #' @examples
 #'
 #' ## The adjacency matrix of a DAG
@@ -4993,7 +5044,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' C <- c(4, 7)
 #' AG(ex, M, C, plot = TRUE)
 #'
-#' @export AG
+#' @export
 `AG` <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = plotGraph, ...) {
   if (class(amat)[1] == "igraph" || class(amat)[1] == "graphNEL" || class(amat)[1] == "character") {
     amat <- grMAT(amat)
@@ -5116,7 +5167,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat24 + amatr
 
-    #################################################################### 5
+    ############################################################ 5
 
 
     amat35 <- t(amatr)
@@ -5136,7 +5187,7 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
     }
     amatr <- amat25 + t(amat25) + amatr
 
-    ###################################################################### 6
+    ######################################################### 6
     amat36 <- t(amatr)
     amat26 <- matrix(rep(0, length(amat)), dim(amat))
     for (kk in M) {
@@ -5373,37 +5424,43 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
   }
 }
 
-##############################################################################
-##############################################################################
-
-#' Maximisation for graphs
+#' Maximization for graphs
 #'
-#' \code{Max} generates a maximal graph that induces the same independence
+#' `Max` generates a maximal graph that induces the same independence
 #' model from a non-maximal graph.
 #'
-#' \code{Max} looks for non-adjacent pais of nodes that are connected by
-#' primitive inducing paths, and connect such pairs by an appropriate edge.
+#' `Max` looks for non-adjacent pais of nodes that are connected by
+#' primitive inducing paths, and connect such pairs by an 
+#' appropriate edge.
 #'
-#' @param amat An adjacency matrix, or a graph that can be a \code{graphNEL} or
-#' an \code{\link[igraph]{igraph}} object or a vector of length \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of triples
-#' (type, node1label, node2label). The type of edge can be \code{"a"} (arrows
-#' from node1 to node2), \code{"b"} (arcs), and \code{"l"} (lines).
-#' @return A matrix that consists 4 different integers as an \eqn{ij}-element:
-#' 0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
-#' \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
-#' for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
-#' to be associated with multiple edges of different types. The matrix is
-#' symmetric w.r.t full lines and bi-directed arrows.
+#' @param amat An adjacency matrix, or a graph that can be a `graphNEL` 
+#' or an [igraph::igraph()] object or a vector of length \eqn{3e},
+#'  where \eqn{e} is the number of edges of the graph, that is 
+#'  a sequence of triples (`type`, `node1label`, `node2label`). 
+#'  The type of edge can be 
+#'  * `"a"` (arrows from `node1` to `node2`), 
+#'  * `"b"` (arcs), and 
+#'  * `"l"` (lines).
+#'  
+#' @return A matrix that consists 4 different integers as 
+#' an \eqn{ij}-element:
+#' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
+#' * 1 for an arrow from \eqn{i} to \eqn{j}, 
+#' * 10 for a full line between \eqn{i} and \eqn{j}, and 
+#' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
+#' These numbers are added to be associated with multiple edges of
+#' different types. The matrix is symmetric w.r.t full lines and 
+#' bi-directed arrows.
 #' @author Kayvan Sadeghi
-#' @seealso \code{\link{MAG}}, \code{\link{MRG}}, \code{\link{msep}},
-#' \code{\link{MSG}}
-#' @references Richardson, T.S. and Spirtes, P. (2002). Ancestral graph Markov
-#' models. \emph{Annals of Statistics}, 30(4), 962-1030.
+#' @seealso [MAG()], [MRG()], [msep()], [MSG()]
+#' @references 
+#' Richardson, T.S. and Spirtes, P. (2002). Ancestral graph Markov
+#' models. *Annals of Statistics*, 30(4), 962-1030.
 #'
-#' Sadeghi, K. and Lauritzen, S.L. (2014). Markov properties for loopless mixed
-#' graphs. \emph{Bernoulli} 20(2), 676-696.
-#' @keywords graphs loopless mixed graph m-separation maximality
+#' Sadeghi, K. and Lauritzen, S.L. (2014). Markov properties for 
+#' loopless mixed graphs. *Bernoulli*, 20(2), 676-696.
+#' 
+#' @keywords graphs loopless mixed-graph m-separation maximality
 #' @examples
 #'
 #' H <- matrix(c(
@@ -5566,10 +5623,6 @@ Max <- function(amat) {
   }
   return(amat)
 }
-
-
-#####################################################################################################
-######################################################################################################
 
 #' The m-separation criterion
 #'

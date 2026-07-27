@@ -7,7 +7,7 @@
 blkdiag(...)
 }
 \arguments{
-\item{\dots}{Variable number of matrices \code{M1, M2, ...}.}
+\item{...}{Variable number of matrices \verb{M1, M2, ...}.}
 }
 \value{
 A block diagonal matrix \code{diag(M1, M2, ...)}.
@@ -24,7 +24,7 @@ blkdiag(model.matrix(~ X + Z), model.matrix(~A))
 
 }
 \seealso{
-\code{\link{diag}}
+\code{\link[base:diag]{base::diag()}}, \code{\link[=blodiag]{blodiag()}}
 }
 \author{
 Giovanni M. Marchetti

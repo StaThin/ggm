@@ -2,7 +2,7 @@
 % Please edit documentation in R/all_functions.R
 \name{marg.param}
 \alias{marg.param}
-\title{Link function of marginal log-linear parameterization}
+\title{Link function of the marginal log-linear parameterization}
 \usage{
 marg.param(lev, type)
 }
@@ -11,14 +11,22 @@ marg.param(lev, type)
 
 \item{type}{A character vector with elements \code{"l"}, \code{"g"},
 \code{"c"}, or \code{"r"} indicating the type of logit. The meaning is as
-follows: \code{"g"} for global, \code{"c"} for continuation, \code{"r"} for
-reverse continuation and \code{"l"} for local.}
+follows:
+\itemize{
+\item \code{"g"} for global logit
+\item \code{"c"} for continuation logit
+\item \code{"r"} for the reverse continuation logit
+\item \code{"l"} for local logit.
+}}
 }
 \value{
-\item{C}{Matrix of constrasts (the first \code{sum(lev)-length(r)}
-elements are referred to univariate logits)} \item{M}{Marginalization matrix
-with elements 0 and 1.} \item{G}{Corresponding design matrix for the
-corresponding log-linear model.}
+a list  with slots
+\itemize{
+\item \code{C} Matrix of constrasts (the first \code{sum(lev)-length(r)}
+elements are referred to univariate logits)
+\item \code{M} Marginalization matrix with elements 0 and 1
+\item \code{G} The design matrix for the corresponding log-linear model.
+}
 }
 \description{
 Provides the contrast and marginalization matrices
@@ -26,11 +34,10 @@ for the marginal parametrization of a probability vector.
 }
 \details{
 See Bartolucci, Colombi and Forcina (2007).
-}
-\note{
-Assumes that the vector of probabilities is in inv lex order.  The
-interactions are returned in order of dimension, like e.g., 1, 2, 3, 12, 13,
-23, 123.
+
+The function assumes that the vector of probabilities
+is in inverse lexicographic order.  The interactions are returned
+in order of dimension, like e.g., \code{1}, \code{2}, \code{3}, \code{12}, \code{13}, \code{23}, \code{123}.
 }
 \examples{
 
@@ -38,16 +45,18 @@ marg.param(c(3, 3), c("l", "g"))
 
 }
 \references{
-Bartolucci, F., Colombi, R. and Forcina, A. (2007). An extended
-class of marginal link functions for modelling contingency tables by
-equality and inequality constraints. Statist. Sinica 17, 691-711.
+Bartolucci, F., Colombi, R. and Forcina, A. (2007).
+An extended class of marginal link functions for modelling
+contingency tables by equality and inequality constraints.
+\emph{Statistica Sinica},  17, 691-711.
 }
 \seealso{
-\code{\link{mat.mlogit}}
+\code{\link[=mat.mlogit]{mat.mlogit()}}.
 }
 \author{
-Francesco Bartolucci, Antonio Forcina, Giovanni M. Marchetti
+Francesco Bartolucci, Antonio Forcina. Giovanni M.
+Marchetti translated the Matlab function by Bartolucci and Forcina.
 }
 \keyword{logistic}
 \keyword{models}
-\keyword{ordinal}
+\keyword{ordinal.}
