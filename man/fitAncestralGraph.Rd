@@ -7,56 +7,63 @@
 fitAncestralGraph(amat, S, n, tol = 1e-06)
 }
 \arguments{
-\item{amat}{A square matrix, representing the adjacency matrix of an
-ancestral graph.}
+\item{amat}{A square matrix, representing the adjacency
+matrix of an ancestral graph.}
 
-\item{S}{A symmetric positive definite matrix with row and col names,
-the sample covariance matrix.}
+\item{S}{A symmetric positive definite matrix with row and
+column names, the sample covariance matrix.}
 
 \item{n}{The sample size, a positive integer.}
 
-\item{tol}{A small positive number indicating the tolerance used in
-convergence checks. Defaults to \code{1e-06}.}
+\item{tol}{A small positive number indicating the tolerance
+used in convergence checks. Defaults to \code{1e-06}.}
 }
 \value{
 A list with the following components:
 \itemize{
 \item \code{Shat} The fitted covariance matrix.
-\item \code{Lhat} Matrix of the fitted precisions associated with undirected
-edges and vertices that do not have an arrowhead pointing at them.
-\item \code{Bhat} Matrix of the fitted regression coefficients associated
-to the directed edges. Precisely said, \code{Bhat} contains ones on the
-diagonal and the off-diagonal entry \eqn{(i,j)}{(i,j)} equals the
-\emph{negated} MLE of the regression coefficient for variable \eqn{j}{j}
+\item \code{Lhat} Matrix of the fitted precisions associated with
+undirected edges and vertices that do not have an arrowhead
+pointing at them.
+\item \code{Bhat} Matrix of the fitted regression coefficients
+associated to the directed edges. Precisely, \code{Bhat}
+contains ones along the diagonal and the off-diagonal
+entry \eqn{(i,j)}{(i,j)} equals the \emph{negated} MLE of the
+regression coefficient for variable \eqn{j}{j}
 in the regression of variable \eqn{i}{i} on its parents.
-Note that this \eqn{(i,j)}{(i,j)} entry in \code{Bhat} corresponds to
-a directed  edge \eqn{j \rightarrow i}, and thus to a one as
-\eqn{(j,i)}{(j,i)} entry in the adjacency matrix.
-\item \code{Ohat} Matrix of the error covariances and variances of the
-residuals between regression equations associated with bi-directed
-edges and vertices with an arrowhead pointing at them.
+Note that this \eqn{(i,j)}{(i,j)} entry in \code{Bhat}
+corresponds to a directed  edge \eqn{j \rightarrow i},
+and thus to a one as \eqn{(j,i)}{(j,i)} entry in the
+adjacency matrix.
+\item \code{Ohat} Matrix of the error covariances and variances
+of the residuals between regression equations associated
+with bi-directed edges and vertices with an arrowhead
+pointing at them.
 \item \code{dev} The deviance of the model.
 \item \code{df} The degrees of freedom.
 \item \code{it} The number of iterations.
 }
 }
 \description{
-Iterative conditional fitting of Gaussian Ancestral Graph Models.
+Iterative conditional fitting of Gaussian Ancestral
+Graph Models.
 }
 \details{
-In the Gaussian case, the models can be parameterized using precision
-parameters, regression coefficients, and error covariances (see
-Richardson and Spirtes, 2002, Section 8). This function finds the MLE
-\eqn{\hat{\Lambda}}{L} of the precision parameters by fitting a
-concentration graph model. The MLE \eqn{\hat{B}}{B} of the
-regression coefficients and the MLE \eqn{\hat{\Omega}}{O} of
-the error covariances are obtained by iterative conditional fitting
+In the Gaussian case, the models can be parameterized
+using precision parameters, regression coefficients, and
+error covariances (see Richardson and Spirtes, 2002, Section 8).
+This function finds the MLE \eqn{\hat{\Lambda}}{L} of
+the precision parameters by fitting a concentration graph model.
+The MLE \eqn{\hat{B}}{B} of the regression coefficients
+and the MLE \eqn{\hat{\Omega}}{O} of the error covariances
+are obtained by iterative conditional fitting
 (Drton and Richardson, 2003, 2004). The three sets of
 parameters are combined to the MLE \eqn{\hat{\Sigma}}{S} of the
 covariance matrix by matrix multiplication:
 \deqn{\hat{\Sigma} = \hat{B}^{-1}(\hat{\Lambda}+\hat{\Omega})\hat{B}^{-T}}{S = B^(-1) (L+O) B^(-T)}
 Note that in Richardson and Spirtes (2002), the matrices
-\eqn{\Lambda}{L} and \eqn{\Omega}{O} are defined as submatrices.
+\eqn{\Lambda}{L} and \eqn{\Omega}{O} are defined
+as submatrices.
 }
 \examples{
 # A covariance matrix
@@ -88,11 +95,19 @@ fitAncestralGraph(mag1, S_marks, n = 88)
 
 }
 \references{
-Drton, M. and Richardson, T. S. (2003). A new algorithm for maximum likelihood estimation in Gaussian graphical models for  marginal independence. \emph{Proceedings of the Nineteenth Conference on Uncertainty in Artificial Intelligence}, 184-191.
+Drton, M. and Richardson, T. S. (2003). A new algorithm for
+maximum likelihood estimation in Gaussian graphical models
+for  marginal independence. \emph{Proceedings of the Nineteenth
+Conference on Uncertainty in Artificial Intelligence},
+184-191.
 
-Drton, M. and Richardson, T. S. (2004). Iterative Conditional Fitting for Gaussian Ancestral Graph Models. \emph{Proceedings of the 20th Conference on Uncertainty in Artificial Intelligence}, Department of Statistics, 130-137.
+Drton, M. and Richardson, T. S. (2004). Iterative Conditional
+Fitting for Gaussian Ancestral Graph Models.
+\emph{Proceedings of the 20th Conference on Uncertainty in
+Artificial Intelligence}, Department of Statistics, 130-137.
 
-Richardson, T. S. and Spirtes, P. (2002). Ancestral Graph Markov Models. \emph{Annals of Statistics}, 30(4), 962-1030.
+Richardson, T. S. and Spirtes, P. (2002). Ancestral
+Graph Markov Models. \emph{Annals of Statistics}, 30(4), 962-1030.
 }
 \seealso{
 \code{\link[=fitCovGraph]{fitCovGraph()}}, \code{\link[=icf]{icf()}}, \code{\link[=makeMG]{makeMG()}}, \code{\link[=fitDag]{fitDag()}}

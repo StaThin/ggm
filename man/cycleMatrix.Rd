@@ -7,27 +7,29 @@
 cycleMatrix(amat)
 }
 \arguments{
-\item{amat}{A symmetric matrix with dimnames denoting the adjacency matrix
-of the undirected graph. The graph must be connected, otherwise the function
-returns an error message.}
+\item{amat}{A symmetric matrix with dimnames denoting the
+adjacency matrix an the undirected graph. The graph must be
+connected, otherwise the function returns an error message.}
 }
 \value{
-A Boolean matrix of the fundamental cycles of the undirected graph.
-If there is no cycle the function returns \code{NULL}.
+A Boolean matrix of the fundamental cycles of the
+undirected graph. If there is no cycle the function returns \code{NULL}.
 }
 \description{
-Finds the matrix of fundamental cycles of a connected undirected graph.
+Finds the matrix of fundamental cycles of a connected
+undirected graph.
 }
 \details{
-All the cycles in an UG can be obtained from combination (ring sum) of the
-set of fundamental cycles. The matrix of fundamental cycles is a Boolean
-matrix having as rows the fundamental cycles and as columns the edges of the
-graph. If an entry is one then the edge associated to that column belongs to
-the cycle associated to the row.
+All the cycles in an UG can be obtained from combination
+(ring sum) of the set of fundamental cycles. The matrix of
+fundamental cycles is a Boolean matrix having as rows the
+fundamental cycles and as columns the edges of the
+graph. If an entry is one then the edge associated to that
+column belongs to the cycle associated to the row.
 }
 \note{
-This function is used by \code{\link[=isGident]{isGident()}}. The row sum of the matrix
-gives the length of the cycles.
+This function is used by \code{\link[=isGident]{isGident()}}. The row sum of
+the matrix gives the length of the cycles.
 }
 \examples{
 ## Three cycles
@@ -40,8 +42,8 @@ apply(cm, 1, sum)
 
 }
 \references{
-Thulasiraman, K. & Swamy, M.N.S. (1992). \emph{Graphs: theory
-and algorithms}. New York: Wiley.
+Thulasiraman, K. & Swamy, M.N.S. (1992).
+\emph{Graphs: theory and algorithms}. New York: Wiley.
 }
 \seealso{
 \code{\link[=UG]{UG()}}, \code{\link[=findPath]{findPath()}}, \code{\link[=fundCycles]{fundCycles()}}, \code{\link[=isGident]{isGident()}}, \code{\link[=bfsearch]{bfsearch()}}

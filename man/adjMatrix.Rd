@@ -13,11 +13,11 @@ adjMatrix(E)
 The adjacency matrix of the graph.
 }
 \description{
-Transforms the "edge matrix" of a graph into the adjacency matrix.
+Transforms the \code{\link[=edgematrix]{edgematrix()}} of a graph into the adjacency matrix.
 }
 \details{
-Given the edge matrix \eqn{A} of a graph, this can be transformed into an
-adjacency matrix \eqn{E} with the formula \eqn{E = (A-I)^T}.
+Given the edge matrix \code{E} of a graph, this can be transformed
+into an adjacency matrix \code{A} with \verb{t(A) - diag(ncol(A)}.
 }
 \examples{
 A <- DAG(y ~ x + z, z ~ u + v)
@@ -33,5 +33,5 @@ Giovanni M. Marchetti
 }
 \keyword{algebra}
 \keyword{array}
-\keyword{graphs}
+\keyword{graph}
 \keyword{multivariate}

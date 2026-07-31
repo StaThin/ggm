@@ -7,11 +7,11 @@
 bfsearch(amat, v = 1)
 }
 \arguments{
-\item{amat}{A symmetric matrix with dimnames specifying the adjacency matrix
-of the undirected graph.}
+\item{amat}{A symmetric matrix with dimnames specifying the
+adjacency matrix of the undirected graph.}
 
-\item{v}{An integer, indicating the starting node of the search. Defaults to
-the first node.}
+\item{v}{An integer indicating the starting node of the search.
+Defaults to the first node.}
 }
 \value{
 A list with the following components:
@@ -19,30 +19,30 @@ A list with the following components:
 \item \code{tree}: the edge matrix of the resulting spanning tree.
 \item \code{branches}: a matrix with two columns, giving the indices of the
 branches of the spanning tree.
-\item \code{chords}: a matrix with two columns, giving the indices of the chords of
-the spanning tree.
+\item \code{chords}: a matrix with two columns, giving the indices
+of the chords of the spanning tree.
 }
 }
 \description{
 Breadth-first search of a connected undirected graph.
 }
 \details{
-Breadth-first search is a systematic method for exploring a graph. The
-algorithm is taken from Aho, Hopcroft & Ullman (1983).
+Breadth-first search is a systematic method for exploring a graph.
+The algorithm is taken from Aho, Hopcroft & Ullman (1983).
 }
 \examples{
-## Finding a spanning tree of the butterfly graph
+# Finding a spanning tree of the butterfly graph
 bfsearch(UG(~ a * b * o + o * u * j))
-## Starting from another node
+# Starting from another node
 bfsearch(UG(~ a * b * o + o * u * j), v = 3)
 
 }
 \references{
-Aho, A.V., Hopcrtoft, J.E. & Ullman, J.D. (1983). \emph{Data
-structures and algorithms.} Reading: Addison-Wesley.
+Aho, A.V., Hopcrtoft, J.E. & Ullman, J.D. (1983).
+\emph{Data structures and algorithms.} Reading: Addison-Wesley.
 
-Thulasiraman, K. & Swamy, M.N.S. (1992). \emph{Graphs: theory and
-algorithms}. New York: Wiley.
+Thulasiraman, K. & Swamy, M.N.S. (1992).
+\emph{Graphs: theory and algorithms}. New York: Wiley.
 }
 \seealso{
 \code{\link[=UG]{UG()}}, \code{\link[=findPath]{findPath()}}, \code{\link[=cycleMatrix]{cycleMatrix()}}

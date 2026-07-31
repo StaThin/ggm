@@ -14,12 +14,18 @@ ch(nn, amat)
 pa(nn, amat)
 }
 \arguments{
-\item{nn}{a vector of nodes. It may either a numeric vector, or a character vector. If it is character vector must be a subset of the \code{rownames} of the edge matrix.}
+\item{nn}{a vector of nodes. It may either a numeric vector, or a
+character vector. If it is character vector must be a subset of
+the \code{rownames} of the edge matrix.}
 
-\item{amat}{a square matrix with dimnames specifying the adjacency matrix of the graph.}
+\item{amat}{a square matrix with dimnames specifying the adjacency
+matrix of the graph.}
 }
 \value{
-A character vector specifying the boundary or the children or the parents of nodes \code{nn} in the graph.  This is a numeric or a character vector depending on the mode of \code{nn}.
+A character vector specifying the boundary or the
+children or the parents of nodes \code{nn} in the graph.
+This is a numeric or a character vector depending on
+the mode of \code{nn}.
 }
 \description{
 Finds the boundary, children, parents of a subset of nodes of a graph.
@@ -61,7 +67,8 @@ if (requireNamespace("ggm", quietly = TRUE)) {
 
 }
 \references{
-Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon Press.
+Lauritzen, S. (1996). \emph{Graphical models}.
+Oxford: Clarendon Press.
 }
 \seealso{
 \code{\link[=UG]{UG()}}, \code{\link[=DAG]{DAG()}}
@@ -69,6 +76,7 @@ Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon Press.
 \author{
 Giovanni M. Marchetti
 }
+\keyword{edges}
 \keyword{graphs}
 \keyword{models}
 \keyword{multivariate}

@@ -7,22 +7,36 @@
 dSep(amat, first, second, cond)
 }
 \arguments{
-\item{amat}{A Boolean matrix with dimnames, representing the adjacency matrix of a directed acyclic graph. The function does not check if this is the case. See the function \code{\link[=isAcyclic]{isAcyclic()}}.}
+\item{amat}{A Boolean matrix with \code{dimnames}, representing the
+adjacency matrix of a directed acyclic graph.
+The function does not check if this is the case.
+See the function \code{\link[=isAcyclic]{isAcyclic()}}.}
 
-\item{first}{A vector representing a subset of nodes of the DAG. The vector should be a character vector of the names of the variables matching the names of the nodes in \code{rownames(amat)}. It can be also a numeric vector of indices.}
+\item{first}{A vector representing a subset of nodes
+of the DAG. The vector should be a character vector of
+the names of the variables matching the names of the nodes
+in \code{rownames(amat)}. It can be also a numeric vector
+of indices.}
 
-\item{second}{A vector representing another subset of nodes of the DAG. The set \code{second} must be disjoint from \code{first}. The mode of \code{second} must match the mode of \code{first}.}
+\item{second}{A vector representing another subset
+of nodes of the DAG. The set \code{second} must be disjoint from
+\code{first}. The mode of \code{second} must match the mode of \code{first}.}
 
-\item{cond}{A vector representing a conditioning subset of nodes. The set \code{cond} must be disjoint from the other two sets and must share the same mode.}
+\item{cond}{A vector representing a conditioning subset of
+nodes. The set \code{cond} must be disjoint from the other
+two sets and must share the same mode.}
 }
 \value{
-A logical value. Is \code{TRUE} if \code{first} and \code{second} are d-separated by \code{cond}.
+A logical value. Is \code{TRUE} if \code{first} and \code{second}
+are d-separated by \code{cond}.
 }
 \description{
-Determines if in a directed acyclic graph two set of nodes are d-separated by a third set of nodes.
+Determines if in a directed acyclic graph two set of nodes
+are d-separated by a third set of nodes.
 }
 \details{
-d-separation is a fundamental concept introduced by Pearl (1988).
+d-separation is a fundamental concept introduced by
+Pearl (1988).
 }
 \examples{
 ## Conditioning on a transition node
@@ -40,12 +54,14 @@ dSep(dag, first = "a", second = c("b", "d"), cond = c("x", "y"))
 
 }
 \references{
-Pearl, J. (1988). \emph{Probabilistic reasoning in intelligent systems}. San Mateo: Morgan Kaufmann.
+Pearl, J. (1988). \emph{Probabilistic reasoning in intelligent
+systems}. San Mateo: Morgan Kaufmann.
 
-Lauritzen, S. (2026). \emph{Graphical models}, 2nd ed. Oxford: Oxford University Press.
+Lauritzen, S. (2026). \emph{Graphical models}, 2nd ed.
+Oxford: Oxford University Press.
 }
 \seealso{
-\code{\link[=DAG]{DAG()}}, \code{\link[=shipley.test]{shipley.test()}}, \code{\link[=msep]{msep()}}, \code{\link[=inducedCovGraph]{inducedCovGraph()}}
+\code{\link[=DAG]{DAG()}}, \code{\link[=shipley.test]{shipley.test()}}, \code{\link[=msep]{msep()}}, \link{induced-graphs}
 }
 \author{
 Giovanni M. Marchetti

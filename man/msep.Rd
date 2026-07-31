@@ -4,20 +4,25 @@
 \alias{msep}
 \title{The m-separation criterion}
 \usage{
-msep(a, alpha, beta, C = c())
+msep(amat, alpha, beta, C = c())
 }
 \arguments{
-\item{a}{An adjacency matrix, or a graph that can be a \code{graphNEL} or an
-\code{\link[igraph]{igraph}} object or a vector of length \eqn{3e}, where
-\eqn{e} is the number of edges of the graph, that is a sequence of triples
-(type, node1label, node2label). The type of edge can be \code{"a"} (arrows
-from node1 to node2), \code{"b"} (arcs), and \code{"l"} (lines).}
+\item{amat}{An adjacency matrix, or a graph that can be a \code{graphNEL}
+or an \code{\link[igraph:igraph]{igraph::igraph()}} object or a vector of length \eqn{3e}, where
+\eqn{e} is the number of edges of the graph, that is a sequence of
+triples (\code{type}, \code{node1label}, \code{node2label}).
+The \code{type} of edge can be
+\itemize{
+\item \code{"a"} (arrows from \code{node1} to \code{node2}),
+\item \code{"b"} (arcs), and
+\item \code{"l"} (lines).
+}}
 
-\item{alpha}{A subset of the node set of \code{a}}
+\item{alpha}{A subset of the node set of \code{amat}.}
 
-\item{beta}{Another disjoint subset of the node set of \code{a}}
+\item{beta}{Another disjoint subset of the node set of \code{amat}.}
 
-\item{C}{A third disjoint subset of the node set of \code{a}}
+\item{C}{A third disjoint subset of the node set of \code{amat}.}
 }
 \value{
 A logical value. \code{TRUE} if \code{alpha} and \code{beta} are
@@ -43,17 +48,16 @@ msep(H, 1, 4, c())
 Richardson, T.S. and Spirtes, P. (2002) Ancestral graph Markov
 models. \emph{Annals of Statistics}, 30(4), 962-1030.
 
-Sadeghi, K. and Lauritzen, S.L. (2014). Markov properties for loopless mixed
-graphs. \emph{Bernoulli} 20(2), 676-696.
+Sadeghi, K. and Lauritzen, S.L. (2014). Markov properties for
+loopless mixed graphs. \emph{Bernoulli}, 20(2), 676-696.
 }
 \seealso{
-\code{\link{dSep}}, \code{\link{MarkEqMag}}
+\code{\link[=dSep]{dSep()}}, \code{\link[=MarkEqMag]{MarkEqMag()}}
 }
 \author{
 Kayvan Sadeghi
 }
 \keyword{d-separation}
-\keyword{graph}
 \keyword{graphs}
 \keyword{m-separation}
-\keyword{mixed}
+\keyword{mixed-graph}

@@ -7,17 +7,17 @@
 allEdges(amat)
 }
 \arguments{
-\item{amat}{A square Boolean matrix, with dimnames, the adjacency matrix of
-a graph.}
+\item{amat}{A square Boolean matrix, with dimnames,
+the adjacency matrix of an undirected or directed acyclic graph.}
 }
 \value{
 A matrix with two columns. Each row of the matrix is a pair of
-indices indicating an edge of the graph. If the graph is undirected, then
+indices indexing an edge of the graph. If the graph is undirected,
 only one of the pairs \eqn{(i,j), (j,i)} is reported.
 }
 \description{
-Finds the set of edges of a graph. That is the set of undirected edges if
-the graph is undirected and the set of arrows if the graph is directed.
+Finds the set of edges of a graph. That is the set of
+undirected edges if the graph is undirected and the set of arrows if the graph is directed.
 }
 \examples{
 ## A UG graph
@@ -33,6 +33,7 @@ allEdges(DAG(u ~ h + o + p, h ~ o, o ~ p))
 \author{
 Giovanni M. Marchetti
 }
+\keyword{edges}
 \keyword{graphs}
 \keyword{models}
 \keyword{multivariate}

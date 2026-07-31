@@ -7,8 +7,8 @@
 correlations(x)
 }
 \arguments{
-\item{x}{A square symmetric matrix, a covariance matrix, or a data.frame for
-n observations and p variables.}
+\item{x}{A square symmetric matrix, a covariance matrix,
+or a data.frame for \code{n} observations and \code{p} variables.}
 }
 \value{
 A square correlation matrix with marginal correlations (lower
@@ -26,8 +26,8 @@ correlations(glucose)
 
 }
 \references{
-Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate
-dependencies}. London: Chapman & Hall.
+Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate dependencies}.
+London: Chapman & Hall.
 }
 \seealso{
 \code{\link[=parcor]{parcor()}}, \code{\link[=cor]{cor()}}

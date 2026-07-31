@@ -7,17 +7,22 @@
 essentialGraph(dagx)
 }
 \arguments{
-\item{dagx}{the adjacency matrix of a directed acyclic graph. The names of rows and of the columns are the nodes of the DAG.}
+\item{dagx}{the adjacency matrix of a directed acyclic graph.
+The names of rows and of the columns are the nodes of the DAG.}
 }
 \value{
-the adjacency matrix of the essential graph. Note that the essential graph is a mixed graph where the edges can be arrows and/or lines. Then, the elements of the adjacency matrix are coded with \verb{(0,1)} if \eqn{i \rightarrow j} and \verb{(1,0)} if   \eqn{i \leftarrow j} and \verb{(10, 10)} if \eqn{ i - j}.
+the adjacency matrix of the essential graph. Note that
+the essential graph is a mixed graph where the edges can be
+arrows and/or lines. Then, the elements of the adjacency
+matrix are coded as \verb{(0,1)} if \eqn{i \rightarrow j} and
+\verb{(1,0)} if \eqn{i \leftarrow j} and \verb{(10, 10)} if \eqn{i - j}.
 }
 \description{
 Find the essential graph from a given directed acyclic graph.
 }
 \details{
-Converts a DAG into the Essential Graph.  Is implemented by the algorithm by
-D.M.Chickering (1995).
+Converts a DAG into the Essential Graph.  Is implemented by
+the algorithm by D.M. Chickering (1995).
 }
 \examples{
 
@@ -26,13 +31,17 @@ plotGraph(essentialGraph(dag))
 
 }
 \references{
-Chickering, D.M. (1995). A transformational characterization of equivalent Bayesian Network structures. \emph{Proceedings of Eleventh Conference on Uncertainty in Artificial Intelligence}, Montreal, QU, 87-98.  Morgan Kaufmann.
+Chickering, D.M. (1995). A transformational characterization
+of equivalent Bayesian Network structures. \emph{Proceedings of
+Eleventh Conference on Uncertainty in Artificial
+Intelligence}, Montreal, QU, 87-98.  Morgan Kaufmann.
 }
 \seealso{
-\code{\link[=makeMG]{makeMG()}} \code{\link[=DAG]{DAG()}}, \code{\link[=InducedGraphs]{InducedGraphs()}}.
+\code{\link[=makeMG]{makeMG()}} \code{\link[=DAG]{DAG()}}, \link{induced-graphs}.
 }
 \author{
-Giovanni M. Marchetti, from a MATLAB function by Tomas Kocka, AAU
+Giovanni M. Marchetti, from a MATLAB function
+by Tomas Kocka, AAU.
 }
 \keyword{graphs}
 \keyword{models}

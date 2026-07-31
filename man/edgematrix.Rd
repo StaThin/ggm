@@ -7,10 +7,12 @@
 edgematrix(B, ord = FALSE)
 }
 \arguments{
-\item{B}{A square matrix, representing the adjacency matrix of a graph.}
+\item{B}{A square matrix, representing the adjacency matrix
+of a graph.}
 
-\item{ord}{A logical value. If \code{TRUE} the resulting edge matrix is ordered
-according to the inverse topological order, making it upper triangular.}
+\item{ord}{A logical value. If \code{TRUE} the resulting edge matrix
+is ordered according to the inverse topological order, making
+it upper triangular.}
 }
 \value{
 \itemize{
@@ -18,11 +20,15 @@ according to the inverse topological order, making it upper triangular.}
 }
 }
 \description{
-In some matrix computations the adjacency matrix of a graph is transformed into an "edge matrix".
-Briefly, if \eqn{B} is the adjacency matrix of a DAG, the corresponding edge matrix \eqn{A}
-is a binary matrix \eqn{A = (a_{{ij}})} such that \eqn{a_{{ij}} = 1} if and only if \eqn{i \to j}
-or \eqn{i = j} and \eqn{0} otherwise. If the adjacency matrix is ordered according to a
-topological ordering the edge matrix is upper triangular with ones on the main diagonal.
+In some matrix computations the adjacency matrix of a graph
+is transformed into an "edge matrix".
+Briefly, if \eqn{B} is the adjacency matrix of a DAG,
+the corresponding edge matrix \eqn{A} is a binary matrix
+\eqn{A = (a_{ij})} such that \eqn{a_{ij} = 1} if and only if
+\eqn{i \to j} or \eqn{i = j} and \eqn{0} otherwise.
+If the adjacency matrix is ordered according to a
+topological ordering the edge matrix is upper triangular
+with ones on the main diagonal.
 This order is the inverse of the topological order.
 }
 \examples{
@@ -32,8 +38,9 @@ edgematrix(B, ord = TRUE)
 
 }
 \references{
-Giovanni M. Marchetti and Nanny Wermuth (2009). \emph{Matrix representations
-and independencies in direct acyclic graphs}, The Annals of Statistics, Vol. 37, No. 2, 961-978.
+Giovanni M. Marchetti and Nanny Wermuth (2009).
+\emph{Matrix representations and independencies in direct acyclic
+graphs}, The Annals of Statistics, Vol. 37, No. 2, 961-978.
 }
 \seealso{
 \code{\link[=adjMatrix]{adjMatrix()}}, \code{\link[=topSort]{topSort()}}

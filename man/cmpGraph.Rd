@@ -16,9 +16,10 @@ The edge matrix of the complementary graph.
 Finds the complementary graph of an undirected graph.
 }
 \details{
-The complementary graph of an UG is the graph that has the same set of nodes
-and an undirected edge connecting \eqn{i} and \eqn{j} whenever there is not
-an \eqn{(i,j)} edge in the original UG.
+The complementary graph of an UG is the graph that has the
+same set of nodes and an undirected edge connecting \eqn{i}
+and \eqn{j} whenever there is not an \eqn{(i,j)} edge in the
+original UG.
 }
 \examples{
 ## A chordless four-cycle
@@ -28,8 +29,8 @@ cmpGraph(four)
 
 }
 \references{
-Lauritzen, S. (1996). \emph{Graphical models}. Oxford: Clarendon
-Press.
+Lauritzen, S. (2026). \emph{Graphical models} 2nd ed. Oxford: Oxford
+University Press.
 }
 \seealso{
 \code{\link[=UG]{UG()}}, \code{\link[=DAG]{DAG()}}

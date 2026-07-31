@@ -8,10 +8,16 @@ MarkEqMag(amat, bmat)
 }
 \arguments{
 \item{amat}{An adjacency matrix of a MAG, or a graph that can be a
-\code{graphNEL} object, an \link[igraph:igraph]{igraph::igraph} object, or a character vector of
-length \verb{3e} (where \code{e} is the number of edges). If a vector, it must be
-a sequence of triples (type, node1label, node2label). The type of edge
-can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), or \code{"l"} (lines).}
+\code{graphNEL} object, an \link[igraph:igraph]{igraph::igraph} object, or a
+character vector of length \verb{3e} (where \code{e} is the number of edges).
+If a vector, it must be a sequence of triples
+(\code{type}, \code{node1label}, \code{node2label}).
+The \code{type} of edge  can be
+\itemize{
+\item \code{"a"} (arrows from \code{node1} to \code{node2}),
+\item \code{"b"} (arcs), or
+\item \code{"l"} (lines).
+}}
 
 \item{bmat}{The same as \code{amat}.}
 }
@@ -19,12 +25,9 @@ can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), or \code{"l"}
 A character string: either \code{"Markov Equivalent"} or \code{"NOT Markov Equivalent"}.
 }
 \description{
-\code{MarkEqMag} determines whether two maximal ancestral graphs (MAGs) are
-Markov equivalent.
-}
-\details{
-The function checks whether the two graphs have the same skeleton and
-colliders with order.
+\code{MarkEqMag} determines whether two maximal ancestral graphs (MAGs)
+are Markov equivalent. The function checks whether the two graphs
+have the same skeleton and colliders with order.
 }
 \examples{
 H1 <- matrix(c(
@@ -54,17 +57,16 @@ MarkEqMag(H2, H3)
 
 }
 \references{
-Ali, R.A., Richardson, T.S. and Spirtes, P. (2009) Markov equivalence for ancestral graphs. \emph{Annals of Statistics}, 37(5B), 2808-2837.
+Ali, R.A., Richardson, T.S. and Spirtes, P. (2009)
+Markov equivalence for ancestral graphs. \emph{Annals of Statistics},
+37(5B), 2808-2837.
 }
 \seealso{
-\link{MarkEqRcg}, \link{msep}
+\code{\link[=MarkEqRcg]{MarkEqRcg()}}, \code{\link[=msep]{msep()}}
 }
 \author{
 Kayvan Sadeghi
 }
-\keyword{Markov}
-\keyword{ancestral}
-\keyword{equivalence}
-\keyword{graphs}
+\keyword{MAG}
+\keyword{Markov-equivalence}
 \keyword{maximal}
-\keyword{multivariate}

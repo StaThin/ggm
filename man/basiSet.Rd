@@ -2,30 +2,31 @@
 % Please edit documentation in R/all_functions.R
 \name{basiSet}
 \alias{basiSet}
-\title{Basis set of a DAG}
+\title{Shipley basis set of a DAG}
 \usage{
 basiSet(amat)
 }
 \arguments{
-\item{amat}{A square matrix with dimnames representing the adjacency matrix
-of a DAG.}
+\item{amat}{An adjacency matrix with dimnames representing the adjacency matrix of a DAG.}
 }
 \value{
-A list of vectors representing several conditional independence
-statements. Each vector contains the names of two non adjacent nodes
-followed by the names of nodes in the conditioning set (which may be empty).
+A list of vectors representing several conditional
+independence statements. Each vector contains the names of two
+non adjacent nodes followed by the names of nodes in
+the conditioning (possibly empty) set.
 }
 \description{
-Finds a basis set for the conditional independencies implied by a directed
-acyclic graph, that is a minimal set of independencies that imply all the
-other ones.
+Finds a basis set for the conditional independencies implied
+by a directed acyclic graph, that is a minimal set of independencies
+that imply all the other ones.
 }
 \details{
-Given a DAG and a pair of non adjacent nodes \eqn{(i,j)} such that \eqn{j}
-has higher causal order than \eqn{i}, the set of independency statements
-\eqn{i} independent of \eqn{j} given the union of the parents of both
-\eqn{i} and \eqn{j} is a basis set (see Shipley, 2000). This basis set has
-the property to lead to independent test statistics.
+Given a DAG and a pair of non adjacent nodes \eqn{(i,j)} such
+that \eqn{j} has higher causal order than \eqn{i}, the set of
+independency statements \eqn{i} independent of \eqn{j} given
+the union of the parents of both \eqn{i} and \eqn{j} is a basis set (see Shipley, 2000).
+This basis set has the property to lead to independent test
+statistics.
 }
 \examples{
 ## See Shipley (2000), Figure 2, p. 213
@@ -44,6 +45,7 @@ on directed acyclic graphs. \emph{Structural Equation Modeling}, 7(2),
 \author{
 Giovanni M. Marchetti
 }
+\keyword{basis}
+\keyword{conditional-independence}
 \keyword{graphs}
 \keyword{models}
-\keyword{multivariate}

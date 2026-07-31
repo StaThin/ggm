@@ -8,23 +8,24 @@ MarkEqRcg(amat, bmat)
 }
 \arguments{
 \item{amat}{An adjacency matrix of an RCG, or a graph that can be a
-\code{graphNEL} object, an \link[igraph:igraph]{igraph::igraph} object, or a character vector of
-length \verb{3e} (where \code{e} is the number of edges). If a vector, it must be
-a sequence of triples (type, node1label, node2label). The type of edge
-can be \code{"a"} (arrows from node1 to node2), \code{"b"} (arcs), or \code{"l"} (lines).}
+\code{graphNEL} object, an \link[igraph:igraph]{igraph::igraph} object, or a character
+vector of length \verb{3e} (where \code{e} is the number of edges).
+If a vector, it must be a sequence of triples
+(\code{type}, \code{node1label}, \code{node2label}). The \code{type} of edge can be
+\itemize{
+\item \code{"a"} (arrows from node1 to node2),
+\item \code{"b"} (arcs), or
+\item \code{"l"} (lines).
+}}
 
 \item{bmat}{The same as \code{amat}.}
 }
 \value{
-@return A character string: either \code{"Markov Equivalent"} or \code{"NOT Markov Equivalent"}.
+A character string: either \code{"Markov Equivalent"} or \code{"NOT Markov Equivalent"}.
 }
 \description{
 \code{MarkEqRcg} determines whether two regression chain graphs (RCGs) or
-subclasses of RCGs are Markov equivalent.
-}
-\details{
-The function checks whether the two graphs have the same skeleton and
-"unshielded colliders".
+subclasses of RCGs are Markov equivalent. The function checks whether the two graphs have the same skeleton and "unshielded colliders".
 }
 \examples{
 H1 <- matrix(c(
@@ -61,12 +62,11 @@ Wermuth, N. and Sadeghi, K. (2012). Sequences of regressions and
 their independences. \emph{Test}, 21:215-252.
 }
 \seealso{
-\link{msep}, \link{grMAT}
+\code{\link[=msep]{msep()}}, \code{\link[=grMAT]{grMAT()}}
 }
 \author{
 Kayvan Sadeghi
 }
 \keyword{Markov-equivalence}
-\keyword{graphs}
 \keyword{regression-chain-graph}
 \keyword{undirected-graph}
