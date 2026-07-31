@@ -13,6 +13,7 @@
 SPl <- function(a, b) {
   which(sort(a) %in% b)
 }
+
 #' Deviance of a Gaussian graphical model
 #' 
 #' Computes the deviance of a Gaussian model given the concentration matrix, 

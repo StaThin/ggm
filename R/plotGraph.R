@@ -354,6 +354,7 @@ plotGraph <- function(a,
   
   return(invisible(list(tkp.id = NULL, igraph = agr)))
 }
+
 #' Graph to adjacency matrix
 #'
 #' \code{grMAT} converts graph objects to a mixed adjacency matrix.
@@ -395,59 +396,92 @@ plotGraph <- function(a,
 #'  }
 #' }
 #' @export
+#' @export
 grMAT <- function(agr) {
-  # Safe check for graphNEL using inherits (S4 compatible)
+  # 1. Safe check for graphNEL objects (S4 compatible for Bioconductor)
   if (inherits(agr, "graphNEL") || inherits(agr, "graph")) {
     if (!requireNamespace("graph", quietly = TRUE)) {
       stop(
         "Package 'graph' (Bioconductor) is required to convert graphNEL objects.\n", 
-        "It can be installed as: BiocManager::install('graph')", 
+        "It can be installed using: BiocManager::install('graph')", 
         call. = FALSE
       )
     }
     agr <- methods::as(agr, "matrix")
   }
   
-  # Safe check for igraph objects avoiding class()[1]
+  # 2. Safe check for igraph objects (using direct namespace call)
   if (inherits(agr, "igraph")) {
-    return(as_adjacency_matrix(agr, sparse = FALSE))
+    return(igraph::as_adjacency_matrix(agr, sparse = FALSE))
   }
   
+  # 3. Processing character vectors representing mixed graphs
   if (inherits(agr, "character")) {
     if (length(agr) %% 3 != 0) {
-      stop("'The character object' is not in a valid form")
+      stop("'The character object' is not in a valid form", call. = FALSE)
     }
+    
     seqt <- seq(1, length(agr), 3)
     b <- agr[seqt]
     agrn <- agr[-seqt]
-    bn <- c()
-    for (i in 1:length(b)) {
-      if (b[i] != "a" && b[i] != "l" && b[i] != "b") {
-        stop("'The numeric object' is not in a valid form")
-      }
-      if (b[i] == "l") {
-        bn[i] <- 10
-      }
-      if (b[i] == "a") {
-        bn[i] <- 1
-      }
-      if (b[i] == "b") {
-        bn[i] <- 100
-      }
+    
+    # Updated check: Now allowing '*' to declare isolated nodes
+    if (!all(b %in% c("a", "l", "b", "*"))) {
+      stop("'The numeric object' is not in a valid form", call. = FALSE)
     }
-    Ragr <- unique(agrn)
+    
+    # Sort unique nodes once at the beginning (includes isolated nodes defined via '*')
+    Ragr <- sort(unique(agrn)) 
     ma <- length(Ragr)
-    mat <- matrix(rep(0, (ma)^2), ma, ma)
-    for (i in seq(1, length(agrn), 2)) {
-      if ((bn[(i + 1) / 2] == 1 && mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] %% 10 != 1) || (bn[(i + 1) / 2] == 10 && mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] %% 100 < 10) || (bn[(i + 1) / 2] == 100 && mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] < 100)) {
-        mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] <- mat[SPl(Ragr, agrn[i]), SPl(Ragr, agrn[i + 1])] + bn[(i + 1) / 2]
-        if (bn[(i + 1) / 2] == 10 || bn[(i + 1) / 2] == 100) {
-          mat[SPl(Ragr, agrn[i + 1]), SPl(Ragr, agrn[i])] <- mat[SPl(Ragr, agrn[i + 1]), SPl(Ragr, agrn[i])] + bn[(i + 1) / 2]
+    mat <- matrix(0, nrow = ma, ncol = ma)
+    rownames(mat) <- Ragr
+    colnames(mat) <- Ragr
+    
+    # Vectorized assignment of edge weights (isolated placeholder '*' gets weight 0)
+    bn <- numeric(length(b))
+    bn[b == "l"] <- 10
+    bn[b == "a"] <- 1
+    bn[b == "b"] <- 100
+    bn[b == "*"] <- 0
+    
+    # Extract all source and destination nodes at once
+    origins <- agrn[seq(1, length(agrn), 2)]
+    destinations <- agrn[seq(2, length(agrn), 2)]
+    
+    # Match node positions instantly without any SPl helper function
+    row_indices <- match(origins, Ragr)
+    col_indices <- match(destinations, Ragr)
+    
+    # Loop to accumulate single and multiple edge weights
+    for (i in seq_along(bn)) {
+      r <- row_indices[i]
+      c <- col_indices[i]
+      val_bn <- bn[i]
+      
+      # If it's a designated isolated node marker or an explicit self-loop placeholder,
+      # do nothing and skip to the next iteration to keep the diagonal at 0.
+      if (b[i] == "*" || r == c) {
+        next
+      }
+      
+      current_val <- mat[r, c]
+      
+      # Historical checks for modulo remainders to accumulate overlapping edges
+      if ((val_bn == 1   && current_val %% 10 != 1) || 
+          (val_bn == 10  && current_val %% 100 < 10) || 
+          (val_bn == 100 && current_val < 100)) {
+        
+        mat[r, c] <- current_val + val_bn
+        
+        # Apply symmetry for undirected ('l') and bi-directed ('b') edges
+        if (val_bn == 10 || val_bn == 100) {
+          mat[c, r] <- mat[c, r] + val_bn
         }
       }
     }
-    rownames(mat) <- Ragr
-    colnames(mat) <- Ragr
+    return(mat)
   }
-  return(mat)
+  
+  # 4. Fallback for unsupported object classes
+  stop("Input 'agr' must be a graphNEL, igraph, or character object.", call. = FALSE)
 }
