@@ -3,15 +3,39 @@ title: "Mixed graphs with multiple edges"
 format: html
 ---
 
-I would actually like to create a function to draw mixed graphs
-defined in this way. 
+The adjacency matrix $G$ of a mixed graph $\mathcal{G}$ with node set $V$ and edge set $E$ is a $|V| \times |V|$ matrix defined as a sum of three different adjacency matrices   $G = A + B + L$  with elements  $A = (a_{ij})$, $B = (b_{ij})$ and $L = (l_{ij})$
+defined as follows.
 
-The adjacency matrix $A$ of a mixed graph is a square matrix of order $k$, where $k$ is the number of nodes. The elements $A_{u, v}$ can take the following forms
+- The adjacency matrix of the arrows 
+$$
+a_{ij}  = \begin{cases}
+          1 &     \iff i \rightarrow j \text{ in } \mathcal{G}\\
+          0 &  \text{otherwise}\\
+          \end{cases}
+$$
+- the adjacency matrix of the bi-directed arrows
+  $$
+  b_{ij}  = b_{ji} = \begin{cases}
+          10 &     \iff i -\!\!- j \text{ in } \mathcal{G}\\
+          0 &  \text{otherwise}\\
+          \end{cases}
+  $$
+- The adjacency matrix of the undirected edges   
+  $$
+  w_{ij}  = w_{ji} = \begin{cases}
+          100 &     \iff i \leftrightarrow j \text{ in } \mathcal{G}\\
+          0 &  \text{otherwise}\\
+          \end{cases}
+  $$
+
+
+
+The elements $G_{ij}$ for $i \ne j$ can take the following forms
 
 $$
 \small
 \begin{array}{lll} 
-         &  \text{Edges}            &  (A_{uv}, A_{vu})  & \text{edge type} \\ \hline  
+         &  \text{Edges}            &  (G_{ij}, G_{ji})  & \text{edge type} \\ \hline  
          &   (1, 0)                       & (1, 0)    &  \text{right arrow}  \\ 
          &   (0,1)                        &  (0,1)     & \text{left arrow}  \\
          &  (10,10)                       & (10, 10)   &    \text{line} \\       
@@ -29,28 +53,11 @@ $$
 \end{array}
 $$
 
-Thus the adjacency matrix of a mixed graph $\mathcal{G}$ with node set $V$ and edge set $E$ is a $|V| \times |V|$ matrix obtained as $A = B + S + W$ by adding three matrices $B = (b_{ij})$, $S = (s_{ij} )$ and $W = (w_{ij})$  defined by
+### Examples
 
-$$
-b_{ij}  = \begin{cases}
-          1 &     \iff i \rightarrow j \text{ in } \mathcal{G}\\
-          0 &  \text{otherwise}\\
-          \end{cases}
-$$
-
-$$
-s_{ij}  = s_{ji} = \begin{cases}
-          10 &     \iff i -\!\!- j \text{ in } \mathcal{G}\\
-          0 &  \text{otherwise}\\
-          \end{cases}
-$$
-
-$$
-w_{ij}  = w_{ji} = \begin{cases}
-          100 &     \iff i \leftrightarrow j \text{ in } \mathcal{G}\\
-          0 &  \text{otherwise}\\
-          \end{cases}
-$$
-
-
+```{r} 
+library(ggm)
+A <- DG( `1` ~ `2`, `2` ~ `3`, `3` ~ 1)
+```
+```
   

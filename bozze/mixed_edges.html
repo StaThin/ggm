@@ -23,6 +23,41 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -95,12 +130,33 @@ window.Quarto = {
 </header>
 
 
-<p>I would actually like to create a function to draw mixed graphs defined in this way.</p>
-<p>The adjacency matrix <span class="math inline">\(A\)</span> of a mixed graph is a square matrix of order <span class="math inline">\(k\)</span>, where <span class="math inline">\(k\)</span> is the number of nodes. The elements <span class="math inline">\(A_{u, v}\)</span> can take the following forms</p>
+<p>The adjacency matrix <span class="math inline">\(G\)</span> of a mixed graph <span class="math inline">\(\mathcal{G}\)</span> with node set <span class="math inline">\(V\)</span> and edge set <span class="math inline">\(E\)</span> is a <span class="math inline">\(|V| \times |V|\)</span> matrix defined as a sum of three different adjacency matrices <span class="math inline">\(G = A + B + L\)</span> with elements <span class="math inline">\(A = (a_{ij})\)</span>, <span class="math inline">\(B = (b_{ij})\)</span> and <span class="math inline">\(L = (l_{ij})\)</span> defined as follows.</p>
+<ul>
+<li>The adjacency matrix of the arrows <span class="math display">\[
+a_{ij}  = \begin{cases}
+        1 &amp;     \iff i \rightarrow j \text{ in } \mathcal{G}\\
+        0 &amp;  \text{otherwise}\\
+        \end{cases}
+\]</span></li>
+<li>the adjacency matrix of the bi-directed arrows <span class="math display">\[
+b_{ij}  = b_{ji} = \begin{cases}
+        10 &amp;     \iff i -\!\!- j \text{ in } \mathcal{G}\\
+        0 &amp;  \text{otherwise}\\
+        \end{cases}
+\]</span></li>
+<li>The adjacency matrix of the undirected edges<br>
+<span class="math display">\[
+w_{ij}  = w_{ji} = \begin{cases}
+        100 &amp;     \iff i \leftrightarrow j \text{ in } \mathcal{G}\\
+        0 &amp;  \text{otherwise}\\
+        \end{cases}
+\]</span></li>
+</ul>
+<p>The elements <span class="math inline">\(G_{ij}\)</span> for <span class="math inline">\(i \ne j\)</span> can take the following forms</p>
 <p><span class="math display">\[
 \small
 \begin{array}{lll}
-         &amp;  \text{Edges}            &amp;  (A_{uv}, A_{vu})  &amp; \text{edge type} \\ \hline  
+         &amp;  \text{Edges}            &amp;  (G_{ij}, G_{ji})  &amp; \text{edge type} \\ \hline  
          &amp;   (1, 0)                       &amp; (1, 0)    &amp;  \text{right arrow}  \\
          &amp;   (0,1)                        &amp;  (0,1)     &amp; \text{left arrow}  \\
          &amp;  (10,10)                       &amp; (10, 10)   &amp;    \text{line} \\       
@@ -117,25 +173,14 @@ window.Quarto = {
       &amp;  (0,1)+(1,0)+(10,10)+(100,100) &amp; (111,111)   &amp; \text{two arrows an arc and a line} \\    \hline   
 \end{array}
 \]</span></p>
-<p>Thus the adjacency matrix of a mixed graph <span class="math inline">\(\mathcal{G}\)</span> with node set <span class="math inline">\(V\)</span> and edge set <span class="math inline">\(E\)</span> is a <span class="math inline">\(|V| \times |V|\)</span> matrix obtained as <span class="math inline">\(A = B + S + W\)</span> by adding three matrices <span class="math inline">\(B = (b_{ij})\)</span>, <span class="math inline">\(S = (s_{ij} )\)</span> and <span class="math inline">\(W = (w_{ij})\)</span> defined by</p>
-<p><span class="math display">\[
-b_{ij}  = \begin{cases}
-          1 &amp;     \iff i \rightarrow j \text{ in } \mathcal{G}\\
-          0 &amp;  \text{otherwise}\\
-          \end{cases}
-\]</span></p>
-<p><span class="math display">\[
-s_{ij}  = s_{ji} = \begin{cases}
-          10 &amp;     \iff i -\!\!- j \text{ in } \mathcal{G}\\
-          0 &amp;  \text{otherwise}\\
-          \end{cases}
-\]</span></p>
-<p><span class="math display">\[
-w_{ij}  = w_{ji} = \begin{cases}
-          100 &amp;     \iff i \leftrightarrow j \text{ in } \mathcal{G}\\
-          0 &amp;  \text{otherwise}\\
-          \end{cases}
-\]</span></p>
+<section id="examples" class="level3">
+<h3 class="anchored" data-anchor-id="examples">Examples</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggm)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">DG</span>( <span class="st">`</span><span class="at">1</span><span class="st">`</span> <span class="sc">~</span> <span class="st">`</span><span class="at">2</span><span class="st">`</span>, <span class="st">`</span><span class="at">2</span><span class="st">`</span> <span class="sc">~</span> <span class="st">`</span><span class="at">3</span><span class="st">`</span>, <span class="st">`</span><span class="at">3</span><span class="st">`</span> <span class="sc">~</span> <span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>```</p>
+</section>
 
 </main>
 <!-- /main column -->

@@ -1,14 +1,15 @@
 #' Plot mixed graphs
 #'
-#' This function takes an adjacency matrix or a graph object and generates a 
-#' highly customizable, clean static visual representation of the network.
+#' This function takes an adjacency matrix or a graph object 
+#' and generates a highly customizable, clean static visual
+#' representation of the network.
 #'
-#' @param a A square adjacency matrix, an [igraph::igraph] object, a `graphNEL` 
-#'   object, or a character vector.
+#' @param a A square adjacency matrix, an [igraph::igraph] object, 
+#' a `graphNEL`  object, or a character vector.
 #' @param dashed Logical. If `FALSE` (default), 
 #' bidirected edges will be drawn as continuous arcs. Otherwise they will drawn as dashed arcs
 #' @param layout An `igraph` layout function or matrix. Defaults to [igraph::layout_nicely].
-#' @param directed Logical. Indicates whether the graph should be treated as 
+#' @param directed Logical. Indicates whether the graph should be treated as
 #'   directed. Defaults to `FALSE`.
 #' @param noframe Logical. If `TRUE`, removes vertex frames and sets node 
 #'   backgrounds to white. Defaults to `FALSE`.
@@ -357,28 +358,38 @@ plotGraph <- function(a,
 
 #' Graph to adjacency matrix
 #'
-#' \code{grMAT} converts graph objects to a mixed adjacency matrix.
+#' `grMAT` converts graph objects to a mixed adjacency matrix.
 #'
-#' @details Support for \code{graphNEL} objects requires the \code{graph} package 
-#'   from Bioconductor, which is a suggested dependency. If the package is missing, 
-#'   passing a \code{graphNEL} object will trigger an informative error.
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
 #'
-#' @param agr A graph object. This can be a \code{graphNEL} object, an 
-#'   \code{\link[igraph:igraph]{igraph}} object, or a character vector of length 
-#'   \eqn{3e}{3e}, where \eqn{e} is the number of edges. If it is a vector, it must 
-#'   be a sequence of triples (type, node1label, node2label). The type of edge 
-#'   can be \code{"a"} (arrow from node1 to node2), \code{"b"} (bi-directed arc), 
-#'   and \code{"l"} (undirected line).
+#' @param agr A graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #'
-#' @return A matrix consisting of 4 different integers representing the \eqn{ij}{ij}-elements:
-#'   0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
-#'   \eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
-#'   for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
-#'   when multiple edges of different types are present. The matrix is
-#'   symmetric with respect to full lines and bi-directed arrows.
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
+#' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
+#' * 1 for an arrow from \eqn{i} to \eqn{j}, 
+#' * 10 for a full line between \eqn{i} and \eqn{j}, and 
+#' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
+#' and bi-directed arrows.
 #' 
-#' @author Kayvan Sadeghi
-#' @keywords graphs adjacency matrix mixed graph vector
+#' @author Kayvan Sadeghi, Giovanni Marchetti 
+#' @keywords graphs adjacency matrix mixed-graph vector
 #' 
 #' @examples
 #' ## Generating the adjacency matrix from a vector
@@ -395,11 +406,13 @@ plotGraph <- function(a,
 #'   grMAT(g)
 #'  }
 #' }
-#' @export
+#' 
+#' g <- c("a", 3, 1, "l", 1, 2, "*", 4, 4)
+#' grMAT(g)
 #' @export
 grMAT <- function(agr) {
   # 1. Safe check for graphNEL objects (S4 compatible for Bioconductor)
-  if (inherits(agr, "graphNEL") || inherits(agr, "graph")) {
+  if ("graphNEL" %in% class(agr) || inherits(agr, "graph")) {
     if (!requireNamespace("graph", quietly = TRUE)) {
       stop(
         "Package 'graph' (Bioconductor) is required to convert graphNEL objects.\n", 
@@ -408,7 +421,9 @@ grMAT <- function(agr) {
       )
     }
     agr <- methods::as(agr, "matrix")
+    return(agr) 
   }
+  
   
   # 2. Safe check for igraph objects (using direct namespace call)
   if (inherits(agr, "igraph")) {

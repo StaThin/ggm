@@ -1,4 +1,9 @@
-Package ggm 
+- # ggm 2.5.3 August 2026
+
+* The `graph` package (Bioconductor) has been moved from `Imports` to `Suggests`. It is no longer required upon installation unless you need to process `graphNEL` objects.
+* Updated `grMAT()` and downstream functions to gracefully handle missing `graph` installations with informative errors and installation instructions.
+* Added support for the wildcard `*` in character vector inputs to explicitly declare isolated nodes.
+
 
 - June 2026 
   Used Roxygen2

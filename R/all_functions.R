@@ -2585,12 +2585,10 @@ icf <- function(bi.graph, S, start = NULL, tol = 1e-06) {
 #' isAcyclic(d)
 #' isAcyclic(d, method = 1)
 #'
-#' @export isAcyclic
-`isAcyclic` <-
-  function(amat, method = 2) {
-    ### Tests if the graph is acyclic.
+#' @export
+isAcyclic <- function(amat, method = 2) {
     if (method == 1) {
-      G <- graph.adjacency(amat)
+      G <- igraph::graph_from_adjacency_matrix(amat)
       return(max(clusters(G, mode = "strong")$csize) == 1)
     } else if (method == 2) {
       B <- transClos(amat)
@@ -4411,37 +4409,49 @@ blkdiag <- function(...) {
 #' `RG` generates and plots ribbonless graphs (a modification of MC graph
 #' to use m-separation) after marginalization and conditioning.
 #'
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'   
+#'   This function uses the internal functions [AG()] and [Max()].
 #'
-#' @param amat An adjacency matrix, or a graph that can be a `
-#'  graphNEL` or an [igraph::igraph] object or a vector of length
-#'  \eqn{3e}, where \eqn{e} is the number of edges of the graph, that is
-#'  a sequence of triples `(type, node1label, node2label`. The type of
-#'  edge can be 
-#'  * `"a"` (arrows from `node1` to `node2`)
-#'  * `"b"` (arcs), and 
-#'  * `"l"` (lines).
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #' @param M A subset of the node set of `amat` that is going to be
-#'  marginalized over.
-#' @param C Another disjoint subset of the node set of `amat` that is
-#'  going to be conditioned on.
+#' marginalized over.
+#' @param C Another disjoint subset of the node set of `amat` that 
+#' is going to be conditioned on.
 #' @param showmat A logical value. `TRUE` (by default) to print the
 #' generated matrix.
-#' @param plot A logical value, `FALSE` (by default). `TRUE` to plot
-#' the generated graph.
+#' @param plot `FALSE` (by default). `TRUE` to plot the generated graph.
 #' @param plotfun Function to plot the graph when `plot = TRUE`. 
 #' Can be `plotGraph` (the default) or `drawGraph`.
 #' @param ... Further arguments passed to `plotfun`.
-#' @return A matrix that consists of 4 different integers 
-#' as an \eqn{ij}-element:
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
 #' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
 #' * 1 for an arrow from \eqn{i} to \eqn{j}, 
 #' * 10 for a full line between \eqn{i} and \eqn{j}, and 
 #' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
-#' 
-#' These numbers are added to be associated with multiple edges of
-#' different types. The matrix is symmetric w.r.t full lines and 
-#' bi-directed arrows.
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
+#' and bi-directed arrows.
+#'
 #' @author Kayvan Sadeghi
+#'
+#' 
 #' @seealso [AG()], [MRG()], [SG()]
 #' 
 #' @references 
@@ -4749,37 +4759,46 @@ RG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' `SG` generates and plots summary graphs after marginalization and
 #' conditioning.
 #'
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'   
+#'   This function uses the internal functions [AG()] and [Max()].
 #'
-#' @param amat An adjacency matrix, or a graph that can be a
-#'  \code{graphNEL} or an [igraph::igraph()] object or a vector of 
-#'  length \eqn{3e}, where \eqn{e} is the number of edges of the graph,
-#'  that is a sequence of triples `(type, node1label, node2label)`. 
-#'  The type of edge can be 
-#'  * `"a"` (arrows from `node1` to `node2`) 
-#'  * `"b"` (arcs), and 
-#'  * `"l"` (lines).
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #' @param M A subset of the node set of `amat` that is going to be
-#'  marginalised over. 
-#' @param C Another disjoint subset of the node set of `amat` that is
-#'  going to be conditioned on.
+#' marginalized over.
+#' @param C Another disjoint subset of the node set of `amat` that 
+#' is going to be conditioned on.
 #' @param showmat A logical value. `TRUE` (by default) to print the
-#'  generated matrix.
-#' @param plot A logical value, `FALSE` (by default). `TRUE` to plot
-#' the generated graph.
+#' generated matrix.
+#' @param plot `FALSE` (by default). `TRUE` to plot the generated graph.
 #' @param plotfun Function to plot the graph when `plot = TRUE`. 
 #' Can be `plotGraph` (the default) or `drawGraph`.
 #' @param ... Further arguments passed to `plotfun`.
-#' @return A matrix that consists 4 different integers as an 
-#' \eqn{ij}-element:
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
 #' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
 #' * 1 for an arrow from \eqn{i} to \eqn{j}, 
 #' * 10 for a full line between \eqn{i} and \eqn{j}, and 
 #' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
-#' 
-#' These numbers are added to be associated with multiple edges 
-#' of different types. The matrix is symmetric w.r.t full lines 
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
 #' and bi-directed arrows.
-#' 
+#'
 #' @author Kayvan Sadeghi
 #' 
 #' @seealso [AG()], [MSG()], [RG()]
@@ -5125,35 +5144,51 @@ SG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' `AG` generates and plots ancestral graphs after marginalization and
 #' conditioning.
 #'
-#' @param amat An adjacency matrix, or a graph that can be of class
-#' `graphNEL` or an [igraph::igraph()] object, or a vector of length
-#'  \eqn{3e}, where \eqn{e} is the number of edges of the graph, 
-#'  that is a sequence of triples (`type`, `node1label`, `node2label`).
-#'  The type of edge can be 
-#'  * `"a"` (arrows from `node1` to `node2`),
-#'  * `"b"` (arcs), and
-#'  * `"l"` (lines).
+#' 
+#'
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'   
+#'   This function uses the internal functions [AG()] and [Max()].
+#'
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #' @param M A subset of the node set of `amat` that is going to be
 #' marginalized over.
-#' @param C Another disjoint subset of the node set of `amat` that is
-#' going to be conditioned on.
+#' @param C Another disjoint subset of the node set of `amat` that 
+#' is going to be conditioned on.
 #' @param showmat A logical value. `TRUE` (by default) to print the
 #' generated matrix.
-#' @param plot A logical value, `FALSE` (by default). `TRUE` to plot
-#' the generated graph.
+#' @param plot `FALSE` (by default). `TRUE` to plot the generated graph.
 #' @param plotfun Function to plot the graph when `plot = TRUE`. 
 #' Can be `plotGraph` (the default) or `drawGraph`.
 #' @param ... Further arguments passed to `plotfun`.
-#' @return A matrix that is the adjacency matrix of the generated graph.
-#' It consists of 4 different integers as an \eqn{ij}-element: 
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
 #' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
 #' * 1 for an arrow from \eqn{i} to \eqn{j}, 
 #' * 10 for a full line between \eqn{i} and \eqn{j}, and 
 #' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
-#' These numbers are added to be associated with multiple edges 
-#' of different types. The matrix is symmetric w.r.t full lines
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
 #' and bi-directed arrows.
+#'
 #' @author Kayvan Sadeghi
+#'
+#' 
 #' @seealso [MAG()], [RG()], [SG()]
 #' @references 
 #' Richardson, T.S. and Spirtes, P. (2002). Ancestral graph Markov
@@ -5577,25 +5612,50 @@ SG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' primitive inducing paths, and connect such pairs by an 
 #' appropriate edge.
 #'
-#' @param amat An adjacency matrix, or a graph that can be a `graphNEL` 
-#' or an [igraph::igraph()] object or a vector of length \eqn{3e},
-#'  where \eqn{e} is the number of edges of the graph, that is 
-#'  a sequence of triples (`type`, `node1label`, `node2label`). 
-#'  The type of edge can be 
-#'  * `"a"` (arrows from `node1` to `node2`), 
-#'  * `"b"` (arcs), and 
-#'  * `"l"` (lines).
-#'  
-#' @return A matrix that consists 4 different integers as 
-#' an \eqn{ij}-element:
+#' 
+#'
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'   
+#'   This function uses the internal functions [AG()] and [Max()].
+#'
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
+#' @param M A subset of the node set of `amat` that is going to be
+#' marginalized over.
+#' @param C Another disjoint subset of the node set of `amat` that 
+#' is going to be conditioned on.
+#' @param showmat A logical value. `TRUE` (by default) to print the
+#' generated matrix.
+#' @param plot `FALSE` (by default). `TRUE` to plot the generated graph.
+#' @param plotfun Function to plot the graph when `plot = TRUE`. 
+#' Can be `plotGraph` (the default) or `drawGraph`.
+#' @param ... Further arguments passed to `plotfun`.
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
 #' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
 #' * 1 for an arrow from \eqn{i} to \eqn{j}, 
 #' * 10 for a full line between \eqn{i} and \eqn{j}, and 
 #' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
-#' These numbers are added to be associated with multiple edges of
-#' different types. The matrix is symmetric w.r.t full lines and 
-#' bi-directed arrows.
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
+#' and bi-directed arrows.
+#'
 #' @author Kayvan Sadeghi
+#'
 #' @seealso [MAG()], [MRG()], [msep()], [MSG()]
 #' @references 
 #' Richardson, T.S. and Spirtes, P. (2002). Ancestral graph Markov
@@ -5773,20 +5833,48 @@ Max <- function(amat) {
 #' `msep` determines whether two set of nodes are m-separated by a third
 #' set of nodes.
 #'
-#' @param amat An adjacency matrix, or a graph that can be a `graphNEL`
-#'  or an [igraph::igraph()] object or a vector of length \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of
-#' triples (`type`, `node1label`, `node2label`). 
-#' The `type` of edge can be 
-#' * `"a"` (arrows from `node1` to `node2`), 
-#' * `"b"` (arcs), and 
-#' * `"l"` (lines).
-#' @param alpha A subset of the node set of `amat`.
-#' @param beta Another disjoint subset of the node set of `amat`.
-#' @param C A third disjoint subset of the node set of `amat`.
-#' @return A logical value. `TRUE` if `alpha` and `beta` are
-#' m-separated given `C`. `FALSE` otherwise.
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'   
+#'   This function uses the internal functions [AG()] and [Max()].
+#'
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
+#' @param M A subset of the node set of `amat` that is going to be
+#' marginalized over.
+#' @param C Another disjoint subset of the node set of `amat` that 
+#' is going to be conditioned on.
+#' @param showmat A logical value. `TRUE` (by default) to print the
+#' generated matrix.
+#' @param plot `FALSE` (by default). `TRUE` to plot the generated graph.
+#' @param plotfun Function to plot the graph when `plot = TRUE`. 
+#' Can be `plotGraph` (the default) or `drawGraph`.
+#' @param ... Further arguments passed to `plotfun`.
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
+#' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
+#' * 1 for an arrow from \eqn{i} to \eqn{j}, 
+#' * 10 for a full line between \eqn{i} and \eqn{j}, and 
+#' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
+#' and bi-directed arrows.
+#'
 #' @author Kayvan Sadeghi
+#'
 #' @seealso [dSep()], [MarkEqMag()]
 #' @references 
 #' Richardson, T.S. and Spirtes, P. (2002) Ancestral graph Markov
@@ -5844,14 +5932,25 @@ msep <- function(amat, alpha, beta, C = c()) {
 #'
 #' @note This function uses the functions [RG()] and [Max()].
 #'
-#' @param amat An adjacency matrix, or a graph that can be a `graphNEL`
-#'  or [igraph::igraph()] object or a vector of length \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of
-#'  triples (`type`, `node1label`, `node2label`). 
-#'  The type of edge can be 
-#'  * `"a"` (arrows from `node1` to `node2`), 
-#'  * `"b"` (arcs), 
-#'  * `"l"` (lines).
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'   
+#'   This function uses the internal functions [AG()] and [Max()].
+#'
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #' @param M A subset of the node set of `amat` that is going to be
 #' marginalized over.
 #' @param C Another disjoint subset of the node set of `amat` that 
@@ -5862,16 +5961,19 @@ msep <- function(amat, alpha, beta, C = c()) {
 #' @param plotfun Function to plot the graph when `plot = TRUE`. 
 #' Can be `plotGraph` (the default) or `drawGraph`.
 #' @param ... Further arguments passed to `plotfun`.
-#' @return A matrix that consists of 4 different integers as 
-#' an \eqn{ij}-element:
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
 #' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
 #' * 1 for an arrow from \eqn{i} to \eqn{j}, 
 #' * 10 for a full line between \eqn{i} and \eqn{j}, and 
 #' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
-#' These numbers are added to be associated with multiple edges 
-#' of different types. The matrix is symmetric w.r.t full lines 
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
 #' and bi-directed arrows.
+#'
 #' @author Kayvan Sadeghi
+#'
 #' @seealso [MAG()], [Max()], [MSG()], [RG()]
 #' @references 
 #' Koster, J.T.A. (2002). Marginalizing and conditioning in
@@ -5926,19 +6028,30 @@ MRG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = 
 
 #' Maximal summary graph
 #'
-#' `MAG` generates and plots maximal summary graphs after 
+#' `MSG` generates and plots maximal summary graphs after 
 #' marginalization and conditioning.
 #'
 #' @note This function uses the functions [SG()] and [Max()].
 #'
-#' @param amat An adjacency matrix, or a graph that can be a `graphNEL`
-#'  or [igraph::igraph()] object or a vector of length \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of
-#'  triples (`type`, `node1label`, `node2label`). 
-#'  The type of edge can be 
-#'  * `"a"` (arrows from `node1` to `node2`), 
-#'  * `"b"` (arcs), 
-#'  * `"l"` (lines).
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'   
+#'   This function uses the internal functions [AG()] and [Max()].
+#'
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #' @param M A subset of the node set of `amat` that is going to be
 #' marginalized over.
 #' @param C Another disjoint subset of the node set of `amat` that 
@@ -5949,17 +6062,20 @@ MRG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = 
 #' @param plotfun Function to plot the graph when `plot = TRUE`. 
 #' Can be `plotGraph` (the default) or `drawGraph`.
 #' @param ... Further arguments passed to `plotfun`.
-#' @return A matrix that consists of 4 different integers as 
-#' an \eqn{ij}-element:
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
 #' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
 #' * 1 for an arrow from \eqn{i} to \eqn{j}, 
 #' * 10 for a full line between \eqn{i} and \eqn{j}, and 
 #' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
-#' These numbers are added to be associated with multiple edges 
-#' of different types. The matrix is symmetric w.r.t full lines 
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
 #' and bi-directed arrows.
+#'
 #' @author Kayvan Sadeghi
-#' @seealso [MAG()], [Max()], [MRG()], [SG()]
+#'
+#' @seealso [AG()], [Max()], [MRG()], [SG()]
 #' @references 
 #' Richardson, T.S. and Spirtes, P. (2002). Ancestral graph Markov
 #' models. *Annals of Statistics*, 30(4), 962-1030.
@@ -6008,19 +6124,28 @@ MSG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = 
 
 #' Maximal ancestral graph
 #'
-#' \code{MAG} generates and plots maximal ancestral graphs after
+#' `MAG` generates and plots maximal ancestral graphs after
 #' marginalisation and conditioning.
 #'
-#' This function uses the functions [AG()] and [Max()].
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'   
+#'   This function uses the internal functions [AG()] and [Max()].
 #'
-#' @param amat An adjacency matrix, or a graph that can be a `graphNEL`
-#'  or [igraph::igraph()] object or a vector of length \eqn{3e}, where
-#' \eqn{e} is the number of edges of the graph, that is a sequence of
-#'  triples (`type`, `node1label`, `node2label`). 
-#'  The type of edge can be 
-#'  * `"a"` (arrows from `node1` to `node2`), 
-#'  * `"b"` (arcs), 
-#'  * `"l"` (lines).
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #' @param M A subset of the node set of `amat` that is going to be
 #' marginalized over.
 #' @param C Another disjoint subset of the node set of `amat` that 
@@ -6031,15 +6156,17 @@ MSG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = 
 #' @param plotfun Function to plot the graph when `plot = TRUE`. 
 #' Can be `plotGraph` (the default) or `drawGraph`.
 #' @param ... Further arguments passed to `plotfun`.
-#' @return A matrix that consists of 4 different integers as 
-#' an \eqn{ij}-element:
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
 #' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
 #' * 1 for an arrow from \eqn{i} to \eqn{j}, 
 #' * 10 for a full line between \eqn{i} and \eqn{j}, and 
 #' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
-#' These numbers are added to be associated with multiple edges 
-#' of different types. The matrix is symmetric w.r.t full lines 
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
 #' and bi-directed arrows.
+#'
 #' @author Kayvan Sadeghi
 #'
 #' @seealso [AG()], [Max()], [MRG()], [MSG()]
@@ -6088,19 +6215,29 @@ MAG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = 
   return(Max(AG(amat, M, C, showmat, plot, plotfun = plotGraph, ...)))
 }
 
+
 #' Markov equivalence for regression chain graphs
 #'
 #' `MarkEqRcg` determines whether two regression chain graphs (RCGs) or 
 #' subclasses of RCGs are Markov equivalent. The function checks whether the two graphs have the same skeleton and "unshielded colliders".
 #'
-#' @param amat An adjacency matrix of an RCG, or a graph that can be a 
-#'   `graphNEL` object, an [igraph::igraph] object, or a character 
-#'   vector of length `3e` (where `e` is the number of edges). 
-#'   If a vector, it must be a sequence of triples 
-#'   (`type`, `node1label`, `node2label`). The `type` of edge can be
-#'   * `"a"` (arrows from node1 to node2), 
-#'   * `"b"` (arcs), or 
-#'   * `"l"` (lines).
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #' @param bmat The same as `amat`.
 #' 
 #' @return A character string: either `"Markov Equivalent"` or `"NOT Markov Equivalent"`.
@@ -6201,15 +6338,23 @@ MarkEqRcg <- function(amat, bmat) {
 #' are Markov equivalent. The function checks whether the two graphs 
 #' have the same skeleton and colliders with order.
 #'
-#' @param amat An adjacency matrix of a MAG, or a graph that can be a
-#'   `graphNEL` object, an [igraph::igraph] object, or a 
-#'   character vector of length `3e` (where `e` is the number of edges).
-#'   If a vector, it must be a sequence of triples 
-#'   (`type`, `node1label`, `node2label`). 
-#'   The `type` of edge  can be 
-#'   * `"a"` (arrows from `node1` to `node2`), 
-#'   * `"b"` (arcs), or
-#'   * `"l"` (lines).
+#'  @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'
+#' @param amat An adjacency matrix, or a graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
 #' @param bmat The same as `amat`.
 #' 
 #' @return A character string: either `"Markov Equivalent"` or `"NOT Markov Equivalent"`.
@@ -7119,4 +7264,26 @@ inducedDAG <-
     cc <- as.list(order)
     inducedChainGraph(amat, cc = cc, cond = cond)
   }
+
+#' Deviance of a Gaussian graphical model
+#' 
+#' Computes the deviance of a Gaussian model given the concentration matrix, 
+#' the sample covariance matrix, the sample size, and the number of variables.
+#' 
+#' @param K A square concentration matrix (inverse covariance matrix).
+#' @param S A square sample covariance matrix.
+#' @param n An integer indicating the sample size.
+#' @param k An integer indicating the number of variables 
+#' (number of rows of \code{S}).
+#' 
+#' @return A numeric value representing the deviance of the Gaussian model.
+#' @author Kayvan Sadeghi, Giovanni M. Marchetti
+#' @seealso \code{\link{log}}, \code{\link{det}}, \code{\link{diag}}
+#' @export
+likGau <- function(K, S, n, k) {
+  # deviance of the Gaussian model.
+  SK <- S %*% K
+  tr <- function(A) sum(diag(A))
+  (tr(SK) - log(det(SK)) - k) * n
+}
 

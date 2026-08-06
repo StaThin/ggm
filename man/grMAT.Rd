@@ -7,28 +7,44 @@
 grMAT(agr)
 }
 \arguments{
-\item{agr}{A graph object. This can be a \code{graphNEL} object, an
-\code{\link[igraph:igraph]{igraph}} object, or a character vector of length
-\eqn{3e}{3e}, where \eqn{e} is the number of edges. If it is a vector, it must
-be a sequence of triples (type, node1label, node2label). The type of edge
-can be \code{"a"} (arrow from node1 to node2), \code{"b"} (bi-directed arc),
-and \code{"l"} (undirected line).}
+\item{agr}{A graph object. This can be:
+\itemize{
+\item a \code{graphNEL} object,
+\item an \code{\link[igraph:igraph]{igraph::igraph()}} object, or
+\item a character vector of length \eqn{3e}{3e}, where \eqn{e}
+is the number of edges. If it is a vector, it must
+be a sequence of triples (\code{type}, \code{node1label}, \code{node2label}).
+
+The type of edge can be:
+\itemize{
+\item \code{"a"} (arrow from \code{node1} to \code{node2}),
+\item \code{"b"} (bi-directed arc),
+\item \code{"l"} (undirected line), or
+\item \code{"*"} (for an isolated node with \code{node1 == node2}).
+}
+}}
 }
 \value{
-A matrix consisting of 4 different integers representing the \eqn{ij}{ij}-elements:
-0 for a missing edge between \eqn{i} and \eqn{j}, 1 for an arrow from
-\eqn{i} to \eqn{j}, 10 for a full line between \eqn{i} and \eqn{j}, and 100
-for a bi-directed arrow between \eqn{i} and \eqn{j}. These numbers are added
-when multiple edges of different types are present. The matrix is
-symmetric with respect to full lines and bi-directed arrows.
+A matrix consisting of 4 different integers
+representing the \eqn{ij}{ij}-elements:
+\itemize{
+\item 0 for a missing edge between \eqn{i} and \eqn{j},
+\item 1 for an arrow from \eqn{i} to \eqn{j},
+\item 10 for a full line between \eqn{i} and \eqn{j}, and
+\item 100 for a bi-directed arrow between \eqn{i} and \eqn{j}.
+These numbers are added when multiple edges of different types
+are present. The matrix is symmetric with respect to full lines
+and bi-directed arrows.
+}
 }
 \description{
 \code{grMAT} converts graph objects to a mixed adjacency matrix.
 }
 \details{
 Support for \code{graphNEL} objects requires the \code{graph} package
-from Bioconductor, which is a suggested dependency. If the package is missing,
-passing a \code{graphNEL} object will trigger an informative error.
+from Bioconductor, which is a suggested dependency.
+If the package is missing, passing a \code{graphNEL} object will
+trigger an informative error.
 }
 \examples{
 ## Generating the adjacency matrix from a vector
@@ -45,13 +61,15 @@ if (requireNamespace("graph", quietly = TRUE)) {
   grMAT(g)
  }
 }
+
+g <- c("a", 3, 1, "l", 1, 2, "*", 4, 4)
+grMAT(g)
 }
 \author{
-Kayvan Sadeghi
+Kayvan Sadeghi, Giovanni Marchetti
 }
 \keyword{adjacency}
-\keyword{graph}
 \keyword{graphs}
 \keyword{matrix}
-\keyword{mixed}
+\keyword{mixed-graph}
 \keyword{vector}

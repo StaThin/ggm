@@ -1,9 +1,9 @@
 #' Plot of a mixed graph
 #' 
-#' Plots a mixed graph from an adjacency matrix, a \code{graphNEL} object, an
-#' \code{\link[igraph]{igraph}} object, or a descriptive vector.
+#' Plots a mixed graph from an adjacency matrix, a `graphNEL` 
+#' object, an `igraph` object, or a descriptive vector.
 #' 
-#' \code{plotGraph} uses \code{\link[igraph]{plot.igraph}} and
+#' `plotGraph` uses [igraph::plot_igraph] and
 #' \code{\link[igraph]{tkplot}} in \pkg{\link[igraph]{igraph}} package.
 #' 
 #' @param a An adjacency matrix: a matrix that consists of 4 different integers
@@ -204,4 +204,149 @@ plotGraph <- function(a,
   } else {
     stop("'object' is not in a valid format")
   }
+}
+
+#' Graph to adjacency matrix
+#'
+#' `grMAT` converts graph objects to a mixed adjacency matrix.
+#'
+#' @details Support for `graphNEL` objects requires the `graph` package 
+#'   from Bioconductor, which is a suggested dependency. 
+#'   If the package is missing, passing a `graphNEL` object will 
+#'   trigger an informative error.
+#'
+#' @param agr A graph object. This can be:
+#' * a `graphNEL` object, 
+#' * an [igraph::igraph()] object, or 
+#' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
+#'   is the number of edges. If it is a vector, it must 
+#'   be a sequence of triples (`type`, `node1label`, `node2label`).
+#'   
+#'   The type of edge can be:
+#'   * `"a"` (arrow from `node1` to `node2`),
+#'   * `"b"` (bi-directed arc), 
+#'   * `"l"` (undirected line), or 
+#'   * `"*"` (for an isolated node with `node1 == node2`).
+#'
+#' @return A matrix consisting of 4 different integers 
+#' representing the \eqn{ij}{ij}-elements:
+#' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
+#' * 1 for an arrow from \eqn{i} to \eqn{j}, 
+#' * 10 for a full line between \eqn{i} and \eqn{j}, and 
+#' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
+#' These numbers are added when multiple edges of different types 
+#' are present. The matrix is symmetric with respect to full lines 
+#' and bi-directed arrows.
+#' 
+#' @author Kayvan Sadeghi, Giovanni Marchetti 
+#' @keywords graphs adjacency matrix mixed-graph vector
+#' 
+#' @examples
+#' ## Generating the adjacency matrix from a vector
+#' exvec <- c(
+#'   "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11, "a", 10, 8,
+#'   "a", 11, 2, "a", 11, 10, "a", 12, 1, "b", 12, 14, "a", 13, 10, "a", 13, 12)
+#' grMAT(exvec)
+#'
+#' \dontrun{
+#' ## Example with graphNEL (requires the 'graph' package from Bioconductor)
+#' if (requireNamespace("graph", quietly = TRUE)) {
+#'   V <- c("a", "b", "c")
+#'   g <- graph::graphNEL(nodes = V, edgemode = "undirected")
+#'   grMAT(g)
+#'  }
+#' }
+#' 
+#' g <- c("a", 3, 1, "l", 1, 2, "*", 4, 4)
+#' grMAT(g)
+#' @export
+grMAT <- function(agr) {
+  # 1. Safe check for graphNEL objects (S4 compatible for Bioconductor)
+  if ("graphNEL" %in% class(agr) || inherits(agr, "graph")) {
+    if (!requireNamespace("graph", quietly = TRUE)) {
+      stop(
+        "Package 'graph' (Bioconductor) is required to convert graphNEL objects.\n", 
+        "It can be installed using: BiocManager::install('graph')", 
+        call. = FALSE
+      )
+    }
+    agr <- methods::as(agr, "matrix")
+    return(agr) 
+  }
+  
+  
+  # 2. Safe check for igraph objects (using direct namespace call)
+  if (inherits(agr, "igraph")) {
+    return(igraph::as_adjacency_matrix(agr, sparse = FALSE))
+  }
+  
+  # 3. Processing character vectors representing mixed graphs
+  if (inherits(agr, "character")) {
+    if (length(agr) %% 3 != 0) {
+      stop("'The character object' is not in a valid form", call. = FALSE)
+    }
+    
+    seqt <- seq(1, length(agr), 3)
+    b <- agr[seqt]
+    agrn <- agr[-seqt]
+    
+    # Updated check: Now allowing '*' to declare isolated nodes
+    if (!all(b %in% c("a", "l", "b", "*"))) {
+      stop("'The numeric object' is not in a valid form", call. = FALSE)
+    }
+    
+    # Sort unique nodes once at the beginning (includes isolated nodes defined via '*')
+    Ragr <- sort(unique(agrn)) 
+    ma <- length(Ragr)
+    mat <- matrix(0, nrow = ma, ncol = ma)
+    rownames(mat) <- Ragr
+    colnames(mat) <- Ragr
+    
+    # Vectorized assignment of edge weights (isolated placeholder '*' gets weight 0)
+    bn <- numeric(length(b))
+    bn[b == "l"] <- 10
+    bn[b == "a"] <- 1
+    bn[b == "b"] <- 100
+    bn[b == "*"] <- 0
+    
+    # Extract all source and destination nodes at once
+    origins <- agrn[seq(1, length(agrn), 2)]
+    destinations <- agrn[seq(2, length(agrn), 2)]
+    
+    # Match node positions instantly without any SPl helper function
+    row_indices <- match(origins, Ragr)
+    col_indices <- match(destinations, Ragr)
+    
+    # Loop to accumulate single and multiple edge weights
+    for (i in seq_along(bn)) {
+      r <- row_indices[i]
+      c <- col_indices[i]
+      val_bn <- bn[i]
+      
+      # If it's a designated isolated node marker or an explicit self-loop placeholder,
+      # do nothing and skip to the next iteration to keep the diagonal at 0.
+      if (b[i] == "*" || r == c) {
+        next
+      }
+      
+      current_val <- mat[r, c]
+      
+      # Historical checks for modulo remainders to accumulate overlapping edges
+      if ((val_bn == 1   && current_val %% 10 != 1) || 
+          (val_bn == 10  && current_val %% 100 < 10) || 
+          (val_bn == 100 && current_val < 100)) {
+        
+        mat[r, c] <- current_val + val_bn
+        
+        # Apply symmetry for undirected ('l') and bi-directed ('b') edges
+        if (val_bn == 10 || val_bn == 100) {
+          mat[c, r] <- mat[c, r] + val_bn
+        }
+      }
+    }
+    return(mat)
+  }
+  
+  # 4. Fallback for unsupported object classes
+  stop("Input 'agr' must be a graphNEL, igraph, or character object.", call. = FALSE)
 }
