@@ -7,30 +7,47 @@
 msep(amat, alpha, beta, C = c())
 }
 \arguments{
-\item{amat}{An adjacency matrix, or a graph that can be a \code{graphNEL}
-or an \code{\link[igraph:igraph]{igraph::igraph()}} object or a vector of length \eqn{3e}, where
-\eqn{e} is the number of edges of the graph, that is a sequence of
-triples (\code{type}, \code{node1label}, \code{node2label}).
-The \code{type} of edge can be
+\item{amat}{An adjacency matrix, or a graph object.
+This can be:
 \itemize{
-\item \code{"a"} (arrows from \code{node1} to \code{node2}),
-\item \code{"b"} (arcs), and
-\item \code{"l"} (lines).
+\item a \code{graphNEL} object,
+\item an \code{\link[igraph:igraph]{igraph::igraph()}} object, or
+\item a character vector of length \eqn{3e}{3e}, where \eqn{e}
+is the number of edges. If it is a vector, it must
+be a sequence of triples (\code{type}, \code{node1label}, \code{node2label}).
+
+The type of edge can be:
+\itemize{
+\item \code{"a"} (arrow from \code{node1} to \code{node2}),
+\item \code{"b"} (bi-directed arc),
+\item \code{"l"} (undirected line), or
+\item \code{"*"} (for an isolated node with \code{node1 == node2}).
+}
 }}
 
-\item{alpha}{A subset of the node set of \code{amat}.}
+\item{alpha}{A subset of the node set of \code{amat}}
 
-\item{beta}{Another disjoint subset of the node set of \code{amat}.}
+\item{beta}{Another disjoint subset of the node set of \code{amat}}
 
-\item{C}{A third disjoint subset of the node set of \code{amat}.}
+\item{C}{A third disjoint subset of the node set of \code{amat}.
+If \code{C = c()} this means that you want to check a marginal
+independence between \code{alpha} and \code{beta}.}
 }
 \value{
-A logical value. \code{TRUE} if \code{alpha} and \code{beta} are
-m-separated given \code{C}. \code{FALSE} otherwise.
+A logical value: \code{TRUE}  if \code{alpha} and \code{beta} are
+m-separated given \code{C} or \code{FALSE} otherwise.
 }
 \description{
-\code{msep} determines whether two set of nodes are m-separated by a third
-set of nodes.
+\code{msep} determines whether two set of nodes are m-separated
+by a third set of nodes.
+}
+\details{
+Support for \code{graphNEL} objects requires the \code{graph}
+package from Bioconductor, which is a suggested dependency.
+If the package is missing, passing a \code{graphNEL} object will
+trigger an informative error.
+
+This function uses the internal functions \code{\link[=AG]{AG()}} and \code{\link[=Max]{Max()}}.
 }
 \examples{
 
@@ -43,6 +60,20 @@ H <- matrix(c(
 msep(H, 1, 4, 2)
 msep(H, 1, 4, c())
 
+dimnames(H) <- list(c("A", "B", "C", "D"), c("A", "B", "C", "D"))
+msep(H, "A", "D", "B")
+msep(H, "A", "D", c())
+
+a <- makeMG(dg= DG(W ~ Z, Z ~ Y + X), bg= UG(~ Y*Z))
+a
+msep(a, "X", "Y", "Z")
+msep(a, "X", "Y", c())
+msep(a, "X", "Y")
+
+library(igraph)
+g <- make_graph(~ X -+ Z, Y -+ Z) 
+msep(g, "X", "Y", "Z")
+msep(g, "X", "Y", c())
 }
 \references{
 Richardson, T.S. and Spirtes, P. (2002) Ancestral graph Markov

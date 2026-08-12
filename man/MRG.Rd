@@ -15,15 +15,21 @@ MRG(
 )
 }
 \arguments{
-\item{amat}{An adjacency matrix, or a graph that can be a \code{graphNEL}
-or \code{\link[igraph:igraph]{igraph::igraph()}} object or a vector of length \eqn{3e}, where
-\eqn{e} is the number of edges of the graph, that is a sequence of
-triples (\code{type}, \code{node1label}, \code{node2label}).
-The type of edge can be
+\item{amat}{An adjacency matrix, or a graph object. This can be:
 \itemize{
-\item \code{"a"} (arrows from \code{node1} to \code{node2}),
-\item \code{"b"} (arcs),
-\item \code{"l"} (lines).
+\item a \code{graphNEL} object,
+\item an \code{\link[igraph:igraph]{igraph::igraph()}} object, or
+\item a character vector of length \eqn{3e}{3e}, where \eqn{e}
+is the number of edges. If it is a vector, it must
+be a sequence of triples (\code{type}, \code{node1label}, \code{node2label}).
+
+The type of edge can be:
+\itemize{
+\item \code{"a"} (arrow from \code{node1} to \code{node2}),
+\item \code{"b"} (bi-directed arc),
+\item \code{"l"} (undirected line), or
+\item \code{"*"} (for an isolated node with \code{node1 == node2}).
+}
 }}
 
 \item{M}{A subset of the node set of \code{amat} that is going to be
@@ -43,15 +49,15 @@ Can be \code{plotGraph} (the default) or \code{drawGraph}.}
 \item{...}{Further arguments passed to \code{plotfun}.}
 }
 \value{
-A matrix that consists of 4 different integers as
-an \eqn{ij}-element:
+A matrix consisting of 4 different integers
+representing the \eqn{ij}{ij}-elements:
 \itemize{
 \item 0 for a missing edge between \eqn{i} and \eqn{j},
 \item 1 for an arrow from \eqn{i} to \eqn{j},
 \item 10 for a full line between \eqn{i} and \eqn{j}, and
 \item 100 for a bi-directed arrow between \eqn{i} and \eqn{j}.
-These numbers are added to be associated with multiple edges
-of different types. The matrix is symmetric w.r.t full lines
+These numbers are added when multiple edges of different types
+are present. The matrix is symmetric with respect to full lines
 and bi-directed arrows.
 }
 }
@@ -59,6 +65,14 @@ and bi-directed arrows.
 \code{MRG} generates and plots maximal ribbonless graphs
 (a modification of MC graph to use m-separation) after
 marginalisation and conditioning.
+}
+\details{
+Support for \code{graphNEL} objects requires the \code{graph} package
+from Bioconductor, which is a suggested dependency.
+If the package is missing, passing a \code{graphNEL} object will
+trigger an informative error.
+
+This function uses the internal functions \code{\link[=AG]{AG()}} and \code{\link[=Max]{Max()}}.
 }
 \note{
 This function uses the functions \code{\link[=RG]{RG()}} and \code{\link[=Max]{Max()}}.

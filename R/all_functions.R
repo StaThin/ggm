@@ -5612,14 +5612,12 @@ SG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #' primitive inducing paths, and connect such pairs by an 
 #' appropriate edge.
 #'
-#' 
-#'
 #' @details Support for `graphNEL` objects requires the `graph` package 
 #'   from Bioconductor, which is a suggested dependency. 
 #'   If the package is missing, passing a `graphNEL` object will 
 #'   trigger an informative error.
 #'   
-#'   This function uses the internal functions [AG()] and [Max()].
+#'   This function uses the internal functions [AG()].
 #'
 #' @param amat An adjacency matrix, or a graph object. This can be:
 #' * a `graphNEL` object, 
@@ -5633,16 +5631,6 @@ SG <- function(amat, M = c(), C = c(), showmat = TRUE, plot = FALSE, plotfun = p
 #'   * `"b"` (bi-directed arc), 
 #'   * `"l"` (undirected line), or 
 #'   * `"*"` (for an isolated node with `node1 == node2`).
-#' @param M A subset of the node set of `amat` that is going to be
-#' marginalized over.
-#' @param C Another disjoint subset of the node set of `amat` that 
-#' is going to be conditioned on.
-#' @param showmat A logical value. `TRUE` (by default) to print the
-#' generated matrix.
-#' @param plot `FALSE` (by default). `TRUE` to plot the generated graph.
-#' @param plotfun Function to plot the graph when `plot = TRUE`. 
-#' Can be `plotGraph` (the default) or `drawGraph`.
-#' @param ... Further arguments passed to `plotfun`.
 #'
 #' @return A matrix consisting of 4 different integers 
 #' representing the \eqn{ij}{ij}-elements:
@@ -5830,17 +5818,18 @@ Max <- function(amat) {
 
 #' The m-separation criterion
 #'
-#' `msep` determines whether two set of nodes are m-separated by a third
-#' set of nodes.
+#' `msep` determines whether two set of nodes are m-separated 
+#' by a third set of nodes.
 #'
-#' @details Support for `graphNEL` objects requires the `graph` package 
-#'   from Bioconductor, which is a suggested dependency. 
-#'   If the package is missing, passing a `graphNEL` object will 
-#'   trigger an informative error.
+#' @details Support for `graphNEL` objects requires the `graph`
+#'  package from Bioconductor, which is a suggested dependency. 
+#'  If the package is missing, passing a `graphNEL` object will 
+#'  trigger an informative error.
 #'   
-#'   This function uses the internal functions [AG()] and [Max()].
+#'  This function uses the internal functions [AG()] and [Max()].
 #'
-#' @param amat An adjacency matrix, or a graph object. This can be:
+#' @param amat An adjacency matrix, or a graph object. 
+#' This can be:
 #' * a `graphNEL` object, 
 #' * an [igraph::igraph()] object, or 
 #' * a character vector of length \eqn{3e}{3e}, where \eqn{e} 
@@ -5852,26 +5841,14 @@ Max <- function(amat) {
 #'   * `"b"` (bi-directed arc), 
 #'   * `"l"` (undirected line), or 
 #'   * `"*"` (for an isolated node with `node1 == node2`).
-#' @param M A subset of the node set of `amat` that is going to be
-#' marginalized over.
-#' @param C Another disjoint subset of the node set of `amat` that 
-#' is going to be conditioned on.
-#' @param showmat A logical value. `TRUE` (by default) to print the
-#' generated matrix.
-#' @param plot `FALSE` (by default). `TRUE` to plot the generated graph.
-#' @param plotfun Function to plot the graph when `plot = TRUE`. 
-#' Can be `plotGraph` (the default) or `drawGraph`.
-#' @param ... Further arguments passed to `plotfun`.
+#' @param alpha A subset of the node set of `amat`
+#' @param beta  Another disjoint subset of the node set of `amat`
+#' @param C A third disjoint subset of the node set of `amat`. 
+#'   If `C = c()` this means that you want to check a marginal 
+#'   independence between `alpha` and `beta`.
 #'
-#' @return A matrix consisting of 4 different integers 
-#' representing the \eqn{ij}{ij}-elements:
-#' * 0 for a missing edge between \eqn{i} and \eqn{j}, 
-#' * 1 for an arrow from \eqn{i} to \eqn{j}, 
-#' * 10 for a full line between \eqn{i} and \eqn{j}, and 
-#' * 100 for a bi-directed arrow between \eqn{i} and \eqn{j}. 
-#' These numbers are added when multiple edges of different types 
-#' are present. The matrix is symmetric with respect to full lines 
-#' and bi-directed arrows.
+#' @return A logical value: `TRUE`  if `alpha` and `beta` are 
+#' m-separated given `C` or `FALSE` otherwise.
 #'
 #' @author Kayvan Sadeghi
 #'
@@ -5895,6 +5872,20 @@ Max <- function(amat) {
 #' msep(H, 1, 4, 2)
 #' msep(H, 1, 4, c())
 #'
+#' dimnames(H) <- list(c("A", "B", "C", "D"), c("A", "B", "C", "D"))
+#' msep(H, "A", "D", "B")
+#' msep(H, "A", "D", c())
+#' 
+#' a <- makeMG(dg= DG(W ~ Z, Z ~ Y + X), bg= UG(~ Y*Z))
+#' a
+#' msep(a, "X", "Y", "Z")
+#' msep(a, "X", "Y", c())
+#' msep(a, "X", "Y")
+#' 
+#' library(igraph)
+#' g <- make_graph(~ X -+ Z, Y -+ Z) 
+#' msep(g, "X", "Y", "Z")
+#' msep(g, "X", "Y", c())
 #' @export
 msep <- function(amat, alpha, beta, C = c()) {
   if (inherits(amat, "igraph") || inherits(amat, "graphNEL") || is.character(amat)) {
@@ -5903,8 +5894,8 @@ msep <- function(amat, alpha, beta, C = c()) {
   if (is.matrix(amat)) {
     if (nrow(amat) == ncol(amat)) {
       if (length(rownames(amat)) != ncol(amat)) {
-        rownames(amat) <- 1:ncol(amat)
-        colnames(amat) <- 1:ncol(amat)
+        rownames(amat) <- as.character(1:ncol(amat))
+        colnames(amat) <- as.character(1:ncol(amat))
       }
     } else {
       stop("'object' is not in a valid adjacency matrix form")
@@ -5912,12 +5903,30 @@ msep <- function(amat, alpha, beta, C = c()) {
   } else {
     stop("'object' is not in a valid form")
   }
-
-  # Sostituzione di rem con la funzione nativa setdiff
-  M <- setdiff(rownames(amat), c(alpha, beta, C))
+  
+  # Safely handle node inputs whether they are numeric indices or characters
+  all_nodes <- rownames(amat)
+  if (is.numeric(alpha)) alpha <- all_nodes[alpha]
+  if (is.numeric(beta))  beta  <- all_nodes[beta]
+  if (is.numeric(C))     C     <- all_nodes[C]
+  
+  alpha <- as.character(alpha)
+  beta  <- as.character(beta)
+  C     <- as.character(C)
+  
+  # Validate that all requested nodes actually exist in the matrix
+  if (!all(c(alpha, beta, C) %in% all_nodes)) {
+    stop("One or more specified nodes in 'alpha', 'beta', or 'C' do not exist in the adjacency matrix")
+  }
+  
+  # Replace legacy 'rem' with native 'setdiff'
+  M <- setdiff(all_nodes, c(alpha, beta, C))
   ar <- Max(RG(amat, M, C))
-
-  if (max(ar[as.character(beta), as.character(alpha)] + ar[as.character(alpha), as.character(beta)] != 0)) {
+  
+  # Use 'drop = FALSE' to maintain matrix structure and prevent subsetting bugs
+  sub_matrix <- ar[beta, alpha, drop = FALSE] + t(ar[alpha, beta, drop = FALSE])
+  
+  if (any(sub_matrix != 0)) {
     return(FALSE)
   }
   return(TRUE)

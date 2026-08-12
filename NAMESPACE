@@ -80,23 +80,27 @@ export(transClos)
 export(triDec)
 export(unmakeMG)
 import(igraph)
-importFrom(graphics,arrows)
-importFrom(graphics,lines)
-importFrom(graphics,locator)
-importFrom(graphics,par)
-importFrom(graphics,plot)
-importFrom(graphics,points)
-importFrom(graphics,segments)
-importFrom(graphics,text)
+importFrom(graphics,
+  arrows,
+  lines,
+  locator,
+  par,
+  plot,
+  points,
+  segments,
+  text
+)
 importFrom(methods,is)
-importFrom(stats,binomial)
-importFrom(stats,coef)
-importFrom(stats,cor)
-importFrom(stats,glm)
-importFrom(stats,model.frame)
-importFrom(stats,model.matrix)
-importFrom(stats,model.response)
-importFrom(stats,pchisq)
-importFrom(stats,pt)
-importFrom(stats,rnorm)
-importFrom(stats,terms)
+importFrom(stats,
+  binomial,
+  coef,
+  cor,
+  glm,
+  model.frame,
+  model.matrix,
+  model.response,
+  pchisq,
+  pt,
+  rnorm,
+  terms
+)

@@ -1,8 +1,27 @@
-- # ggm 2.5.3 August 2026
+#  Changes in version 2.5.5:
 
-* The `graph` package (Bioconductor) has been moved from `Imports` to `Suggests`. It is no longer required upon installation unless you need to process `graphNEL` objects.
-* Updated `grMAT()` and downstream functions to gracefully handle missing `graph` installations with informative errors and installation instructions.
-* Added support for the wildcard `*` in character vector inputs to explicitly declare isolated nodes.
+  * Changed DESCRIPTION. The `graph` package (Bioconductor) has been moved from `Imports` to `Suggests`. It is no longer required upon installation unless you need to process `graphNEL` objects.
+  
+  * Updated `grMAT()` and downstream functions to gracefully handle missing `graph` installations with informative errors and installation instructions. Added support for the wildcard `*` in character vector inputs to explicitly declare isolated nodes.
+
+  * Corrected `msep` in case of adjacency matrix without dimnames.
+  
+  * Corrected `plotGraph` that is now more efficient and produce better plots in case of double edges. 
+
+
+#  Changes in version 2.5.4:
+  
+  * Corrected invalid URL of the paper in The R Journal.  
+  
+#  Changes in version 2.5.3:
+  
+  * Fixed deprecated '.Dim' and '.Dimnames' special names in documentation examples.
+  * Wrapped interactive plotting examples in '\donttest{}' to avoid orphaned Xvfb-run temporary files during CRAN checks.
+  
+
+
+
+
 
 
 - June 2026 

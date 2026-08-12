@@ -7,16 +7,21 @@
 MarkEqMag(amat, bmat)
 }
 \arguments{
-\item{amat}{An adjacency matrix of a MAG, or a graph that can be a
-\code{graphNEL} object, an \link[igraph:igraph]{igraph::igraph} object, or a
-character vector of length \verb{3e} (where \code{e} is the number of edges).
-If a vector, it must be a sequence of triples
-(\code{type}, \code{node1label}, \code{node2label}).
-The \code{type} of edge  can be
+\item{amat}{An adjacency matrix, or a graph object. This can be:
 \itemize{
-\item \code{"a"} (arrows from \code{node1} to \code{node2}),
-\item \code{"b"} (arcs), or
-\item \code{"l"} (lines).
+\item a \code{graphNEL} object,
+\item an \code{\link[igraph:igraph]{igraph::igraph()}} object, or
+\item a character vector of length \eqn{3e}{3e}, where \eqn{e}
+is the number of edges. If it is a vector, it must
+be a sequence of triples (\code{type}, \code{node1label}, \code{node2label}).
+
+The type of edge can be:
+\itemize{
+\item \code{"a"} (arrow from \code{node1} to \code{node2}),
+\item \code{"b"} (bi-directed arc),
+\item \code{"l"} (undirected line), or
+\item \code{"*"} (for an isolated node with \code{node1 == node2}).
+}
 }}
 
 \item{bmat}{The same as \code{amat}.}
@@ -28,6 +33,12 @@ A character string: either \code{"Markov Equivalent"} or \code{"NOT Markov Equiv
 \code{MarkEqMag} determines whether two maximal ancestral graphs (MAGs)
 are Markov equivalent. The function checks whether the two graphs
 have the same skeleton and colliders with order.
+}
+\details{
+@details Support for \code{graphNEL} objects requires the \code{graph} package
+from Bioconductor, which is a suggested dependency.
+If the package is missing, passing a \code{graphNEL} object will
+trigger an informative error.
 }
 \examples{
 H1 <- matrix(c(

@@ -3,8 +3,8 @@
 #' Plots a mixed graph from an adjacency matrix, a `graphNEL` 
 #' object, an `igraph` object, or a descriptive vector.
 #' 
-#' `plotGraph` uses [igraph::plot_igraph] and
-#' \code{\link[igraph]{tkplot}} in \pkg{\link[igraph]{igraph}} package.
+#' `plotGraph` uses [igraph::plot.igraph()] and
+#' [igraph::tkplot()].
 #' 
 #' @param a An adjacency matrix: a matrix that consists of 4 different integers
 #' as an \eqn{ij}-element: 0 for a missing edge between \eqn{i} and \eqn{j}, 1
