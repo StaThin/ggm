@@ -17,28 +17,29 @@ a matrix of \code{n} rows and \code{d} columns.
 }
 \description{
 Generates a sample of points uniformly distributed on the surface of a
-sphere in d-space.
+sphere in \eqn{d}-space.
 }
 \details{
-The algorithm is based on normalizing to length 1 each d-vector of a sample
-from a multivariate normal \eqn{N(0, I)}.
+The algorithm is based on normalizing to length 1 each \eqn{d}-vector
+of a sample from a multivariate standard normal \eqn{N(0, I)}.
 }
 \examples{
 
-## 100 points on circle
+# 100 points on circle
 z <- rsphere(100, 2)
 plot(z)
 
-## 100 points on a sphere
+# 100 points on a sphere
 z <- rsphere(100, 3)
 pairs(z)
 
 }
 \seealso{
-\code{\link{rnorm}}, \code{\link{rcorr}}
+\code{\link[stats:rnorm]{stats::rnorm()}}, \code{\link[=rcorr]{rcorr()}}
 }
 \author{
 Giovanni M. Marchetti
 }
 \keyword{distribution}
 \keyword{multivariate}
+\keyword{normal}

@@ -66,8 +66,8 @@ and bi-directed arrows.
 marginalisation and conditioning.
 }
 \details{
-Support for \code{graphNEL} objects requires the \code{graph} package
-from Bioconductor, which is a suggested dependency.
+Support for \code{graphNEL} objects requires the \code{graph}
+package from Bioconductor, which is a suggested dependency.
 If the package is missing, passing a \code{graphNEL} object will
 trigger an informative error.
 

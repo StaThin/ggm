@@ -4,15 +4,18 @@
 \alias{correlations}
 \title{Marginal and partial correlations}
 \usage{
-correlations(x)
+correlations(x, placement = upper.tri)
 }
 \arguments{
 \item{x}{A square symmetric matrix, a covariance matrix,
 or a data.frame for \code{n} observations and \code{p} variables.}
+
+\item{placement}{is the function \code{upper.tri} or \verb{lower tri} that specyfies
+the placement of the pairwise partial correlations. The default is \code{upper.tri}.}
 }
 \value{
-A square correlation matrix with marginal correlations (lower
-triangle) and partial correlations (upper triangle).
+A square correlation matrix with marginal correlations
+and partial correlations with the chosen \code{placement}.
 }
 \description{
 Computes a correlation matrix with ones along the diagonal, marginal
@@ -23,6 +26,8 @@ remaining variables in the upper triangle.
 ## See Table 6.1 in Cox & Wermuth (1996)
 data(glucose)
 correlations(glucose)
+
+correlations(glucose, placement = lower.tri)
 
 }
 \references{

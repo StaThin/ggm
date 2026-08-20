@@ -15,7 +15,8 @@ AG(
 )
 }
 \arguments{
-\item{amat}{An adjacency matrix, or a graph object. This can be:
+\item{amat}{An adjacency matrix, or a graph object.
+This can be:
 \itemize{
 \item a \code{graphNEL} object,
 \item an \code{\link[igraph:igraph]{igraph::igraph()}} object, or
@@ -62,12 +63,12 @@ and bi-directed arrows.
 }
 }
 \description{
-\code{AG} generates and plots ancestral graphs after marginalization and
-conditioning.
+\code{AG} generates and plots ancestral graphs after marginalization
+and conditioning.
 }
 \details{
-Support for \code{graphNEL} objects requires the \code{graph} package
-from Bioconductor, which is a suggested dependency.
+Support for \code{graphNEL} objects requires the \code{graph}
+package  from Bioconductor, which is a suggested dependency.
 If the package is missing, passing a \code{graphNEL} object will
 trigger an informative error.
 

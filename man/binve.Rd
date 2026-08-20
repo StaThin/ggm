@@ -7,7 +7,7 @@
 binve(eta, C, M, G, maxit = 500, print = FALSE, tol = 1e-10)
 }
 \arguments{
-\item{eta}{a vector of dimension \code{t-1} where \code{t} is the number of cells of a contingency table.}
+\item{eta}{a vector of dimension \code{t - 1} where \code{t} is the number of cells of a contingency table.}
 
 \item{C}{A contrast matrix.}
 
@@ -32,7 +32,8 @@ A vector of probabilities \code{p}.
 A marginal log-linear link is defined by \eqn{\eta = C (M \log p)}{eta = C(M * log(p)}. See Bartolucci et al. (2007) for details.
 }
 \note{
-From a Matlab function by A. Forcina, University of Perugia, Italy.
+From a Matlab function by Antonio Forcina,
+University of Perugia, Italy.
 }
 \references{
 Bartolucci, F., Colombi, R. and Forcina, A. (2007).

@@ -62,12 +62,12 @@ and bi-directed arrows.
 }
 }
 \description{
-\code{SG} generates and plots summary graphs after marginalization and
-conditioning.
+\code{SG} generates and plots summary graphs after marginalization
+and conditioning.
 }
 \details{
-Support for \code{graphNEL} objects requires the \code{graph} package
-from Bioconductor, which is a suggested dependency.
+Support for \code{graphNEL} objects requires the \code{graph}
+package from Bioconductor, which is a suggested dependency.
 If the package is missing, passing a \code{graphNEL} object will
 trigger an informative error.
 

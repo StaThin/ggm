@@ -7,7 +7,7 @@
 conComp(amat, method = 1)
 }
 \arguments{
-\item{amat}{A square matrix with dimnames, the adjacency matrix
+\item{amat}{The adjacency matrix
 of an UG.}
 
 \item{method}{An integer 1 or 2 to choose the method used
@@ -18,12 +18,12 @@ An integer vector representing a partition of the set
 of nodes.
 }
 \description{
-Finds the connectivity components of a graph.
+Finds the connectivity components of an undirected graph.
 }
 \examples{
-## three connected components
+# three connected components
 conComp(UG(~ a * c + c * d + e + g * o * u))
-## a connected graph
+# one connected graph
 conComp(UG(~ a * b + b * c + c * d + d * a))
 
 }

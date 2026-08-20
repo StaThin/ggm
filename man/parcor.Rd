@@ -20,24 +20,24 @@ Finds the matrix of the partial correlations between pairs of variables
 given the rest.
 }
 \details{
-The algorithm computes \eqn{- \sigma^{rs}/(\sigma^{rr} \sigma^{ss})^{1/2}}
-where the \eqn{\sigma^{rs}} are concentrations, i.e. elements of the inverse
-covariance matrix.
+The algorithm computes \eqn{- \omega_{rs}/(\omega_{rr} \omega_{ss})^{1/2}}{-w[r,s] /(w[r,r] * w[s,s])^(1/2)}
+where \eqn{\omega_{rs}}{w[r,s]} are concentrations,
+i.e. elements  of the inverse covariance matrix.
 }
 \examples{
 
-### Partial correlations for the mathematics marks data
+# Partial correlations for the mathematics marks data
 data(marks)
 S <- var(marks)
 parcor(S)
 
 }
 \references{
-Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate
-dependencies}. London: Chapman & Hall.
+Cox, D. R. & Wermuth, N. (1996). *Multivariate dependencies].
+London: Chapman & Hall.
 }
 \seealso{
-\code{\link{var}}, \code{\link{cor}}, \code{\link{correlations}}
+\code{\link[stats:var]{stats::var()}}, \code{\link[stats:cor]{stats::cor()}}, \code{\link[=correlations]{correlations()}}
 }
 \author{
 Giovanni M. Marchetti

@@ -30,12 +30,14 @@ The type of edge can be:
 A character string: either \code{"Markov Equivalent"} or \code{"NOT Markov Equivalent"}.
 }
 \description{
-\code{MarkEqRcg} determines whether two regression chain graphs (RCGs) or
-subclasses of RCGs are Markov equivalent. The function checks whether the two graphs have the same skeleton and "unshielded colliders".
+\code{MarkEqRcg} determines whether two regression chain graphs
+(RCGs) or subclasses of RCGs are Markov equivalent.
+The function checks whether the two graphs have the same
+skeleton and "unshielded colliders".
 }
 \details{
-Support for \code{graphNEL} objects requires the \code{graph} package
-from Bioconductor, which is a suggested dependency.
+Support for \code{graphNEL} objects requires the \code{graph}
+package from Bioconductor, which is a suggested dependency.
 If the package is missing, passing a \code{graphNEL} object will
 trigger an informative error.
 }
@@ -70,8 +72,8 @@ MarkEqRcg(H2, H3)
 
 }
 \references{
-Wermuth, N. and Sadeghi, K. (2012). Sequences of regressions and
-their independences. \emph{Test}, 21:215-252.
+Wermuth, N. and Sadeghi, K. (2012). Sequences of regressions
+and their independences. \emph{Test}, 21:215-252.
 }
 \seealso{
 \code{\link[=msep]{msep()}}, \code{\link[=grMAT]{grMAT()}}

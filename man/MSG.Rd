@@ -66,12 +66,10 @@ and bi-directed arrows.
 marginalization and conditioning.
 }
 \details{
-Support for \code{graphNEL} objects requires the \code{graph} package
-from Bioconductor, which is a suggested dependency.
+Support for \code{graphNEL} objects requires the \code{graph}
+package from Bioconductor, which is a suggested dependency.
 If the package is missing, passing a \code{graphNEL} object will
 trigger an informative error.
-
-This function uses the internal functions \code{\link[=AG]{AG()}} and \code{\link[=Max]{Max()}}.
 }
 \note{
 This function uses the functions \code{\link[=SG]{SG()}} and \code{\link[=Max]{Max()}}.

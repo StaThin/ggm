@@ -9,31 +9,38 @@ rnormDag(n, A, Delta)
 \arguments{
 \item{n}{an integer > 0, the sample size.}
 
-\item{A}{a square, upper triangular matrix with ones along the diagonal. It
-defines, together with \code{Delta}, the concentration matrix (and also the
+\item{A}{a square, upper triangular matrix with ones along the diagonal.
+It defines, together with \code{Delta}, the concentration matrix (and also the
 covariance matrix) of the multivariate normal. The order of \code{A} is the
 number of components of the normal.}
 
-\item{Delta}{a numeric vector of length equal to the number of columns of
-\code{A}.}
+\item{Delta}{a numeric vector of length equal to the number of columns
+of\code{A}.}
 }
 \value{
-a matrix with \code{n} rows and \code{nrow(A)} columns, a sample from a multivariate normal distribution with mean zero and covariance matrix \eqn{S = A^{-1} \Delta (A^{-1})'}{S = solve(A) \%*\% diag(Delta) \%*\% t(solve(A))}.
+a matrix with \code{n} rows and \code{nrow(A)} columns, a sample from a
+multivariate normal distribution with mean zero and covariance matrix
+\eqn{S = A^{-1} \Delta (A^{-1})'}{S = solve(A) \%*\% diag(Delta) \%*\% t(solve(A))}.
 }
 \description{
-Generates a sample from a mean centered multivariate normal distribution whose covariance matrix has a given triangular decomposition.
+Generates a sample from a mean centered multivariate normal distribution
+whose covariance matrix has a given triangular decomposition.
 }
 \details{
-The value in position \eqn{(i,j)} of \code{A} (with \eqn{i < j}) is a regression coefficient (with sign changed) in the regression of variable \eqn{i} on variables \eqn{i+1, \dots, d}.
-
-The value in position \eqn{i} of \code{Delta} is the residual variance in the above regression.
+\itemize{
+\item The value in position \eqn{(i,j)} of \code{A} (with \eqn{i < j}) is
+a regression coefficient with the sign changed in the regression of
+variable \eqn{i} on variables \eqn{i+1, \dots, d}.
+\item The value in position \eqn{i} of \code{Delta} is the residual variance
+in the above regression.
+}
 }
 \examples{
 if (requireNamespace("ggm", quietly = TRUE)) {
   library(ggm)
 
-  ## Generate a sample of 100 observation from a multivariate normal
-  ## The matrix of the path coefficients
+  # Generate a sample of 100 observation from a multivariate normal
+  # The matrix of the path coefficients
   A <- matrix(
     c(
       1, -2, -3, 0, 0, 0, 0,
@@ -49,7 +56,7 @@ if (requireNamespace("ggm", quietly = TRUE)) {
   D <- rep(1, 7)
   X <- rnormDag(100, A, D)
 
-  ## The true covariance matrix
+  # The true covariance matrix
   solve(A) \%*\% diag(D) \%*\% t(solve(A))
 
   ## Triangular decomposition of the sample covariance matrix
@@ -58,7 +65,8 @@ if (requireNamespace("ggm", quietly = TRUE)) {
 
 }
 \references{
-Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate dependencies}. London: Chapman & Hall.
+Cox, D. R. & Wermuth, N. (1996). \emph{Multivariate dependencies}.
+London: Chapman & Hall.
 }
 \seealso{
 \code{\link[=triDec]{triDec()}}, \code{\link[=fitDag]{fitDag()}}

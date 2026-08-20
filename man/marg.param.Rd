@@ -35,9 +35,10 @@ for the marginal parametrization of a probability vector.
 \details{
 See Bartolucci, Colombi and Forcina (2007).
 
-The function assumes that the vector of probabilities
-is in inverse lexicographic order.  The interactions are returned
-in order of dimension, like e.g., \code{1}, \code{2}, \code{3}, \code{12}, \code{13}, \code{23}, \code{123}.
+The function assumes that the vector of
+probabilities is in inverse lexicographic order.
+The interactions are returned in order of dimension,
+like e.g., \code{1}, \code{2}, \code{3}, \code{12}, \code{13}, \code{23}, \code{123}.
 }
 \examples{
 

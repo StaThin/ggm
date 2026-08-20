@@ -9,12 +9,14 @@ blodiag(x, blo)
 \arguments{
 \item{x}{A vector of length \code{n}.}
 
-\item{blo}{A vector of positive integers such that \code{sum(blo) == n}.}
+\item{blo}{A vector of positive integers such that
+\code{sum(blo) == n}.}
 }
 \value{
-A block-diagonal matrix with as many row as elements of
-\code{blo} and \code{n} columns. The vector \code{x} is split into \code{length(blo)}
-sub-vectors and these are the blocks of the resulting matrix.
+A block-diagonal matrix with as many row
+as elements of  \code{blo} and \code{n} columns.
+The vector \code{x} is split into \code{length(blo)}sub-vectors and
+these are the blocks of the resulting matrix.
 }
 \description{
 Split a vector x into a block diagonal matrix.
@@ -23,8 +25,8 @@ Split a vector x into a block diagonal matrix.
 
 blodiag(1:10, blo = c(2, 3, 5))
 blodiag(1:8, blo = c(3, 4, 0, 1))
-blodiag(1:4, blo = c(2,0,2))
-blodiag(1:4, blo = c(2,2,0))
+blodiag(1:4, blo = c(2, 0, 2))
+blodiag(1:4, blo = c(2, 2, 0))
 
 }
 \seealso{

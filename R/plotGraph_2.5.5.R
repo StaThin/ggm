@@ -29,8 +29,12 @@
 #' \item{tkp.id}{`NULL` (retained solely for backward compatibility with older package versions).}
 #' \item{igraph}{The processed internal graph object of class `igraph`.}
 #'
+#'@references 
+#'Sadeghi, K. and Marchetti, G.M. (2012). Graphical Markov models with mixed
+#' graphs in R. \emph{The R Journal},  4(2):65-73. 
+#' \url{https://journal.r-project.org/articles/RJ-2012-015/RJ-2012-015.pdf}
 #' @examples
-#' ## Generating the adjacency matrix from a vector and plotting
+#' # Generating the adjacency matrix from a vector and plotting
 #' exvec <- c(
 #'   "b", 1, 2, "b", 1, 14, "a", 9, 8, "l", 9, 11,
 #'   "a", 10, 8, "a", 11, 2, "a", 11, 9, "a", 11, 10,

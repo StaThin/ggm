@@ -43,22 +43,22 @@ The model formulae may contain interactions,
 but they are ignored in the graph.
 }
 \examples{
-## A Markov chain
+# A Markov chain
 DAG(y ~ x, x ~ z, z ~ u)
 
-## Another DAG
+# Another DAG
 DAG(y ~ x + z + u, x ~ u, z ~ u)
 
-## A DAG with an isolated node
+# A DAG with an isolated node
 DAG(v ~ v, y ~ x + z, z ~ w + u)
 
-## There can be repetitions
+# There can be repetitions
 DAG(y ~ x + u + v, y ~ z, u ~ v + z)
 
-## Interactions are ignored
+# Interactions are ignored
 DAG(y ~ x * z + z * v, x ~ z)
 
-## A cyclic graph returns an error!
+# A cyclic graph returns an error!
 \dontrun{
 DAG(y ~ x, x ~ z, z ~ y)
 }

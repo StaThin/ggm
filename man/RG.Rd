@@ -15,13 +15,15 @@ RG(
 )
 }
 \arguments{
-\item{amat}{An adjacency matrix, or a graph object. This can be:
+\item{amat}{An adjacency matrix, or a graph object.
+This can be:
 \itemize{
 \item a \code{graphNEL} object,
 \item an \code{\link[igraph:igraph]{igraph::igraph()}} object, or
 \item a character vector of length \eqn{3e}{3e}, where \eqn{e}
 is the number of edges. If it is a vector, it must
-be a sequence of triples (\code{type}, \code{node1label}, \code{node2label}).
+be a sequence of triples (\code{type}, \code{node1label},
+\code{node2label}).
 
 The type of edge can be:
 \itemize{
@@ -32,16 +34,17 @@ The type of edge can be:
 }
 }}
 
-\item{M}{A subset of the node set of \code{amat} that is going to be
-marginalized over.}
+\item{M}{A subset of the node set of \code{amat} that
+is going to be marginalized over.}
 
-\item{C}{Another disjoint subset of the node set of \code{amat} that
-is going to be conditioned on.}
+\item{C}{Another disjoint subset of the node set
+of \code{amat} that is going to be conditioned on.}
 
-\item{showmat}{A logical value. \code{TRUE} (by default) to print the
-generated matrix.}
+\item{showmat}{A logical value. \code{TRUE} (by default)
+to print the generated matrix.}
 
-\item{plot}{\code{FALSE} (by default). \code{TRUE} to plot the generated graph.}
+\item{plot}{\code{FALSE} (by default). \code{TRUE} to plot the
+generated graph.}
 
 \item{plotfun}{Function to plot the graph when \code{plot = TRUE}.
 Can be \code{plotGraph} (the default) or \code{drawGraph}.}
@@ -56,18 +59,19 @@ representing the \eqn{ij}{ij}-elements:
 \item 1 for an arrow from \eqn{i} to \eqn{j},
 \item 10 for a full line between \eqn{i} and \eqn{j}, and
 \item 100 for a bi-directed arrow between \eqn{i} and \eqn{j}.
-These numbers are added when multiple edges of different types
-are present. The matrix is symmetric with respect to full lines
-and bi-directed arrows.
+These numbers are added when multiple edges of
+different types are present. The matrix is symmetric
+with respect to full lines and bi-directed arrows.
 }
 }
 \description{
-\code{RG} generates and plots ribbonless graphs (a modification of MC graph
-to use m-separation) after marginalization and conditioning.
+\code{RG} generates and plots ribbonless graphs
+(a modification of MC graph to use m-separation)
+after marginalization and conditioning.
 }
-\details{
-Support for \code{graphNEL} objects requires the \code{graph} package
-from Bioconductor, which is a suggested dependency.
+\note{
+Support for \code{graphNEL} objects requires the \code{graph}
+package from Bioconductor, which is a suggested dependency.
 If the package is missing, passing a \code{graphNEL} object will
 trigger an informative error.
 

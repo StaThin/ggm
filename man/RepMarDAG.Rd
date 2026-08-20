@@ -30,7 +30,7 @@ different integers as an \eqn{ij}-element:
 \item 0 for a missing edge between \eqn{i} and \eqn{j},
 \item 1 for an arrow from \eqn{i} to \eqn{j},
 \item 10 for a full line between \eqn{i} and \eqn{j}, and
-\item 100 for a bi-directed arrow between \eqn{i} and#' \eqn{j}.
+\item 100 for a bi-directed arrow between \eqn{i} and \eqn{j}.
 These numbers are added to be associated with multiple edges of
 different types. The matrix is symmetric w.r.t full lines
 and bi-directed arrows.
@@ -48,20 +48,33 @@ full lines is chordal and whether there is a minimal collider path
 or cycle of length 4 in graph.
 }
 \examples{
-
+# 1.
+h <- makeMG(bg = UG(~ A*B + B*C + C*D + D*A + E + F),
+            dg = DAG(B ~ E, C~ E+F, D~F))
+RepMarDAG(h)
+# 2. 
 H <- matrix(c(0, 10, 0, 0, 
-              10, 0, 0, 0, 
-              0, 1, 0, 100, 
-              0, 0, 100, 0), 4, 4)
-RepMarBG(H)
+              10, 0, 1, 0, 
+              0, 0, 0, 100, 
+              0, 0, 100, 0), 4, 4, byrow = TRUE)
+ nod <- c("A", "B", "C", "D")
+ dimnames(H) <- list(nod, nod)
+ RepMarDAG(H)
+ # 3. wrong
+ G <- makeMG(bg = UG(~ A*B*C + C*D + C*E))
+ RepMarDAG(G)
+ # 4. wrong 
+ g <- makeMG(dg = DAG(A ~ C, B ~ D), bg = UG( ~ A*B))
+ RepMarDAG(g)
 
 }
 \references{
 Sadeghi, K. (2011). Markov equivalences for subclasses of
-loopless mixed graphs. \emph{Arxiv}, https://arxiv.org/abs/1110.4539.
+loopless mixed graphs. \emph{Arxiv},
+https://arxiv.org/abs/1110.4539.
 }
 \seealso{
-\code{\link[=MarkEqMag]{MarkEqMag()}}, \code{\link[=MarkEqRcg]{MarkEqRcg()}},\code{\link[=RepMarBG]{RepMarBG()}}, \code{\link[=RepMarUG]{RepMarUG()}}
+\code{\link[=MarkEqMag]{MarkEqMag()}} \code{\link[=MarkEqRcg]{MarkEqRcg()}} \code{\link[=RepMarBG]{RepMarBG()}}  \code{\link[=RepMarUG]{RepMarUG()}}
 }
 \author{
 Kayvan Sadeghi

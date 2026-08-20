@@ -7,8 +7,9 @@
 fitmlogit(..., C = c(), D = c(), mit = 100, ep = 1e-80, acc = 1e-04, daf)
 }
 \arguments{
-\item{...}{Model formulae of marginal logistic models for each
-response and for each association parameters (log-odds ratios).}
+\item{...}{Model formulae of marginal logistic models for
+each  response and for each association parameters
+(log-odds ratios).}
 
 \item{C}{Matrix of equality constraints.}
 
@@ -17,9 +18,11 @@ response and for each association parameters (log-odds ratios).}
 \item{mit}{A positive integer: maximum number of iterations.
 (default: \code{100}).}
 
-\item{ep}{A tolerance used in the algorithm (default \code{1e-80}).}
+\item{ep}{A tolerance used in the algorithm
+(default \code{1e-80}).}
 
-\item{acc}{A tolerance used in the algorithm (default \code{1e-4}).}
+\item{acc}{A tolerance used in the algorithm
+(default \code{1e-4}).}
 
 \item{daf}{A data frame for the individual units containing the responses and the explanatory variables.}
 }
@@ -32,9 +35,9 @@ response and for each association parameters (log-odds ratios).}
 }
 }
 \description{
-Fits a logistic regression model to multivariate binary responses.
-The explanatory variables can be binary and/or individual-level
-continuous covariates.
+Fits a logistic regression model to multivariate binary
+responses. The explanatory variables can be binary and/or
+individual-level continuous covariates.
 }
 \details{
 See Evans and Forcina (2013).
@@ -50,8 +53,8 @@ out2$beta
 }
 \references{
 Evans, R.J. and Forcina, A. (2013). Two algorithms
-for fitting constrained marginal models. \emph{Computational Statistics
-and Data Analysis}, 66, 1-7.
+for fitting constrained marginal models.
+\emph{Computational Statistics and Data Analysis}, 66, 1-7.
 }
 \seealso{
 \code{\link[stats:glm]{stats::glm()}}

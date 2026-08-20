@@ -2,7 +2,7 @@
 % Please edit documentation in R/all_functions.R
 \name{hypercube}
 \alias{hypercube}
-\title{Create a boolean matrix from all combinations of binary variables}
+\title{Create a Boolean matrix from all combinations of binary variables}
 \usage{
 hypercube(n)
 }
@@ -12,14 +12,17 @@ the function gives an error message.}
 }
 \value{
 a matrix with \eqn{2^n}{2^n} rows and \eqn{n} columns.
-Each row of the matrix is a \code{TRUE}/\code{FALSE} vector representing the
-coordinates of the vertices of a hypercube, ordered in inverse
-lexicographic order.
-@examples
-hypercube(4)
-
-@sealso \code{\link[base:expand.grid]{base::expand.grid()}}
+Each row of the matrix is a \code{TRUE}/\code{FALSE} vector
+representing the coordinates of the vertices of
+a hypercube, ordered in inverse lexicographic order.
 }
 \description{
-Create a boolean matrix from all combinations of binary variables
+Create a Boolean matrix from all combinations of binary variables
+}
+\examples{
+ hypercube(4)
+
+}
+\seealso{
+\code{\link[base:expand.grid]{base::expand.grid()}}
 }

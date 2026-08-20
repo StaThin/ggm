@@ -6,9 +6,30 @@
 
   * Corrected `msep` in case of adjacency matrix without dimnames.
   
-  * Corrected `plotGraph` that is now more efficient and produce better plots in case of double edges. 
+  * Corrected `plotGraph` that is now more efficient and produce 
+    better plots in case of double edges. Differences in arguments:
+    ggm 2.5.4
+      a, dashed = FALSE, tcltk = TRUE, layout = layout.auto, 
+      directed = FALSE, noframe = FALSE, nodesize = 15, vld = 0, 
+      vc = "gray", vfc = "black", colbid = "FireBrick3", 
+      coloth = "black", cex = 1.5, ...
+  * ggm 2.5.5
+    a, dashed = FALSE, layout = igraph::layout_nicely, 
+    directed = FALSE, noframe = FALSE, nodesize = 20, vld = 0, 
+    vc = "gray80", vfc = NA, colbid = "FireBrick3", coloth = "gray40", 
+    cex = 1, ew = 1.8, eas = 0.7, eaw = 1, ...) 
+    
+    Notice that the argument `tctkl` is removed from plotGraph 
+    because is based on `igraph::tkplot that is deprecated 
+    and will be removed. Please use the new 'ggmGraphEditor' package
+    for interactive plots. 
+  
+  * Added an argument `value` to `cmpGraph`.
+  
+  * Added an argument `prcor` to `correlations`
 
-
+  * Corrected function`RepMarDAG`
+  
 #  Changes in version 2.5.4:
   
   * Corrected invalid URL of the paper in The R Journal.  
@@ -18,12 +39,6 @@
   * Fixed deprecated '.Dim' and '.Dimnames' special names in documentation examples.
   * Wrapped interactive plotting examples in '\donttest{}' to avoid orphaned Xvfb-run temporary files during CRAN checks.
   
-
-
-
-
-
-
 - June 2026 
   Used Roxygen2
   Deprecated tcltk = TRUE in plotGraph

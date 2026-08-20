@@ -38,16 +38,16 @@ and bi-directed arrows.
 }
 }
 \description{
-\code{Max} generates a maximal graph that induces the same independence
-model from a non-maximal graph.
+\code{Max} generates a maximal graph that induces the same
+independence model from a non-maximal graph.
 }
 \details{
 \code{Max} looks for non-adjacent pais of nodes that are connected by
 primitive inducing paths, and connect such pairs by an
 appropriate edge.
 
-Support for \code{graphNEL} objects requires the \code{graph} package
-from Bioconductor, which is a suggested dependency.
+Support for \code{graphNEL} objects requires the \code{graph}
+package from Bioconductor, which is a suggested dependency.
 If the package is missing, passing a \code{graphNEL} object will
 trigger an informative error.
 

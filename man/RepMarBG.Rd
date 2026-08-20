@@ -9,8 +9,9 @@ RepMarBG(amat)
 \arguments{
 \item{amat}{An adjacency matrix, or a graph that can be a
 \code{graphNEL} or an \code{\link[igraph:igraph]{igraph::igraph()}} object or a vector of
-length \eqn{3e}, where \eqn{e} is the number of edges of the graph,
-that is a sequence of triples (\code{type}, \code{node1label}, \code{node2label}).
+length \eqn{3e}, where \eqn{e} is the number of edges of
+the graph, that is a sequence of triples
+(\code{type}, \code{node1label}, \code{node2label}).
 The type of edge can be
 \itemize{
 \item \code{"a"} (arrows from \code{node1} to \code{node2},
@@ -21,19 +22,19 @@ The type of edge can be
 \value{
 A list with two components: \code{verify} and \code{amat}.
 \itemize{
-\item \code{verify} is a logical value, \code{TRUE} if there is a representational
-Markov equivalence and \code{FALSE} otherwise.
+\item \code{verify} is a logical value, \code{TRUE} if there is a
+representational Markov equivalence and \code{FALSE} otherwise.
 \item \code{amat} is either \code{NA} if \code{verify} ia \code{FALSE} or is the
-adjacency matrix of the generated graph, if \code{verify} is \code{TRUE}.
-In this case \code{amat} represent a mixed graph consisting of 4
-different integers as an \eqn{ij}-element:
+adjacency matrix of the generated graph, if \code{verify}
+is \code{TRUE}. In this case \code{amat} represent a mixed graph
+consisting of 4 different integers as an \eqn{ij}-element:
 \item 0 for a missing edge between \eqn{i} and \eqn{j},
 \item 1 for an arrow from \eqn{i} to \eqn{j},
 \item 10 for a full line between \eqn{i} and \eqn{j}, and
-\item 100 for a bi-directed arrow between \eqn{i} and#' \eqn{j}.
-These numbers are added to be associated with multiple edges of
-different types. The matrix is symmetric w.r.t full lines
-and bi-directed arrows.
+\item 100 for a bi-directed arrow between \eqn{i} and \eqn{j}.
+These numbers are added to be associated with multiple
+edges of different types. The matrix is symmetric
+w.r.t full lines and bi-directed arrows.
 }
 }
 \description{
@@ -49,10 +50,14 @@ V-configuration in graph.
 \examples{
 
 H <- matrix(c(0, 10, 0, 0, 
-              10, 0, 0, 0, 
-              0, 1, 0, 100, 
-              0, 0, 100, 0), 4, 4)
+              10, 0, 1, 0, 
+              0, 0, 0, 100, 
+              0, 0, 100, 0), 4, 4, byrow  = TRUE)
 RepMarBG(H)
+
+G <- c("a", "A", "B", "b", "B", "C", "a", "C", "D", "a",
+ "E", "B", "a", "E", "C") 
+RepMarBG(G)
 
 }
 \references{

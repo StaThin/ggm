@@ -29,14 +29,13 @@ The power set used in the marginal model is
 listed in the order of dimensions of the sets.
 }
 \examples{
-
 mat.mlogit(2)
 
 }
 \references{
-Glonek, G. J. N. and McCullagh, P. (1995).
-Multivariate logistic models. \emph{Journal of the
-Royal Statistical Society}, Ser. B, 57, 533-546.
+Glonek, G. J. N. and McCullagh, P. (1995). Multivariate
+logistic models. \emph{Journal of the Royal Statistical Society},
+Ser. B, 57, 533-546.
 }
 \seealso{
 \code{\link[stats:binomial]{stats::binomial()}}, \code{\link[=marg.param]{marg.param()}}.

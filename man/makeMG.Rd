@@ -27,12 +27,10 @@ an \eqn{ij}-element:
 \item 10 for a full line between \eqn{i} and \eqn{j}, and
 \item 100 for a bi-directed arrow between  \eqn{i} and
 \eqn{j}.
-}
-
-\if{html}{\out{<div class="sourceCode">}}\preformatted{These numbers are added to be associated with
+These numbers are added to be associated with
 multiple edges of different types. The matrix is
 symmetric w.r.t full lines and bi-directed arrows.
-}\if{html}{\out{</div>}}
+}
 }
 \description{
 Defines a loopless mixed graph from directed,

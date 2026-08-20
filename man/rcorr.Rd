@@ -13,28 +13,28 @@ rcorr(d)
 a correlation matrix of order \code{d}.
 }
 \description{
-Generates a random correlation matrix with the method of Marsaglia and Olkin
-(1984).
+Generates a random correlation matrix with the method of
+Marsaglia and Olkin (1984).
 }
 \details{
-The algorithm uses \code{\link{rsphere}} to generate \eqn{d} vectors on a
+The algorithm uses \code{rsphere()} to generate \eqn{d} vectors on a
 sphere in \eqn{d}-space. If \eqn{Z} is a matrix with such vectors as rows,
-then the random correlation matrix is \eqn{ZZ'}.
+then the random correlation matrix is \eqn{ZZ^T}{Z\%*\% t(Z)}.
 }
 \examples{
 
-## A random correlation matrix of order 3
+# A random correlation matrix of order 3
 rcorr(3)
 ## A random correlation matrix of order 5
 rcorr(5)
 
 }
 \references{
-Marshall, G.& Olkin, I. (1984).Generating correlation matrices.
-\emph{SIAM J. Sci. Stat. Comput.}, 5, 2, 470--475.
+Marshall, G.& Olkin, I. (1984). Generating correlation matrices.
+\emph{SIAM J. Sci. Stat. Comput.}, 5, 2, 470-475.
 }
 \seealso{
-\code{\link{rsphere}}
+\code{\link[=rsphere]{rsphere()}}
 }
 \author{
 Giovanni M. Marchetti

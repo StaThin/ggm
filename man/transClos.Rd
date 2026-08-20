@@ -7,35 +7,36 @@
 transClos(amat)
 }
 \arguments{
-\item{amat}{a Boolean matrix with dimnames representing the adjacency matrix
-of a graph.}
+\item{amat}{a Boolean matrix with dimnames representing
+the adjacency matrix of a graph.}
 }
 \value{
-\item{A}{The adjacency matrix of the transitive closure.}
+\code{A} the adjacency matrix of the transitive closure.
 }
 \description{
 Computes the transitive closure of a graph (undirected or directed acyclic).
 }
 \details{
-The transitive closure of a directed graph with adjacency matrix \eqn{A} is
-a graph with adjacency matrix \eqn{A^*} such that \eqn{A^*_{i,j} = 1} if
-there is a directed path from \eqn{i} to \eqn{j}. The transitive closure of
-an undirected graph is defined similarly (by substituting path to directed
-path).
+The transitive closure of a directed graph with adjacency
+matrix \eqn{A} is a graph with adjacency matrix \eqn{A^*}
+such that \eqn{A^*_{i,j} = 1} if there is a directed path
+from \eqn{i} to \eqn{j}. The transitive closure of
+an undirected graph is defined similarly (by substituting
+path to directed path).
 }
 \examples{
 
-## Closure of a DAG
+# Closure of a DAG
 d <- DAG(y ~ x, x ~ z)
 transClos(d)
 
-## Closure of an UG
+# Closure of an UG
 g <- UG(~ x * y * z + z * u + u * v)
 transClos(g)
 
 }
 \seealso{
-\code{\link{DAG}}, \code{\link{UG}}
+\code{\link[=DAG]{DAG()}}, \code{\link[=UG]{UG()}}
 }
 \author{
 Giovanni M. Marchetti

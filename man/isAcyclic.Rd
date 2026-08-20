@@ -7,15 +7,15 @@
 isAcyclic(amat, method = 2)
 }
 \arguments{
-\item{amat}{a square Boolean matrix with dimnames, the adjacency matrix of a
-graph.}
+\item{amat}{a square Boolean matrix with dimnames, the adjacency matrix
+of a graph.}
 
 \item{method}{an integer 1 or 2 specifying the method used. If
 \code{method=1} the function calls the function \code{clusters} in package
-\code{igraph} to find the strong components: two nodes v and w are in the
-same strong component iff there are directed paths from v to w and from w to
-v. If \code{method=2} the function uses the \code{ggm} function
-\code{transClos}. Method 1 is faster.}
+\code{igraph} to find the strong components: two nodes \code{v} and \code{w} are in the
+same strong component iff there are directed paths from \code{v} to \code{w}
+and from \code{w} to \code{v}. If \code{method=2} the function uses the function
+\code{ggm::transClos}. Method 1 is faster.}
 }
 \value{
 a logical value, \code{TRUE} if the graph is acyclic and
@@ -26,7 +26,7 @@ Checks if a given graph is acyclic.
 }
 \examples{
 
-## A cyclic graph
+# A cyclic graph
 d <- matrix(0, 3, 3)
 rownames(d) <- colnames(d) <- c("x", "y", "z")
 d["x", "y"] <- d["y", "z"] <- d["z", "x"] <- 1
@@ -36,8 +36,8 @@ isAcyclic(d, method = 1)
 
 }
 \references{
-Aho, A.V., Hopcroft, J.E. & Ullman, J.D. (1983). \emph{Data
-structures and algorithms.} Reading: Addison-Wesley.
+Aho, A.V., Hopcroft, J.E. & Ullman, J.D. (1983).
+\emph{Data structures and algorithms}. Reading: Addison-Wesley.
 }
 \author{
 David Edwards, Giovanni M. Marchetti

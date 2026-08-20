@@ -10,11 +10,11 @@ shipley_test(amat, S, n)
 shipley.test(amat, S, n)
 }
 \arguments{
-\item{amat}{a square Boolean matrix, of the same dimension as \code{S},
-representing the adjacency matrix of a DAG.}
+\item{amat}{a square Boolean matrix, of the same dimension as \code{S}, representing the adjacency matrix
+of a DAG.}
 
-\item{S}{a symmetric positive definite matrix, the sample
-covariance matrix.}
+\item{S}{a symmetric positive definite matrix, the
+sample  covariance matrix.}
 
 \item{n}{a positive integer, the sample size.}
 }
@@ -22,31 +22,37 @@ covariance matrix.}
 \itemize{
 \item \code{ctest} Test statistic \eqn{C}.
 \item \code{df} The degrees of freedom.
-\item \code{pvalue} The p-value of the test, assuming a two-sided
-alternative.
+\item \code{pvalue} The p-value of the test, assuming
+a two-sided alternative.
 }
 }
 \description{
-Computes a simultaneous test of all independence relationships
-implied by a given Gaussian DAG model based on
-the sample covariance matrix.
+Computes a simultaneous test of all independence
+relationships implied by a given Gaussian DAG model
+based on the sample covariance matrix.
 }
 \details{
 \code{shipley.test()} is deprecated and will be removed in
-the next versions of \code{ggm} to avoid conflicts with the S3 class
-system of R. Use \code{shipley_test()}.
+the next versions of \code{ggm} to avoid conflicts with the S3 class system of R. Use instead \code{shipley_test()}.
 
-The test statistic is \eqn{C = -2 \sum \log p_j} where \eqn{p_j}
-are the p-values of tests of conditional independence in the
-basis set computed with \code{basiSet(A)}. The p-values are independent
-uniform variables on \eqn{(0,1)} and the statistic has exactly
-a chi squared distribution \eqn{2k} degrees of freedom where
-$\eqn{k}$ is the number of elements of the basis set.
-Bill Shipley (2002) calls this a Fisher's C test.
+The test statistic is
+\eqn{C = -2 \sum \log p_j}{C = -2 * sum(log (p[j])}
+where \eqn{p_j} are the p-values of tests of
+conditional independence in the basis set
+computed with \code{basiSet(A)}. If the p-values are
+independent uniform variables on \eqn{(0,1)} Fisher
+proved that $C$ has an asymptotic chi-squared
+distribution with \eqn{2k} degrees of freedom
+where $\eqn{k}$ is the number of elements of
+the basis set. Shipley (2000) proved that,
+although there are logical and statistical
+dependencies in finite samples, the tests
+in the base set are asymptotically independent
+and the \code{C} test is still asymptotically chi-squared.
 }
 \examples{
 
-## A decomposable model for the mathematics marks data
+# A decomposable model for the mathematics marks data
 data(marks)
 dag <- DAG(
   mechanics ~ vectors + algebra, vectors ~ algebra,
@@ -56,9 +62,9 @@ shipley_test(dag, cov(marks), n = 88)
 
 }
 \references{
-Shipley, B. (2000). A new inferential test for path models based
-on directed acyclic graphs. \emph{Structural Equation Modeling},
-7(2), 206--218.
+Shipley, B. (2000). A new inferential test for path
+models based on directed acyclic graphs.
+\emph{Structural Equation Modeling}, 7(2), 206-218.
 }
 \seealso{
 \code{\link[=basiSet]{basiSet()}}

@@ -7,7 +7,7 @@
 DG(...)
 }
 \arguments{
-\item{\dots}{a sequence of model formulae}
+\item{...}{a sequence of model formulae}
 }
 \value{
 the adjacency matrix of the directed graph,
@@ -49,7 +49,7 @@ Lauritzen, S., L. (1996). \emph{Graphical models}
 2nd ed. Oxford: Oxford University Press.
 }
 \seealso{
-\code{\link[=DAG]{DAG()}}, [\code{\link{UG}}, \code{\link[=UG]{UG()}}
+\code{\link[=DAG]{DAG()}}, \code{\link[=UG]{UG()}}
 }
 \author{
 G. M. Marchetti

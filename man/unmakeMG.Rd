@@ -22,7 +22,7 @@ w.r.t full lines and bi-directed arrows.
 }}
 }
 \value{
-the inverse of \code{makeAG}. It returns the
+the inverse of \code{makeMG}. It returns the
 following components.
 \itemize{
 \item \code{dg} the adjacency matrix of the directed edges
@@ -36,7 +36,8 @@ into three components: directed, undirected and
 bi-directed.
 }
 \details{
-The matrices \code{ug}, and \code{bg} are just symmetric Boolean matrices.
+The matrices \code{ug}, and \code{bg} are just
+symmetric Boolean matrices.
 }
 \examples{
 

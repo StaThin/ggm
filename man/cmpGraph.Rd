@@ -4,10 +4,13 @@
 \alias{cmpGraph}
 \title{The complementary graph}
 \usage{
-cmpGraph(amat)
+cmpGraph(amat, value = 1)
 }
 \arguments{
 \item{amat}{The adjacency matrix of an undirected graph.}
+
+\item{value}{the value 1 or 10 indicating the edges present. The default is
+\code{value = 1}.}
 }
 \value{
 The edge matrix of the complementary graph.

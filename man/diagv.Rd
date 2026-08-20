@@ -7,20 +7,22 @@
 diagv(v, M)
 }
 \arguments{
-\item{v}{A numeric vector specifying the elements on the diagonal of a
-matrix.}
+\item{v}{A numeric vector specifying the elements on
+the diagonal of a matrix.}
 
-\item{M}{A numeric matrix compatible with the product \eqn{D_v M}.}
+\item{M}{A numeric matrix compatible with the
+product \eqn{D_v M}.}
 }
 \value{
 A matrix \code{N}.
 }
 \description{
-Computes faster the product of a diagonal matrix times a full matrix.
+Computes faster the product of a diagonal matrix times
+a full matrix.
 }
 \details{
-Computes \eqn{N = D_v M} where \eqn{D_v} is diagonal avoiding the
-\code{\link[base:diag]{base::diag()}} operator.
+Computes \eqn{N = D_v M} where \eqn{D_v} is diagonal
+avoiding the \code{\link[base:diag]{base::diag()}} operator.
 }
 \examples{
 
